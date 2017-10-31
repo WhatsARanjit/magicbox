@@ -33,12 +33,14 @@
                 $('#status').removeClass('text-danger');
                 $('#status').addClass('text-success');
                 $('#status').html('success');
-                $('#status').show('fast');
               } else {
                 $('#status').removeClass('text-success');
                 $('#status').addClass('text-danger');
                 $('#status').html('failure');
-                $('#status').show('fast');
+              }
+              $('#status_output').show('fast');
+              if (!res['message'].length > 0) {
+                $('#samp_output').hide('fast');
               }
             }
         });
@@ -61,12 +63,12 @@
         </div>
       </form>
         <p><button onclick='submitcode();' class='btn btn-primary'>Test</button></p>
-      <form>
+      <form id='status_output' hidden>
         <div class='form-inline'>
-          <label for='output'>Status:</label> <span id='status' hidden>success</span>
+          <label for='output'>Status:</label> <span id='status'>success</span>
         </div>
         <div class='form-group'>
-          <samp><textarea class='form-control' id='output' rows='5' readonly></textarea></samp>
+          <samp id='samp_output'><textarea class='form-control' id='output' rows='5' readonly></textarea></samp>
         </div>
       </form>
 
