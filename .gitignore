@@ -1,0 +1,8 @@
+.*.swp
+Gemfile.lock
+spec/fixtures/
+pkg/*
+*.old
+checksums.json
+nohup.out
+.sass-cache
