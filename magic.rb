@@ -1,50 +1,16 @@
-require 'sinatra'
-require 'json'
 require 'tempfile'
-require 'uri'
+require_relative './lib/magicbox/webserver.rb'
 
-set :bind, '0.0.0.0'
-set :static, true
-@v = '1.0'
-
-def api(endpoint)
- "/api/#{@v}/#{endpoint}"
-end
-
-def sample_ui(endpoint)
-  _endpoint = endpoint == 'index' ? '' : endpoint
-  get "/#{_endpoint}" do
-    html  = File.read "./pages/header.html"
-    html += File.read "./pages/#{endpoint}.html"
-    html += File.read "./pages/footer.html"
-    html
-  end
-end
-
-configure do
-  mime_type :js, 'application/javascript'
-  mime_type :css, 'text/css'
-  mime_type :png, 'image/png'
-  mime_type :json, 'application/json'
-  mime_type :ico, 'image/x-icon'
-end
-
+web = Magicbox::Webserver.new
 [
-'index',
-'validate',
-'fact',
+  'index',
+  'validate',
+  'fact',
 ].each do |endpoint|
-  sample_ui(endpoint)
+  web.sample_ui(endpoint)
 end
 
-get '/assets/*/*' do
-  type = params['splat'][0]
-  file = params['splat'][1]
-  content_type type.to_sym
-  File.read "./assets/#{type}/#{file}"
-end
-
-post api('validate') do
+web.post 'validate' do
   content_type :json
   request.body.rewind
   begin
@@ -77,7 +43,7 @@ post api('validate') do
   end
 end
 
-post api('fact') do
+web.post 'fact' do
   content_type :json
   request.body.rewind
   begin
@@ -95,3 +61,5 @@ post api('fact') do
     { "exitcode" => exitstatus, "message" => ["expected: #{value}", "actual: #{parse}"].flatten(1)}.to_json
   end
 end
+
+web.run!
