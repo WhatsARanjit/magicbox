@@ -1,0 +1,23 @@
+<script>
+function test() {
+  data = '{ "fact": "ranjit", "value": true, "code": "' + encodeURI($('#magic-box').val()) + '" }';
+  submitcode('fact', data)
+}
+</script>
+
+<form id='magic' action='#'>
+  <div class='form-group'>
+    <label for='magic-box'>Enter facter code:</label>
+    <quote>Write a fact called 'ranjit' that returns Boolean <samp>true</samp>.</quote>
+    <textarea class='form-control' id='magic-box' rows='5'></textarea>
+  </div>
+</form>
+  <p><button onclick='test();' class='btn btn-primary'>Test</button></p>
+<form id='status_output' hidden>
+  <div class='form-inline'>
+    <label for='output'>Status:</label> <span id='status'>success</span>
+  </div>
+  <div class='form-group' id='samp_output'>
+    <samp><textarea class='form-control' id='output' rows='5' readonly></textarea></samp>
+  </div>
+</form>
