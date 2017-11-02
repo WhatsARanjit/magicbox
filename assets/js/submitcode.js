@@ -1,5 +1,12 @@
 function submitcode(endpoint, data)
   {
+    $('#status').removeClass('text-success');
+    $('#status').removeClass('text-danger');
+    $('#status').addClass('text-warning');
+    $('#status_output').show('fast');
+    $('#samp_output').hide('fast');
+    $('#status').html('working...');
+    console.log(data);
     console.log($('#magic-box').val());
     $.ajax({ 
       type:'post',
@@ -12,14 +19,15 @@ function submitcode(endpoint, data)
         $('#output').val(res['message'].join("\n"));
         if (res['exitcode'] == 0) {
           $('#status').removeClass('text-danger');
+          $('#status').removeClass('text-warning');
           $('#status').addClass('text-success');
           $('#status').html('success');
         } else {
           $('#status').removeClass('text-success');
+          $('#status').removeClass('text-warning');
           $('#status').addClass('text-danger');
           $('#status').html('failure');
         }
-        $('#status_output').show('fast');
         if (!res['message'].length > 0) {
           $('#samp_output').hide('fast');
         } else {
