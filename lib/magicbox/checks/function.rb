@@ -4,15 +4,20 @@ module Magicbox::Checks
       begin
         #api_v        = @data['version'] || 4
         code          = URI.unescape(@data['code']).chomp
+        function_name = @data['function']
         value         = @data['value'].is_a?(String) ? URI.unescape(@data['value']).chomp : @data['value']
-        function_args = @data['args']
+        function_args = URI.unescape(@data['args'])
+        spec_test     = @data['spec'] ?
+          URI.unescape(@data['spec']): "it { is_expected.to run.with_params(*#{function_args}).and_return(#{value}) }" 
+
+        spec_test.gsub!(/_FUNCTION_NAME/, function_name)
+        spec_test.gsub!(/_VALUE/, value.to_s)
+        spec_test.gsub!(/_FUNCTION_ARGS/, function_args.to_s)
 
         # Find out v4 or v3 and function name
         m = code.match(/(Puppet::(?:Parser::)?Functions)[:\.]+[\w_]+function\((?:[\\n\s]+)?:['"]?([\w\d_]+)/)
-        raise 'Could not recognize as function' unless m[1] and m[2]
+        raise 'Could not recognize as function' unless m[1]
         api_v         = m[1] == 'Puppet::Functions' ? 4 : 3
-        function_name = m[2]
-        spec_test     = "it { is_expected.to run.with_params(*#{function_args}).and_return(#{value}) }"
 
         # Setup temporary dirs
         tmp_dir       = Dir.mktmpdir('magicbox')
@@ -45,7 +50,7 @@ module Magicbox::Checks
         File.open("#{functions_spec_dir}/#{function_name}_spec.rb", 'w') { |file| file.write(spec_test_raw) }
 
         require 'rspec-puppet'
-        parse      = Dir.chdir(tmp_dir) {
+        cmd_out     = Dir.chdir(tmp_dir) {
           %x(rspec --format json)
         }
         exitstatus = $?.exitstatus
@@ -54,7 +59,7 @@ module Magicbox::Checks
       rescue => e
         { "exitcode" => 1, "message" => [e.message]}.to_json
       else
-        json    = JSON.parse(parse)
+        json    = JSON.parse(cmd_out)
         message = exitstatus == 0 ? json.dig('examples', 0, 'status') : json.dig('examples', 0, 'exception', 'message')
         { "exitcode" => exitstatus, "message" => [message]}.to_json
       end
