@@ -51,6 +51,7 @@ module Magicbox
       MyApp.mime_type :png, 'image/png'
       MyApp.mime_type :json, 'application/json'
       MyApp.mime_type :ico, 'image/x-icon'
+      MyApp.mime_type :fonts, 'application/x-font-woff'
       MyApp.get '/assets/*/*' do
         type = params['splat'][0]
         file = params['splat'][1]
