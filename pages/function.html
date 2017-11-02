@@ -1,6 +1,6 @@
 <script>
 function test() {
-  data = '{ "args": [10,25], "value": 35, "code": "' + encodeURI($('#magic-box').val()) + '" }';
+  data = '{ "function": "sum", "args": "' + escape([10,25]) + '", "value": 35, "code": "' + escape($('#magic-box').val()) + '" }';
   submitcode('function', data)
 }
 </script>
@@ -9,7 +9,7 @@ function test() {
   <div class='form-group'>
     <label for='magic-box'>Enter function code:</label>
     <quote>Write a function called 'sum' that adds 2 numbers.  Usage: <samp>sum(10,25)</samp> returns <samp>35</samp>.</quote>
-    <samp><textarea class='form-control' id='magic-box' rows='5'></textarea></samp>
+    <samp><textarea class='form-control' id='magic-box' rows='10'></textarea></samp>
   </div>
 </form>
   <p><button onclick='test();' class='btn btn-primary'>Test</button></p>

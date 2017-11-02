@@ -1,6 +1,6 @@
 <script>
 function test() {
-  data = '{ "fact": "ranjit", "value": true, "code": "' + encodeURI($('#magic-box').val()) + '" }';
+  data = '{ "fact": "ranjit", "value": true, "code": "' + escape($('#magic-box').val()) + '" }';
   submitcode('fact', data)
 }
 </script>
