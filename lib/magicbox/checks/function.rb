@@ -8,7 +8,7 @@ module Magicbox::Checks
         function_args = @data['args']
 
         # Find out v4 or v3 and function name
-        m = code.match(/(Puppet::(?:Parser::)?Functions)[:\.]+[\w_]+function\(:([\w\d_]+)/)
+        m = code.match(/(Puppet::(?:Parser::)?Functions)[:\.]+[\w_]+function\((?:[\\n\s]+)?:['"]?([\w\d_]+)/)
         raise 'Could not recognize as function' unless m[1] and m[2]
         api_v         = m[1] == 'Puppet::Functions' ? 4 : 3
         function_name = m[2]
