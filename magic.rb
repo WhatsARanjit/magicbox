@@ -8,6 +8,7 @@ web = Magicbox::Webserver.new
   'validate',
   'fact',
   'function',
+  'function_args',
 ].each do |endpoint|
   web.sample_ui(endpoint)
 end
