@@ -110,3 +110,16 @@ pre {
 .highlight .n {
     color: #88b0d5;
 }
+
+/*
+    Magicbox
+*/
+
+textarea#magic-box {
+  background: #000000;
+  color: #F2F3F4;
+}
+
+textarea#magic-box, textarea#output {
+    font-family: monospace;
+}
