@@ -3,7 +3,7 @@ module Magicbox::Checks
     def parse
       begin
         code  = URI.unescape(@data['code']).chomp
-        fact  = @data['fact'].chomp
+        fact  = @data['fact'].is_a?(String) ? URI.unescape(@data['fact']).chomp : @data['fact']
         value = @data['value'].is_a?(String) ? URI.unescape(@data['value']).chomp : @data['value']
         require 'facter'
         Facter.clear

@@ -6,8 +6,9 @@ module Magicbox::Checks
         code          = URI.unescape(@data['code']).chomp
         function_name = @data['function'].chomp
         # Don't unescape if a non-String is given
-        value         = @data['value'].is_a?(String) ? URI.unescape(@data['value']).chomp : @data['value']
-        function_args = URI.unescape(@data['args']).chomp
+        value          = @data['value'].is_a?(String) ? URI.unescape(@data['value']).chomp : @data['value']
+        function_args  = @data['args'].is_a?(String) ? URI.unescape(@data['args']).chomp : @data['args']
+        #function_args = URI.unescape(@data['args']).chomp
         if @data['spec']
           t = Magicbox::Spec_tests::Function.new(
             @data['spec'],
