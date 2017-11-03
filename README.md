@@ -6,10 +6,10 @@
 1. [Requirements](#requirements)
 1. [Startup](#startup)
 1. [API](#api)
-  1. [/1.0/validate](#10validate)
-  1. [/1.0/fact](#10fact)
-  1. [/1.0/function](#10function)
-  1. [/1.0/resource](#10resource)
+  * [/api/1.0/validate](#api10validate)
+  * [/api/1.0/fact](#api10fact)
+  * [/api/1.0/function](#api10function)
+  * [/api/1.0/resource](#api10resource)
 
 ## Overview
 
@@ -30,7 +30,7 @@ An example interface will be available at `http://<IP ADDRESS>:4567/`.
 
 ## API
 
-### `/1.0/validate`
+### `/api/1.0/validate`
 
 Submit code for syntax validation.
 
@@ -65,7 +65,7 @@ __cURL example__
 
 NOTE: `code` should be supplied as an escape string
 
-### `/1.0/fact`
+### `/api/1.0/fact`
 
 Test that Facter code produces an expected value.
 
@@ -104,7 +104,7 @@ __cURL example__
 
 NOTE: `code` and `value` should be supplied as an escaped string.
 
-### `/1.0/function`
+### `/api/1.0/function`
 
 Test that a function produces an expected value or error.
 
@@ -156,7 +156,7 @@ __cURL example__
 
 NOTE: `code`, `args`, and `value` should be supplied as an escaped string.
 
-### `/1.0/resource`
+### `/api/1.0/resource`
 
 Query with `puppet resource` and optionally test the command arguments.
 
