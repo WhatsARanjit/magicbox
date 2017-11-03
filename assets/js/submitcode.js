@@ -15,8 +15,16 @@ function submitcode(endpoint, data)
       dataType:'json',
       success: function(res) {
         console.log(res)
-        $('#output').attr('rows', res['message'].length+2);
-        $('#output').val(res['message'].join("\n"));
+        formatted = Array();
+        for (line in res['message']) {
+          if (typeof res['message']['line'] == 'string') {
+            formatted.push(res['message'][line].replace(/\n/g, "<br />"))
+          } else {
+            formatted.push(res['message'][line])
+          };
+        };
+        $('#output').attr('rows', formatted.length+2);
+        $('#output').val(formatted.join("\n"));
         if (res['exitcode'] == 0) {
           $('#status').removeClass('text-danger');
           $('#status').removeClass('text-warning');
