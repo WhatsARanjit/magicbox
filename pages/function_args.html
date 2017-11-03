@@ -1,6 +1,6 @@
 <script>
 function test() {
-  data = '{ "function": "number", "args": "' + escape("'this is a String'") + '", "code": "' + escape($('#magic-box').val()) + '", "spec": "it%20%7B%20is_expected.to%20run.with_params%28%2A_FUNCTION_ARGS%29.and_raise_error%28ArgumentError%2C%20%2Fexpects%20an%20Integer%20value%2F%29%20%7D" }';
+  data = '{ "function": "number", "args": "' + escape("'this is a String'") + '", "code": "' + escape($('#magic-box').val()) + '", "spec": "raise_error", "value": "' + escape(["ArgumentError", "/expects an Integer value/"]) + '" }';
   submitcode('function', data)
 }
 </script>

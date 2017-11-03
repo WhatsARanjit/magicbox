@@ -13,6 +13,7 @@ module Magicbox
   end
 end
 
+require File.expand_path(File.dirname(__FILE__) + '/spec_tests/base.rb')
 require File.expand_path(File.dirname(__FILE__) + '/checks/validate.rb')
 require File.expand_path(File.dirname(__FILE__) + '/checks/fact.rb')
 require File.expand_path(File.dirname(__FILE__) + '/checks/function.rb')

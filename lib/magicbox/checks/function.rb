@@ -4,18 +4,25 @@ module Magicbox::Checks
       begin
         #api_v        = @data['version'] || 4
         code          = URI.unescape(@data['code']).chomp
-        function_name = @data['function']
+        function_name = @data['function'].chomp
+        # Don't unescape if a non-String is given
         value         = @data['value'].is_a?(String) ? URI.unescape(@data['value']).chomp : @data['value']
-        function_args = URI.unescape(@data['args'])
-        spec_test     = @data['spec'] ?
-          URI.unescape(@data['spec']): "it { is_expected.to run.with_params(*#{function_args}).and_return(#{value}) }" 
-
-        spec_test.gsub!(/_FUNCTION_NAME/, function_name)
-        spec_test.gsub!(/_VALUE/, value.to_s)
-        spec_test.gsub!(/_FUNCTION_ARGS/, function_args.to_s)
+        function_args = URI.unescape(@data['args']).chomp
+        if @data['spec']
+          t = Magicbox::Spec_tests::Function.new(
+            @data['spec'],
+            {
+              :function_args => function_args,
+              :value =>  value,
+            }
+          )
+          spec_test = t.make_spec
+        else
+          spec_test = "it { is_expected.to run.with_params(*#{function_args}).and_return(#{value}) }" 
+        end
 
         # Find out v4 or v3 and function name
-        m = code.match(/(Puppet::(?:Parser::)?Functions)[:\.]+[\w_]+function\((?:[\\n\s]+)?:['"]?([\w\d_]+)/)
+        m = code.match(/(Puppet::(?:Parser::)?Functions)[:\.]+[\w_]+function\((?:[\\n\s]*):['"]?([\w\d_]+)/)
         raise 'Could not recognize as function' unless m[1]
         api_v         = m[1] == 'Puppet::Functions' ? 4 : 3
 
