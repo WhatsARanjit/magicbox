@@ -10,6 +10,7 @@ web = Magicbox::Webserver.new
   'function',
   'function_args',
   'resource',
+  'compile',
 ].each do |endpoint|
   web.sample_ui(endpoint)
 end
@@ -58,6 +59,21 @@ web.post 'resource' do
   raw   = JSON.parse(request.body.read)
   check = Magicbox::Checks::Resource.new(raw)
   check.parse
+end
+
+web.post 'compile' do
+  content_type :json
+  request.body.rewind
+  raw    = JSON.parse(request.body.read)
+  data   = raw.merge({ 'lang' => 'puppet', 'spec' => 'compile'})
+  check1 = Magicbox::Checks::Validate.new(data)
+  result = check1.parse
+  if JSON.parse(result)['exitcode'] == 1
+    result
+  else
+    check2 = Magicbox::Checks::Compile.new(data)
+    check2.parse
+  end
 end
 
 web.run!
