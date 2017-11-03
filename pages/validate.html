@@ -1,6 +1,9 @@
 <script>
   function test() {
-    data = '{ "lang": "' + $('#lang').val() + '", "code": "' + escape($('#magic-box').val()) + '" }'
+    data = '{ \
+      "lang": "' + $('#lang').val() + '", \
+      "code": "' + escape($('#magic-box').val()) + '" \
+    }'
     submitcode('validate', data);
   }
 </script>

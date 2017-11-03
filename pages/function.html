@@ -1,6 +1,11 @@
 <script>
 function test() {
-  data = '{ "function": "sum", "args": "' + escape([10,25]) + '", "value": 35, "code": "' + escape($('#magic-box').val()) + '" }';
+  data = '{ \
+    "function": "sum", \
+    "args": "' + escape([10,25]) + '", \
+    "value": 35, \
+    "code": "' + escape($('#magic-box').val()) + '" \
+  }';
   submitcode('function', data)
 }
 </script>
