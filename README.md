@@ -6,10 +6,10 @@
 1. [Requirements](#requirements)
 1. [Startup](#startup)
 1. [API](#api)
-  * [/api/1.0/validate](#api10validate)
-  * [/api/1.0/fact](#api10fact)
-  * [/api/1.0/function](#api10function)
-  * [/api/1.0/resource](#api10resource)
+    * [/api/1.0/validate](#api10validate)
+    * [/api/1.0/fact](#api10fact)
+    * [/api/1.0/function](#api10function)
+    * [/api/1.0/resource](#api10resource)
 
 ## Overview
 
