@@ -9,6 +9,7 @@ web = Magicbox::Webserver.new
   'fact',
   'function',
   'function_args',
+  'resource',
 ].each do |endpoint|
   web.sample_ui(endpoint)
 end
@@ -49,6 +50,14 @@ web.post 'function' do
     check2 = Magicbox::Checks::Function.new(raw)
     check2.parse
   end
+end
+
+web.post 'resource' do
+  content_type :json
+  request.body.rewind
+  raw   = JSON.parse(request.body.read)
+  check = Magicbox::Checks::Resource.new(raw)
+  check.parse
 end
 
 web.run!
