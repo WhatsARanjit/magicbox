@@ -1,13 +1,18 @@
 function submitcode(endpoint, data)
   {
+    // Reset box
     $('#status').removeClass('text-success');
     $('#status').removeClass('text-danger');
     $('#status').addClass('text-warning');
     $('#status_output').show('fast');
     $('#samp_output').hide('fast');
     $('#status').html('working...');
-    console.log(data);
+
+    // Make it pretty for logging/debugging
+    console.log(data.replace(/ {2,}/g, ' '));
     console.log($('#magic-box').val());
+
+    // Submit API request
     $.ajax({ 
       type:'post',
       url:'api/1.0/' + endpoint,
@@ -16,6 +21,8 @@ function submitcode(endpoint, data)
       success: function(res) {
         console.log(res)
         formatted = Array();
+
+        // Change \n into <br /> for HTML viewing
         for (line in res['message']) {
           if (typeof res['message']['line'] == 'string') {
             formatted.push(res['message'][line].replace(/\n/g, "<br />"))
@@ -23,6 +30,8 @@ function submitcode(endpoint, data)
             formatted.push(res['message'][line])
           };
         };
+
+        // Do status box
         $('#output').attr('rows', formatted.length+2);
         $('#output').val(formatted.join("\n"));
         if (res['exitcode'] == 0) {
@@ -40,6 +49,9 @@ function submitcode(endpoint, data)
           $('#samp_output').hide('fast');
         } else {
           $('#samp_output').show('fast');
+        }
+        if ( res['exitcode'] == 0 ) {
+          $('#successModal').modal('show');
         }
       }
   });
