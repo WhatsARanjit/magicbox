@@ -19,7 +19,7 @@ module Magicbox
       # Method will return raw spec contents
       def make_spec
         klass = Object.const_get("Magicbox::Spec_tests::#{spec_type.capitalize}::#{@spec.capitalize}")
-        klass.make_spec(*opts.values)
+        klass.make_spec(*opts)
       end
 
       private
