@@ -5,12 +5,9 @@ module Magicbox
         @spec = named_spec
         @opts = opts
 
-        #@function_args = opts.dig(:function_args)
-        #@value         = opts.dig(:value)
         # Create scope for template
         opts.each do |k,v|
           instance_variable_set("@#{k.to_s}", v)
-          attr_accessor :"#{k.to_s}"
         end
 
         load_spec
@@ -18,10 +15,11 @@ module Magicbox
 
       attr_reader :spec, :opts
 
+
       # Method will return raw spec contents
       def make_spec
         klass = Object.const_get("Magicbox::Spec_tests::#{spec_type.capitalize}::#{@spec.capitalize}")
-        klass.make_spec(*opts)
+        klass.make_spec(*opts.values)
       end
 
       private

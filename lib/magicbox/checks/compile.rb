@@ -3,10 +3,10 @@ module Magicbox::Checks
     def parse
       begin
         code      = URI.unescape(@data['code']).chomp
-        spec      = URI.unescape(@data['spec']).chomp
-        t         = Magicbox::Spec_tests::Share.new(spec, {})
+        item      = URI.unescape(@data['item']).chomp
+        t         = Magicbox::Spec_tests::Share.new('compile', {})
         spec_test = t.make_spec
-        sandbox   = Magicbox::Spec_tests::Sandbox.new('magic_module', 'class', code, spec_test)
+        sandbox   = Magicbox::Spec_tests::Sandbox.new(item, 'class', code, spec_test)
 
         # Run and clean
         exitstatus, cmd_out = sandbox.run!

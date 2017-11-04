@@ -1,7 +1,8 @@
 <script>
 function test() {
   data = '{ \
-    "code": "class magic_module { ' + escape($('#magic-box').val()) + ' }" \
+    "code": "class magic_module { ' + escape($('#magic-box').val()) + ' }", \
+    "item": "magic_module" \
   }';
   submitcode('compile', data)
 }

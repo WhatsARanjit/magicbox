@@ -13,9 +13,9 @@ module Magicbox
         @fixtures_dir = '/tmp'
         @test_dir     = '/tmp'
         @extension    = 'rb'
-        @module_name  = 'magic_module'
+        @module_name  = 'no_module'
         @extra_dirs   = []
-        @thing_file   = @module_name
+        @thing_file   = 'no_thing'
 
         # Make dirs based on type of test
         autoload_breakdown
@@ -39,10 +39,16 @@ module Magicbox
       private
 
       def autoload_breakdown
-        parts        = @thing.split('::')
-        @module_name = parts.shift
-        @thing_file  = parts.pop || 'init'
-        @extra_dirs  = parts
+        if [ 'class', 'define' ].include?(@mode)
+          parts        = @thing.split('::')
+          @module_name = parts.shift
+          @thing_file  = parts.pop || 'init'
+          @extra_dirs  = parts
+        else
+          @module_name = 'magic_module'
+          @thing_file  = @thing
+          @extra_dirs  = []
+        end
       end
 
       def spec_template
@@ -59,9 +65,11 @@ module Magicbox
         when 'function3'
           @fixtures_dir = file.join(@spec_dir, 'fixtures', 'modules', @module_name, 'lib', 'puppet', 'parser', 'functions')
           @test_dir     = file.join(@spec_dir, 'unit', 'functions')
+          @mode         = 'puppet_function'
         when 'function4'
           @fixtures_dir = File.join(@spec_dir, 'fixtures', 'modules', @module_name, 'lib', 'puppet', 'functions')
           @test_dir     = File.join(@spec_dir, 'functions')
+          @mode         = 'puppet_function'
         when 'class'
           @fixtures_dir = File.join(@spec_dir, 'fixtures', 'modules', @module_name, 'manifests', *@extra_dirs)
           @test_dir     = File.join(@spec_dir, 'unit', 'classes', *@extra_dirs)

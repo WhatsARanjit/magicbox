@@ -65,7 +65,7 @@ web.post 'compile' do
   content_type :json
   request.body.rewind
   raw    = JSON.parse(request.body.read)
-  data   = raw.merge({ 'lang' => 'puppet', 'spec' => 'compile'})
+  data   = raw.merge({ 'lang' => 'puppet', })
   check1 = Magicbox::Checks::Validate.new(data)
   result = check1.parse
   if JSON.parse(result)['exitcode'] == 1
