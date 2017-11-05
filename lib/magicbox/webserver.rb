@@ -6,9 +6,14 @@ class MyApp < Sinatra::Base; end
 module Magicbox
   class Magicbox::Webserver
 
-    def initialize(bind='0.0.0.0')
+    def initialize(
+      bind    = '0.0.0.0',
+      port    = 80,
+      version = '1.0'
+    )
       @bind    = bind
-      @version = '1.0'
+      @port    = port
+      @version = version
 
       setup_webserver
     end
@@ -44,6 +49,7 @@ module Magicbox
     end
 
     def setup_webserver
+      MyApp.set :port, @port
       MyApp.set :bind, @bind
       MyApp.set :static, true
       MyApp.mime_type :js, 'application/javascript'
