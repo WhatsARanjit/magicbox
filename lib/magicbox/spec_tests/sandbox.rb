@@ -81,7 +81,7 @@ module Magicbox::SpecTests
 
     def make_temp_dirs(path)
       path.each do |p|
-        dir_array = p.split(File::SEPARATOR).push(@thing)
+        dir_array = p.split(File::SEPARATOR).push(@thing).compact
         dir_array.inject do |memo, part|
           Dir.mkdir(memo) unless memo.empty? || File.exist?(memo)
           File.join(memo, part)

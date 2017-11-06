@@ -20,7 +20,8 @@ class Magicbox::Webserver
 
   def self.sanitize(input)
     if input.is_a?(String)
-      URI.decode_www_form_component(input)
+      # '+' manually replaced to URL code
+      URI.decode_www_form_component(input.gsub(/\+/, '%2B'))
     else
       input
     end

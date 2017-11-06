@@ -3,8 +3,8 @@ module Magicbox::Checks
     def parse
       begin
         code          = Magicbox::Webserver.sanitize(@data['code'])
-        function_name = Magicbox::Webserver.sanitize(@data['function_name'])
-        function_args = Magicbox::Webserver.sanitize(@data['function_args'])
+        function_name = Magicbox::Webserver.sanitize(@data['function'])
+        function_args = Magicbox::Webserver.sanitize(@data['args'])
         value         = Magicbox::Webserver.sanitize(@data['value'])
         spec          = @data['spec'] || nil
         if spec
