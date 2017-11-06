@@ -8,3 +8,7 @@ module Magicbox; end
 ].each do |file|
   require File.join(PROJECT_ROOT, 'lib', 'magicbox', *file)
 end
+
+RSpec.configure do |c|
+  c.formatter = 'documentation'
+end
