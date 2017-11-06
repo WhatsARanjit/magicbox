@@ -1,8 +1,12 @@
-.*.swp
-Gemfile.lock
-spec/fixtures/
-pkg/*
 *.old
+.*.swp
+.bundle
+.sass-cache
+.vagrant/
+Gemfile.local
+Gemfile.lock
 checksums.json
 nohup.out
-.sass-cache
+pkg/*
+spec/fixtures/
+vendor/

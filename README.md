@@ -1,4 +1,4 @@
-# Puppeteer [![Build Status](https://travis-ci.org/WhatsARanjit/puppet-puppeteer.svg?branch=master)](https://travis-ci.org/WhatsARanjit/puppet-puppeteer)
+# Magic Box [![Build Status](https://travis-ci.org/WhatsARanjit/magicbox.svg?branch=master)](https://travis-ci.org/WhatsARanjit/magicbox)
 
 #### Table of Contents
 

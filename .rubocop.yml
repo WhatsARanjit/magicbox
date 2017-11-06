@@ -6,6 +6,10 @@ AllCops:
     - 'pages/**/*'
     - 'assets/**/*'
 
+Naming/FileName:
+  Exclude:
+    - Gemfile
+
 Lint/UriEscapeUnescape:
   Enabled: false
 Metrics/AbcSize:
