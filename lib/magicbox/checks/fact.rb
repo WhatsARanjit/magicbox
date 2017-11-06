@@ -2,9 +2,9 @@ module Magicbox::Checks
   class Fact < Magicbox::Check
     def parse
       begin
-        code  = URI.unescape(@data['code']).chomp
-        fact  = @data['fact'].is_a?(String) ? URI.unescape(@data['fact']).chomp : @data['fact']
-        value = @data['value'].is_a?(String) ? URI.unescape(@data['value']).chomp : @data['value']
+        code    = Magicbox::Webserver.sanitize(@data['code'])
+        fact    = Magicbox::Webserver.sanitize(@data['fact'])
+        value   = Magicbox::Webserver.sanitize(@data['value'])
         require 'facter'
         Facter.clear
         eval(code)

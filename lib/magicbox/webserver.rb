@@ -18,6 +18,14 @@ class Magicbox::Webserver
 
   attr_reader :version
 
+  def self.sanitize(input)
+    if input.is_a?(String)
+      URI.decode_www_form_component(input)
+    else
+      input
+    end
+  end
+
   def post(endpoint, &block)
     MyApp.post(api(endpoint), &block)
   end

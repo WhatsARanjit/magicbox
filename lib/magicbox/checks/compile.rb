@@ -2,8 +2,8 @@ module Magicbox::Checks
   class Compile < Magicbox::Check
     def parse
       begin
-        code      = URI.unescape(@data['code']).chomp
-        item      = URI.unescape(@data['item']).chomp
+        code      = Magicbox::Webserver.sanitize(@data['code'])
+        item      = Magicbox::Webserver.sanitize(@data['item'])
         t         = Magicbox::SpecTests::Share.new('compile', {})
         spec_test = t.make_spec
         sandbox   = Magicbox::SpecTests::Sandbox.new(

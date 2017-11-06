@@ -2,10 +2,10 @@ module Magicbox::Checks
   class Function < Magicbox::Check
     def parse
       begin
-        code          = URI.unescape(@data['code']).chomp
-        function_name = @data['function'].chomp
-        value         = @data['value'].is_a?(String) ? URI.unescape(@data['value']).chomp : @data['value']
-        function_args = @data['args'].is_a?(String) ? URI.unescape(@data['args']).chomp : @data['args']
+        code          = Magicbox::Webserver.sanitize(@data['code'])
+        function_name = Magicbox::Webserver.sanitize(@data['function_name'])
+        function_args = Magicbox::Webserver.sanitize(@data['function_args'])
+        value         = Magicbox::Webserver.sanitize(@data['value'])
         spec          = @data['spec'] || nil
         if spec
           t = Magicbox::SpecTests::Function.new(

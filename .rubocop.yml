@@ -3,8 +3,10 @@ AllCops:
     - '*.rb'
     - 'lib/**/*.rb'
   Exclude:
-    - 'pages/**/*'
+    - '.**'
     - 'assets/**/*'
+    - 'pages/**/*'
+    - 'vendor/**/*'
 
 Naming/FileName:
   Exclude:

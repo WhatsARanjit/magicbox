@@ -2,8 +2,10 @@ module Magicbox::Checks
   class Resource < Magicbox::Check
     def parse
       begin
-        code  = URI.unescape(@data['code']).chomp
-        m     = code.match(/^puppet resource ([\w\_\d]+) ?['"]?(.*)/)
+        code = Magicbox::Webserver.sanitize(@data['code'])
+        typ  = Magicbox::Webserver.sanitize(@data['type'])
+        titl = Magicbox::Webserver.sanitize(@data['title'])
+        m    = code.match(/^puppet resource ([\w\_\d]+) ?['"]?(.*)/)
         raise 'Could not understand code' unless m
         type  = m[1]
         title = m[2].empty? ? false : m[2]
@@ -11,9 +13,6 @@ module Magicbox::Checks
 
         # Check command against optional type and title
         checks = []
-        typ  = @data['type'].is_a?(String) ? URI.unescape(@data['type']).chomp : @data['type']
-        titl = @data['title'].is_a?(String) ? URI.unescape(@data['title']).chomp : @data['title']
-
         checks << "Supplied type '#{type}' does not match '#{typ}'" if typ && typ != type
         checks << "Supplied title '#{title}' does not match '#{titl}'" if titl && titl != title
 

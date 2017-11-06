@@ -8,8 +8,8 @@ module Magicbox::Checks
 
     def parse
       begin
-        code  = URI.unescape(@data['code']).chomp
-        lang  = @data['lang'].chomp
+        code = Magicbox::Webserver.sanitize(@data['code'])
+        lang = Magicbox::Webserver.sanitize(@data['lang'])
         tempp = Tempfile.new('pp')
         tempp.write(code)
         tempp.rewind
