@@ -9,6 +9,9 @@ AllCops:
     - 'pages/**/*'
     - 'vendor/**/*'
 
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*.rb'
 Naming/FileName:
   Exclude:
     - Gemfile
