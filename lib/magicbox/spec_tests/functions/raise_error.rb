@@ -1,5 +1,5 @@
-module Magicbox::Spec_tests::Functions
-  class Raise_error
+module Magicbox::SpecTests::Functions
+  class RaiseError
     def self.make_spec(*opts)
       opts_hash     = opts.to_h
       function_args = opts_hash[:function_args]

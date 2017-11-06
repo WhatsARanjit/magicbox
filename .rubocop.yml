@@ -1,0 +1,36 @@
+AllCops:
+  Include:
+    - '*.rb'
+    - 'lib/**/*.rb'
+  Exclude:
+    - 'pages/**/*'
+    - 'assets/**/*'
+
+Lint/UriEscapeUnescape:
+  Enabled: false
+Metrics/AbcSize:
+  Enabled: false
+Metrics/LineLength:
+  Enabled: false
+Metrics/MethodLength:
+  Enabled: false
+Security/Eval:
+  Enabled: false
+Style/BracesAroundHashParameters:
+  Enabled: false
+Style/ClassAndModuleChildren:
+  EnforcedStyle: compact
+Style/Documentation:
+  Enabled: false
+Style/RedundantBegin:
+  Enabled: false
+Style/TrailingCommaInLiteral:
+  Enabled: false
+#Consider for later
+Style/SpecialGlobalVars:
+  Enabled: false
+#WHAT
+Metrics/CyclomaticComplexity:
+  Enabled: false
+Metrics/PerceivedComplexity:
+  Enabled: false

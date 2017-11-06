@@ -1,8 +1,9 @@
-module Magicbox::Spec_tests::Shared; end
+module Magicbox::SpecTests::Shared; end
 
-module Magicbox::Spec_tests
-  class Share < Magicbox::Spec_tests::Base
+module Magicbox::SpecTests
+  class Share < Magicbox::SpecTests::Base
     private
+
     def spec_type
       'shared'
     end

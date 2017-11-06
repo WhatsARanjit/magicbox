@@ -1,15 +1,13 @@
-module Magicbox
-  class Check
-    def initialize(data)
-      @data = data
-    end
+class Magicbox::Check
+  def initialize(data)
+    @data = data
+  end
 
-    attr_reader :data
+  attr_reader :data
 
-    # Placeholder method
-    def parse
-      {}.to_json
-    end
+  # Placeholder method
+  def parse
+    {}.to_json
   end
 end
 

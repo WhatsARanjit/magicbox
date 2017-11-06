@@ -1,16 +1,19 @@
 require 'tempfile'
+
+module Magicbox; end
+
 require File.expand_path(File.dirname(__FILE__) + '/lib/magicbox/webserver.rb')
 require File.expand_path(File.dirname(__FILE__) + '/lib/magicbox/checks.rb')
 
 web = Magicbox::Webserver.new
-[
-  'index',
-  'validate',
-  'fact',
-  'function',
-  'function_args',
-  'resource',
-  'compile',
+%w[
+  index
+  validate
+  fact
+  function
+  function_args
+  resource
+  compile
 ].each do |endpoint|
   web.sample_ui(endpoint)
 end
@@ -26,8 +29,8 @@ end
 web.post 'fact' do
   content_type :json
   request.body.rewind
-  raw   = JSON.parse(request.body.read)
-  data   = raw.merge({ 'lang' => 'ruby'})
+  raw    = JSON.parse(request.body.read)
+  data   = raw.merge({ 'lang' => 'ruby' })
   check1 = Magicbox::Checks::Validate.new(data)
   result = check1.parse
   if JSON.parse(result)['exitcode'] == 1
@@ -42,7 +45,7 @@ web.post 'function' do
   content_type :json
   request.body.rewind
   raw    = JSON.parse(request.body.read)
-  data   = raw.merge({ 'lang' => 'ruby'})
+  data   = raw.merge({ 'lang' => 'ruby' })
   check1 = Magicbox::Checks::Validate.new(data)
   result = check1.parse
   if JSON.parse(result)['exitcode'] == 1

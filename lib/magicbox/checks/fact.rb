@@ -7,12 +7,21 @@ module Magicbox::Checks
         value = @data['value'].is_a?(String) ? URI.unescape(@data['value']).chomp : @data['value']
         require 'facter'
         Facter.clear
-        test_fact  = eval(code)
+        eval(code)
         exitstatus = Facter.value(fact) == value ? 0 : 1
-      rescue => e
-        { "exitcode" => 1, "message" => [e.message]}.to_json
+      rescue RuntimeError => e
+        {
+          'exitcode' => 1,
+          'message'  => [e.message],
+        }.to_json
       else
-        { "exitcode" => exitstatus, "message" => ["expected: #{value}", "actual: #{Facter.value(fact)}"].flatten(1)}.to_json
+        {
+          'exitcode' => exitstatus,
+          'message' => [
+            "expected: #{value}",
+            "actual: #{Facter.value(fact)}",
+          ].flatten(1)
+        }.to_json
       end
     end
   end

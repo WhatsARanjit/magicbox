@@ -10,12 +10,12 @@ module Magicbox::Checks
         raise 'Could not find type' unless type
 
         # Check command against optional type and title
-        checks = Array.new
-        _type  = @data['type'].is_a?(String) ? URI.unescape(@data['type']).chomp : @data['type']
-        _title = @data['title'].is_a?(String) ? URI.unescape(@data['title']).chomp : @data['title']
+        checks = []
+        typ  = @data['type'].is_a?(String) ? URI.unescape(@data['type']).chomp : @data['type']
+        titl = @data['title'].is_a?(String) ? URI.unescape(@data['title']).chomp : @data['title']
 
-        checks << "Supplied type '#{type}' does not match '#{_type}'" if _type and _type != type
-        checks << "Supplied title '#{title}' does not match '#{_title}'" if _title and _title != title
+        checks << "Supplied type '#{type}' does not match '#{typ}'" if typ && typ != type
+        checks << "Supplied title '#{title}' does not match '#{titl}'" if titl && titl != title
 
         if checks.empty?
           require 'puppet/indirector/face'
@@ -25,7 +25,7 @@ module Magicbox::Checks
             message = [cmd_out.to_manifest]
           else
             cmd_out = Puppet::Face[:resource, '0.0.1'].search(type)
-            message = cmd_out.collect { |r| r.to_manifest }
+            message = cmd_out.collect(&:to_manifest)
           end
 
           if cmd_out.empty?
@@ -38,11 +38,16 @@ module Magicbox::Checks
           exitstatus = 1
           message    = checks
         end
-
-      rescue => e
-        { "exitcode" => 1, "message" => [e.message] }.to_json
+      rescue RuntimeError => e
+        {
+          'exitcode' => 1,
+          'message'  => [e.message],
+        }.to_json
       else
-        { "exitcode" => exitstatus, "message" => message }.to_json
+        {
+          'exitcode' => exitstatus,
+          'message'  => message,
+        }.to_json
       end
     end
   end

@@ -1,8 +1,9 @@
-module Magicbox::Spec_tests::Functions; end
+module Magicbox::SpecTests::Functions; end
 
-module Magicbox::Spec_tests
-  class Function < Magicbox::Spec_tests::Base
+module Magicbox::SpecTests
+  class Function < Magicbox::SpecTests::Base
     private
+
     def spec_type
       'functions'
     end

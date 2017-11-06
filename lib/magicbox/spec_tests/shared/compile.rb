@@ -1,4 +1,4 @@
-module Magicbox::Spec_tests::Shared
+module Magicbox::SpecTests::Shared
   class Compile
     def self.make_spec
       'it { should compile }'
