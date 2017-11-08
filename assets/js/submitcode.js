@@ -1,3 +1,17 @@
+function makeHTMLfriendly(input) {
+  formatted = Array();
+
+  // Change \n into <br /> for HTML viewing
+  for (line in input) {
+    if (typeof input['line'] == 'string') {
+      formatted.push(input[line].replace(/\n/g, "<br />"))
+    } else {
+      formatted.push(input[line])
+    };
+  };
+  return formatted;
+}
+
 function submitcode(endpoint, data)
   {
     // Reset box
@@ -20,16 +34,7 @@ function submitcode(endpoint, data)
       dataType:'json',
       success: function(res) {
         console.log(res);
-        formatted = Array();
-
-        // Change \n into <br /> for HTML viewing
-        for (line in res['message']) {
-          if (typeof res['message']['line'] == 'string') {
-            formatted.push(res['message'][line].replace(/\n/g, "<br />"))
-          } else {
-            formatted.push(res['message'][line])
-          };
-        };
+        formatted = makeHTMLfriendly(res['message']);
 
         // Do status box
         $('#output').attr('rows', formatted.length+2);
@@ -47,16 +52,7 @@ function submitcode(endpoint, data)
       error: function(xhr) {
         res = JSON.parse(xhr.responseText);
         console.log(res);
-        formatted = Array();
-
-        // Change \n into <br /> for HTML viewing
-        for (line in res['message']) {
-          if (typeof res['message']['line'] == 'string') {
-            formatted.push(res['message'][line].replace(/\n/g, "<br />"))
-          } else {
-            formatted.push(res['message'][line])
-          };
-        };
+        formatted = makeHTMLfriendly(res['message']);
 
         // Do status box
         $('#output').attr('rows', formatted.length+2);
