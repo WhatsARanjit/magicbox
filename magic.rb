@@ -23,7 +23,7 @@ web.post 'validate' do
   request.body.rewind
   raw   = JSON.parse(request.body.read)
   check = Magicbox::Checks::Validate.new(raw)
-  check.parse
+  check.http_response
 end
 
 web.post 'fact' do
@@ -32,12 +32,12 @@ web.post 'fact' do
   raw    = JSON.parse(request.body.read)
   data   = raw.merge({ 'lang' => 'ruby' })
   check1 = Magicbox::Checks::Validate.new(data)
-  result = check1.parse
-  if JSON.parse(result)['exitcode'] == 1
+  result = check1.http_response
+  if result.first != 200
     result
   else
     check2 = Magicbox::Checks::Fact.new(raw)
-    check2.parse
+    check2.http_response
   end
 end
 
@@ -47,12 +47,12 @@ web.post 'function' do
   raw    = JSON.parse(request.body.read)
   data   = raw.merge({ 'lang' => 'ruby' })
   check1 = Magicbox::Checks::Validate.new(data)
-  result = check1.parse
-  if JSON.parse(result)['exitcode'] == 1
+  result = check1.http_response
+  if result.first != 200
     result
   else
     check2 = Magicbox::Checks::Function.new(raw)
-    check2.parse
+    check2.http_response
   end
 end
 
@@ -61,7 +61,7 @@ web.post 'resource' do
   request.body.rewind
   raw   = JSON.parse(request.body.read)
   check = Magicbox::Checks::Resource.new(raw)
-  check.parse
+  check.http_response
 end
 
 web.post 'compile' do
@@ -70,12 +70,12 @@ web.post 'compile' do
   raw    = JSON.parse(request.body.read)
   data   = raw.merge({ 'lang' => 'puppet', })
   check1 = Magicbox::Checks::Validate.new(data)
-  result = check1.parse
-  if JSON.parse(result)['exitcode'] == 1
+  result = check1.http_response
+  if result.first != 200
     result
   else
-    check2 = Magicbox::Checks::Compile.new(data)
-    check2.parse
+    check2 = Magicbox::Checks::Compile.new(raw)
+    check2.http_response
   end
 end
 

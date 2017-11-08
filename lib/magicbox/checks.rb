@@ -5,6 +5,19 @@ class Magicbox::Check
 
   attr_reader :data
 
+  def resheaders
+    {
+      'Access-Control-Allow-Origin' => '*'
+    }
+  end
+
+  def http_response
+    resobj    = parse
+    http_code = resobj['exitcode'].zero? ? 200 : 400
+
+    [http_code, resheaders, resobj.to_json]
+  end
+
   # Placeholder method
   def parse
     {}.to_json

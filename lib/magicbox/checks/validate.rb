@@ -1,11 +1,5 @@
 module Magicbox::Checks
-  class Validate
-    def initialize(data)
-      @data = data
-    end
-
-    attr_reader :data
-
+  class Validate < Magicbox::Check
     def parse
       begin
         code = Magicbox::Webserver.sanitize(@data['code'])
@@ -31,12 +25,12 @@ module Magicbox::Checks
         {
           'exitcode' => 1,
           'message'  => [e.message],
-        }.to_json
+        }
       else
         {
           'exitcode' => exitstatus,
           'message'  => cmd.split("\n"),
-        }.to_json
+        }
       ensure
         tempp.unlink
       end
