@@ -19,7 +19,7 @@ function submitcode(endpoint, data)
       data: data,
       dataType:'json',
       success: function(res) {
-        console.log(res)
+        console.log(res);
         formatted = Array();
 
         // Change \n into <br /> for HTML viewing
@@ -34,6 +34,7 @@ function submitcode(endpoint, data)
         // Do status box
         $('#output').attr('rows', formatted.length+2);
         $('#output').val(formatted.join("\n"));
+
         // Success colors
         $('#status').removeClass('text-danger');
         $('#status').removeClass('text-warning');
@@ -43,8 +44,9 @@ function submitcode(endpoint, data)
         // Success modal
         $('#successModal').modal('show');
       },
-      error: function(res) {
-        console.log(res)
+      error: function(xhr) {
+        res = JSON.parse(xhr.responseText);
+        console.log(res);
         formatted = Array();
 
         // Change \n into <br /> for HTML viewing
@@ -66,7 +68,8 @@ function submitcode(endpoint, data)
         $('#status').addClass('text-danger');
         $('#status').html('failure');
       },
-      complete: function(res) {
+      complete: function(xhr) {
+        res = JSON.parse(xhr.responseText);
         if (!res['message'].length > 0) {
           $('#samp_output').hide('fast');
         } else {
