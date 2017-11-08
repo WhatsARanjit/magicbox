@@ -13,6 +13,6 @@ subject = Magicbox::Checks::Function.new(
 
 describe 'function check' do
   it 'should pass' do
-    expect(subject.parse).to eql(output)
+    expect(subject.parse.to_json).to eql(output)
   end
 end

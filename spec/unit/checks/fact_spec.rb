@@ -12,6 +12,6 @@ subject = Magicbox::Checks::Fact.new(
 
 describe 'fact check' do
   it 'should pass' do
-    expect(subject.parse).to eql(output)
+    expect(subject.parse.to_json).to eql(output)
   end
 end

@@ -17,7 +17,7 @@ module Magicbox::Checks
         exitstatus, cmd_out = sandbox.run!
         sandbox.cleanup!
       rescue RuntimeError => e
-        { 'exitcode' => 1, 'message' => [e.message] }.to_json
+        { 'exitcode' => 1, 'message' => [e.message] }
       else
         json    = JSON.parse(cmd_out)
         message = if exitstatus.zero?
@@ -25,7 +25,7 @@ module Magicbox::Checks
                   else
                     json.dig('examples', 0, 'exception', 'message')
                   end
-        { 'exitcode' => exitstatus, 'message' => [message] }.to_json
+        { 'exitcode' => exitstatus, 'message' => [message] }
       end
     end
   end

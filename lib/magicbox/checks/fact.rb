@@ -13,7 +13,7 @@ module Magicbox::Checks
         {
           'exitcode' => 1,
           'message'  => [e.message],
-        }.to_json
+        }
       else
         {
           'exitcode' => exitstatus,
@@ -21,7 +21,7 @@ module Magicbox::Checks
             "expected: #{value}",
             "actual: #{Facter.value(fact)}",
           ].flatten(1)
-        }.to_json
+        }
       end
     end
   end

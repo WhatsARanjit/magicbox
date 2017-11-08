@@ -41,12 +41,12 @@ module Magicbox::Checks
         {
           'exitcode' => 1,
           'message'  => [e.message],
-        }.to_json
+        }
       else
         {
           'exitcode' => exitstatus,
           'message'  => message,
-        }.to_json
+        }
       end
     end
   end

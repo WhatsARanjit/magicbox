@@ -12,6 +12,6 @@ subject = Magicbox::Checks::Resource.new(
 
 describe 'resource check' do
   it 'should pass' do
-    expect(subject.parse).to match(output)
+    expect(subject.parse.to_json).to match(output)
   end
 end

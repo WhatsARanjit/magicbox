@@ -11,6 +11,6 @@ subject = Magicbox::Checks::Compile.new(
 
 describe 'compile check' do
   it 'should pass' do
-    expect(subject.parse).to eql(output)
+    expect(subject.parse.to_json).to eql(output)
   end
 end
