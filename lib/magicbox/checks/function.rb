@@ -32,7 +32,7 @@ module Magicbox::Checks
         sandbox.cleanup!
       rescue RuntimeError => e
         {
-          'exitcode' => 1,
+          'exitcode' => 2,
           'message'  => [e.message],
         }
       else

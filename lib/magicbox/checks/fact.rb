@@ -11,7 +11,7 @@ module Magicbox::Checks
         exitstatus = Facter.value(fact) == value ? 0 : 1
       rescue RuntimeError => e
         {
-          'exitcode' => 1,
+          'exitcode' => 2,
           'message'  => [e.message],
         }
       else

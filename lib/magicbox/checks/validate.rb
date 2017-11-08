@@ -23,7 +23,7 @@ module Magicbox::Checks
         exitstatus = $?.exitstatus
       rescue RuntimeError => e
         {
-          'exitcode' => 1,
+          'exitcode' => 2,
           'message'  => [e.message],
         }
       else

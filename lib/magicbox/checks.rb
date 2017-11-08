@@ -13,7 +13,15 @@ class Magicbox::Check
 
   def http_response
     resobj    = parse
-    http_code = resobj['exitcode'].zero? ? 200 : 400
+    http_code =
+      case resobj['exitcode']
+      when 0
+        200
+      when 1
+        400
+      else
+        500
+      end
 
     [http_code, resheaders, resobj.to_json]
   end
