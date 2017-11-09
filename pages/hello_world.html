@@ -1,0 +1,25 @@
+<script>
+function test() {
+  data = '{ \
+    "code": "' + escape($('#magic-box').val()) + '", \
+    "check": "File%5C%5B%5C/etc%5C/motd%5C%5D.*f0ef7081e1539ac00ef5b761b4fb01b3" \
+  }';
+  submitcode('apply', data)
+}
+</script>
+
+<form id='magic' action='#'>
+  <div class='form-group'>
+    <label for='magic-box'>Write a file resource that manages the <code>/etc/motd</code>'s content as '<code>Hello world\n</code>':</label>
+    <samp><textarea class='form-control' id='magic-box' rows='5'></textarea></samp>
+  </div>
+</form>
+  <p><button onclick='test();' class='btn btn-primary'>Test</button></p>
+<form id='status_output' hidden>
+  <div class='form-inline'>
+    <label for='output'>Status:</label> <span id='status'>success</span>
+  </div>
+  <div class='form-group' id='samp_output'>
+    <samp><textarea class='form-control' id='output' rows='5' readonly></textarea></samp>
+  </div>
+</form>

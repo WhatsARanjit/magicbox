@@ -14,6 +14,9 @@ web = Magicbox::Webserver.new
   function_args
   resource
   compile
+  parser_validate
+  apply
+  hello_world
 ].each do |endpoint|
   web.sample_ui(endpoint)
 end
@@ -77,6 +80,14 @@ web.post 'compile' do
     check2 = Magicbox::Checks::Compile.new(raw)
     check2.http_response
   end
+end
+
+web.post 'apply' do
+  content_type :json
+  request.body.rewind
+  raw   = JSON.parse(request.body.read)
+  check = Magicbox::Checks::Apply.new(raw)
+  check.http_response
 end
 
 web.run!

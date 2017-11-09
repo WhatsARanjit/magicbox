@@ -115,11 +115,11 @@ pre {
     Magicbox
 */
 
-textarea#magic-box {
+textarea#magic-box, .magic-console {
   background: #000000;
   color: #F2F3F4;
 }
 
-textarea#magic-box, textarea#output {
+textarea#magic-box, textarea#output, magic-console {
     font-family: monospace;
 }
