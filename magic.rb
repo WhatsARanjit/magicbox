@@ -6,6 +6,23 @@ require File.expand_path(File.dirname(__FILE__) + '/lib/magicbox/webserver.rb')
 require File.expand_path(File.dirname(__FILE__) + '/lib/magicbox/checks.rb')
 
 web = Magicbox::Webserver.new
+
+# Embed pages for iframes
+%w[
+  validate
+  fact
+  function
+  function_args
+  resource
+  compile
+  parser_validate
+  apply
+  hello_world
+].each do |endpoint|
+  web.sample_ui(endpoint, true)
+end
+
+# Sample UI pages
 %w[
   index
   validate
