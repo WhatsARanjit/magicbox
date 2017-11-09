@@ -5,7 +5,9 @@
 1. [Overview](#overview)
 1. [Requirements](#requirements)
 1. [Startup](#startup)
+1. [Example UI](#example-ui)
 1. [API](#api)
+    * [Schema](#schema)
     * [/api/1.0/validate](#api10validate)
     * [/api/1.0/fact](#api10fact)
     * [/api/1.0/function](#api10function)
@@ -26,9 +28,63 @@ Magic Box API and sample web UI.
 # ruby magic.rb
 ```
 
-An example interface will be available at `http://<IP ADDRESS>:4567/`.
+## Example UI
+
+An example interface will be available at `http://<IP ADDRESS>/`.  To enable
+Magic Box on any box, here is an example:
+
+__text box__
+```html
+<textarea id='thebox'></textarea>
+<button onclick='submit();' >Submit</button>
+```
+
+__javascript__
+
+```javascript
+function submit() {
+  data = '{ \
+    "lang": "puppet", \
+    "code": "' + escape($('#thebox').val()) + '" \
+  }'
+  $.ajax({
+    type:'post',
+    url:'http://<magicbox host>/api/1.0/validate',
+    data: data,
+    dataType:'json',
+    success: function(res) {
+      alert('success');
+    },
+    error: function(xhr) {
+      alert('error');
+    },
+    complete: function(xhr) {
+      console.log(JSON.parse(xhr.responseText))
+    }
+  });
+}
+```
+
+The `success`, `error`, and `complete` fields can be used to trigger popups
+and/or advance you to the next page (or whatever series of events).
 
 ## API
+
+### Schema
+
+All data should be `POST`'d as a JSON blob.  Fields that probably contain special
+characters like `code` or `value` will need to be escaped.  The response
+format for all endpoints is:
+
+```json
+{
+  "exitcode": "Enum[0, 1]",
+  "message": "Array[String]"
+}
+```
+
+If the code submission is correct, the API will return a `200` response code.
+Incorrect code will receive a `400` and server failures a `500`.
 
 ### `/api/1.0/validate`
 
