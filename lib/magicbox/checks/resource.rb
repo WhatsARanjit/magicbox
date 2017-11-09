@@ -6,6 +6,11 @@ module Magicbox::Checks
         typ  = Magicbox::Webserver.sanitize(@data['type'])
         titl = Magicbox::Webserver.sanitize(@data['title'])
         m    = code.match(/^puppet resource ([\w\_\d]+) ?['"]?(.*)/)
+
+        # Optional params
+        munge  = Magicbox::Webserver.sanitize(@data['munge'])
+        filter = Magicbox::Webserver.sanitize(@data['filter'])
+
         raise 'Could not understand code' unless m
         type  = m[1]
         title = m[2].empty? ? false : m[2]
@@ -20,8 +25,32 @@ module Magicbox::Checks
           require 'puppet/indirector/face'
 
           if title
-            cmd_out = Puppet::Face[:resource, '0.0.1'].find("#{type}/#{title}")
-            message = [cmd_out.to_manifest]
+            poutput = Puppet::Face[:resource, '0.0.1'].find("#{type}/#{title}")
+            # Overwrite any parameters
+            if munge
+              new_resource_hash = poutput.to_h
+              munge.each do |attr, value|
+                new_resource_hash[attr.to_sym] = value
+              end
+              poutput = Puppet::Resource.from_data_hash(
+                'type'       => typ,
+                'title'      => titl,
+                'parameters' => new_resource_hash
+              )
+            end
+            # Filter returned parameters
+            if filter
+              new_resource_hash = {}
+              filter.each do |attr|
+                new_resource_hash[attr.to_sym] = poutput[attr.to_sym] if poutput[attr.to_sym]
+              end
+              poutput = Puppet::Resource.from_data_hash(
+                'type'       => typ,
+                'title'      => titl,
+                'parameters' => new_resource_hash
+              )
+            end
+            message = [poutput.to_manifest]
           else
             cmd_out = Puppet::Face[:resource, '0.0.1'].search(type)
             message = cmd_out.collect(&:to_manifest)

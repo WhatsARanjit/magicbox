@@ -35,10 +35,14 @@ class Magicbox::Webserver
     MyApp.bind(@bind)
   end
 
-  def sample_ui(endpoint)
+  def sample_ui(endpoint, embed = false)
     endp = endpoint == 'index' ? '' : endpoint
+
+    # Choose URI and header based on whether embedded or not
+    endp        = embed ? "embed_#{endp}" : endp
+    header_html = embed ? './pages/embed_header.html' : './pages/header.html'
+    html        = File.read(header_html)
     MyApp.get "/#{endp}" do
-      html  = File.read './pages/header.html'
       html += File.read "./pages/#{endpoint}.html"
       html += File.read './pages/footer.html'
       html
