@@ -52,11 +52,11 @@ module Magicbox::Checks
             end
             message = [poutput.to_manifest]
           else
-            cmd_out = Puppet::Face[:resource, '0.0.1'].search(type)
-            message = cmd_out.collect(&:to_manifest)
+            poutput = Puppet::Face[:resource, '0.0.1'].search(type)
+            message = poutput.collect(&:to_manifest)
           end
 
-          if cmd_out.empty?
+          if poutput.empty?
             exitstatus = 1
             message    = ['Could not find matching resource(s).']
           else
