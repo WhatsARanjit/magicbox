@@ -12,6 +12,9 @@ AllCops:
 Metrics/BlockLength:
   Exclude:
     - 'spec/**/*.rb'
+Metrics/BlockNesting:
+  Exclude:
+    - 'lib/magicbox/checks/*.rb'
 Naming/FileName:
   Exclude:
     - Gemfile
