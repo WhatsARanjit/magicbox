@@ -4,6 +4,7 @@ module Magicbox::Checks
       begin
         code  = Magicbox::Webserver.sanitize(@data['code'])
         check = Magicbox::Webserver.sanitize(@data['check'])
+        error = Magicbox::Webserver.sanitize(@data['error'])
         tempp = Tempfile.new('pp')
         tempp.write(code)
         tempp.rewind
@@ -34,7 +35,8 @@ module Magicbox::Checks
         # Adjust exitcode to reflect output
         if check
           exitstatus = check_code
-          cmd_out_scrubbed.unshift("Output did not match '#{check}'.") unless exitstatus.zero?
+          e_message  = error || "Output did not match '#{check}'."
+          cmd_out_scrubbed.unshift(e_message) unless exitstatus.zero?
         end
         {
           'exitcode' => exitstatus,
