@@ -63,6 +63,7 @@ class Magicbox::Webserver
     MyApp.set :port, @port
     MyApp.set :bind, @bind
     MyApp.set :static, true
+    MyApp.set :protection, except: :frame_options
     MyApp.mime_type :js, 'application/javascript'
     MyApp.mime_type :css, 'text/css'
     MyApp.mime_type :png, 'image/png'

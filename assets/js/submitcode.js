@@ -48,6 +48,7 @@ function submitcode(endpoint, data)
 
         // Success modal
         $('#successModal').modal('show');
+        setTimeout(function() { $('#successModal').modal('hide') }, 4000);
       },
       error: function(xhr) {
         res = JSON.parse(xhr.responseText);
