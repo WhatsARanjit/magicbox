@@ -12,6 +12,8 @@
     * [/api/1.0/fact](#api10fact)
     * [/api/1.0/function](#api10function)
     * [/api/1.0/resource](#api10resource)
+    * [/api/1.0/compile](#api10compile)
+    * [/api/1.0/apply](#api10apply)
 
 ## Overview
 
@@ -231,6 +233,14 @@ __Parameters:__
   "title": {
     "description": "The resource title expected to be queried.",
     "type": "Optional[String[1]]"
+  },
+  "munge": {
+    "description": "Attributes to munge with given values.",
+    "type": "Optional[Hash[String, Any, 1]]"
+  },
+  "filter": {
+    "description": "Show only the listed attributes.",
+    "type": "Optional[Array[String]]"
   }
 }
 ```
@@ -250,3 +260,71 @@ __cURL example__
 ```
 
 NOTE: `code`, and `title` should be supplied as an escaped string.
+
+### `/api/1.0/compile`
+
+Query with `puppet resource` and optionally test the command arguments.
+
+__Parameters:__
+
+```json
+{
+  "code": {
+    "description": "The code to parse.",
+    "type": "String[1]"
+  },
+  "item": {
+    "description": "The item to spec test for.",
+    "type": "String[1]"
+  }
+}
+```
+
+__cURL example__
+
+```shell
+# curl -s -X POST -d \
+> '{ "code": "class magic_module { notice%28%27hello%20world%27%29 }", "item": "magic_module" }' \
+> http://10.32.160.187/api/1.0/compile
+=> {"exitcode":0,"message":["passed"]}
+```
+
+NOTE: `code` should be supplied as an escaped string.
+
+### `/api/1.0/apply`
+
+Test a puppet apply and examine the output.
+
+__Parameters:__
+
+```json
+{
+  "code": {
+    "description": "The code to parse.",
+    "type": "String[1]"
+  },
+  "check": {
+    "description": "Regex to check the output for.",
+    "type": "Optional[String[1]]"
+  },
+  "error": {
+    "description": "A friendly error message to display if check fails.",
+    "type": "Optional[String[1]]"
+  }
+}
+```
+
+__cURL example__
+
+```shell
+curl -s -X POST -d \
+> '{ "code": "notice%28%27hello%20world%27%29", "check": "hello%20world" }' \
+> http://10.32.160.187/api/1.0/apply
+=> {"exitcode":0,"message":["Notice: Scope(Class[main]): hello world","Notice: Compiled catalog for whatsaranjit in environment production in 0.03 seconds","Notice: Applied catalog in 0.02 seconds"]}
+# curl -s -X POST -d \
+> '{ "code": "notice%28%27hello%20world%27%29", "check": "bye%20world", "error": "Mistake" }' \
+> http://10.32.160.187/api/1.0/apply
+=> {"exitcode":1,"message":["Mistake","Notice: Scope(Class[main]): hello world","Notice: Compiled catalog for whatsaranjit in environment production in 0.02 seconds","Notice: Applied catalog in 0.02 seconds"]}
+```
+
+NOTE: `code`, and `check` should be supplied as an escaped string.

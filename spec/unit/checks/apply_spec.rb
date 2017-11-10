@@ -24,4 +24,17 @@ describe 'apply check' do
       expect(subject.parse['exitcode']).to eql(0)
     end
   end
+  context 'with a friendly error message' do
+    subject = Magicbox::Checks::Apply.new(
+      {
+        'code'  => 'notify%20%7B%20%27hello%20world%27%3A%20%7D',
+        'check' => 'changed%20to%20%27byebye%20world%27',
+        'error' => 'This is a mistake',
+      }
+    )
+
+    it 'should error with custom message' do
+      expect(subject.parse['message'].first).to eql('This is a mistake')
+    end
+  end
 end
