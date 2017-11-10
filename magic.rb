@@ -9,15 +9,11 @@ web = Magicbox::Webserver.new
 
 # Embed pages for iframes
 %w[
-  validate
-  fact
-  function
-  function_args
-  resource
-  compile
-  parser_validate
-  apply
-  hello_world
+  syntax/hello_world
+  syntax/querying_the_system
+  syntax/modifying_attributes
+  syntax/observe_your_change
+  syntax/validating_your_syntax
 ].each do |endpoint|
   web.sample_ui(endpoint, true)
 end

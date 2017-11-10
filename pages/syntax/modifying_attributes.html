@@ -1,0 +1,34 @@
+<script>
+function test() {
+  data = '{ \
+    "code": "' + escape($('#magic-box').val()) + '", \
+    "check": "%270644%27%2C%20changed%20to%20%270600%27", \
+    "error": "Error: mode was not updated" \
+  }';
+  submitcode('apply', data)
+}
+</script>
+
+<form id='magic' action='#'>
+  <div class='form-group'>
+    <label for='magic-box'>Enter puppet code:</label>
+    <quote>change the 'mode' attribute from '<code>0644</code>' to '<code>0600</code>'.</quote>
+    <samp><textarea class='form-control' id='magic-box' rows='7'>
+file { '/etc/motd':
+  ensure => 'file',
+  owner  => 0,
+  group  => 0,
+  mode   => '0644',
+}
+    </textarea></samp>
+  </div>
+</form>
+  <p><button onclick='test();' class='btn btn-warning'>Test</button></p>
+<form id='status_output' hidden>
+  <div class='form-inline'>
+    <label for='output'>Status:</label> <span id='status'>success</span>
+  </div>
+  <div class='form-group' id='samp_output'>
+    <samp><textarea class='form-control' id='output' rows='5' readonly></textarea></samp>
+  </div>
+</form>

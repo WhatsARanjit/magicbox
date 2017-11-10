@@ -2,15 +2,17 @@
 function test() {
   data = '{ \
     "code": "' + escape($('#magic-box').val()) + '", \
-    "check": "File%5C%5B%5C/etc%5C/motd%5C%5D.*f0ef7081e1539ac00ef5b761b4fb01b3" \
+    "type": "file", \
+    "title": "/etc/motd" \
   }';
-  submitcode('apply', data)
+  submitcode('resource', data)
 }
 </script>
 
 <form id='magic' action='#'>
   <div class='form-group'>
-    <label for='magic-box'>Write a file resource that manages the <code>/etc/motd</code>'s content as '<code>Hello world\n</code>':</label>
+    <label for='magic-box'>Enter command:</label>
+    <quote>Use <code>puppet resource</code> to query the <code>/etc/motd</code> file.</quote>
     <samp><textarea class='form-control' id='magic-box' rows='5'></textarea></samp>
   </div>
 </form>

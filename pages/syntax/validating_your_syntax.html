@@ -1,0 +1,55 @@
+<script>
+  function test() {
+    if ($('#magic-console').val() != 'puppet parser validate test.pp' ) {
+      alert('Please type the correct command!');
+    } else {
+      data = '{ \
+        "lang": "puppet", \
+        "code": "' + escape($('#magic-box').val()) + '" \
+      }'
+      submitcode('validate', data);
+    }
+  }
+</script>
+
+<form id='magic' action='#'>
+  <div class='form-group'>
+    <label for='magic-box'>Contents of test.pp file:</label>
+    <samp><textarea class='form-control' id='magic-box' rows='7'>
+file { '/tmp/fixme':
+  ensure   => 'file',
+  owner    => 0,
+  group    => 0
+  mode     => '0644',
+}
+    </textarea></samp>
+  </div>
+  <label for='magic-console'>Enter command:</label>
+  <quote>Use <code>puppet parser validate</code> command to validate test.pp file.</quote>
+  <div class='input-group input-group-sm'>
+    <span class='input-group-addon magic-console'>$</span>
+    <samp>
+      <input type='text' class='form-control magic-console' id='magic-console' placeholder='puppet parser validate <filename>' aria-label='Command line'>
+    </samp>
+  </div>
+</form>
+<br>
+<button onclick='test();' class='btn btn-warning'>
+  Test
+</button>
+<form id='status_output' hidden>
+  <div class='form-inline'>
+    <label for='output'>Status:</label> <span id='status'>success</span>
+  </div>
+  <div class='form-group' id='samp_output'>
+    <samp><textarea class='form-control' id='output' rows='5' readonly></textarea></samp>
+  </div>
+</form>
+
+<script>
+  $('#magic-console').keypress(function(e) {
+    if (e.which == '13') {
+      test();
+    }
+  });
+</script>

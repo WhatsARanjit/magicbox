@@ -36,15 +36,21 @@ class Magicbox::Webserver
   end
 
   def sample_ui(endpoint, embed = false)
-    endp = endpoint == 'index' ? '' : endpoint
+    parts  = endpoint.split(File::SEPARATOR)
+    # Filename of page to load
+    fendp  = parts.pop
+    # Update URI to / if index
+    # Add embed_ if embedded page true
+    endarr = Array(fendp == 'index' ? '' : fendp)
+    endarr.unshift('embed_') if embed
+    subdir = parts
 
     # Choose URI and header based on whether embedded or not
-    endp        = embed ? "embed_#{endp}" : endp
-    header_html = embed ? './pages/embed_header.html' : './pages/header.html'
-    MyApp.get "/#{endp}" do
+    header_html = File.join('pages', embed ? 'embed_header.html' : 'header.html')
+    MyApp.get "/#{endarr.join}" do
       html  = File.read(header_html)
-      html += File.read "./pages/#{endpoint}.html"
-      html += File.read './pages/footer.html'
+      html += File.read(File.join('pages', *subdir, "#{fendp}.html"))
+      html += File.read(File.join('pages', 'footer.html'))
       html
     end
   end
