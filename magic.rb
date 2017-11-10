@@ -5,7 +5,7 @@ module Magicbox; end
 require File.expand_path(File.dirname(__FILE__) + '/lib/magicbox/webserver.rb')
 require File.expand_path(File.dirname(__FILE__) + '/lib/magicbox/checks.rb')
 
-web = Magicbox::Webserver.new
+@web = Magicbox::Webserver.new
 
 # Embed pages for iframes
 %w[
@@ -15,7 +15,7 @@ web = Magicbox::Webserver.new
   syntax/observe_your_change
   syntax/validating_your_syntax
 ].each do |endpoint|
-  web.sample_ui(endpoint, true)
+  @web.sample_ui(endpoint, true)
 end
 
 # Sample UI pages
@@ -31,76 +31,35 @@ end
   apply
   hello_world
 ].each do |endpoint|
-  web.sample_ui(endpoint)
+  @web.sample_ui(endpoint)
 end
 
-web.post 'validate' do
-  content_type :json
-  request.body.rewind
-  raw   = JSON.parse(request.body.read)
-  check = Magicbox::Checks::Validate.new(raw)
-  check.http_response
-end
-
-web.post 'fact' do
-  content_type :json
-  request.body.rewind
-  raw    = JSON.parse(request.body.read)
-  data   = raw.merge({ 'lang' => 'ruby' })
-  check1 = Magicbox::Checks::Validate.new(data)
-  result = check1.http_response
-  if result.first != 200
-    result
-  else
-    check2 = Magicbox::Checks::Fact.new(raw)
-    check2.http_response
+def api_check(endpoint, checks, add_data = {})
+  @web.post endpoint do
+    content_type :json
+    request.body.rewind
+    raw  = JSON.parse(request.body.read)
+    # Merge any necessary fields
+    data = raw.merge(add_data)
+    # Stack the checks
+    res  = checks.reduce([200, {}, '']) do |memo, check|
+      response_code = memo.first
+      if response_code == 200
+        check = Object.const_get("Magicbox::Checks::#{check.capitalize}").new(data)
+        check.http_response
+      else
+        memo
+      end
+    end
+    res
   end
 end
 
-web.post 'function' do
-  content_type :json
-  request.body.rewind
-  raw    = JSON.parse(request.body.read)
-  data   = raw.merge({ 'lang' => 'ruby' })
-  check1 = Magicbox::Checks::Validate.new(data)
-  result = check1.http_response
-  if result.first != 200
-    result
-  else
-    check2 = Magicbox::Checks::Function.new(raw)
-    check2.http_response
-  end
-end
+api_check('validate', %w[validate])
+api_check('fact', %w[validate fact], 'lang' => 'ruby')
+api_check('function', %w[validate function], 'lang' => 'ruby')
+api_check('resource', %w[resource])
+api_check('compile', %w[validate compile], 'lang' => 'puppet')
+api_check('apply', %w[validate apply], 'lang' => 'puppet')
 
-web.post 'resource' do
-  content_type :json
-  request.body.rewind
-  raw   = JSON.parse(request.body.read)
-  check = Magicbox::Checks::Resource.new(raw)
-  check.http_response
-end
-
-web.post 'compile' do
-  content_type :json
-  request.body.rewind
-  raw    = JSON.parse(request.body.read)
-  data   = raw.merge({ 'lang' => 'puppet', })
-  check1 = Magicbox::Checks::Validate.new(data)
-  result = check1.http_response
-  if result.first != 200
-    result
-  else
-    check2 = Magicbox::Checks::Compile.new(raw)
-    check2.http_response
-  end
-end
-
-web.post 'apply' do
-  content_type :json
-  request.body.rewind
-  raw   = JSON.parse(request.body.read)
-  check = Magicbox::Checks::Apply.new(raw)
-  check.http_response
-end
-
-web.run!
+@web.run!
