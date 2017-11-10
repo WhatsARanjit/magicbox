@@ -26,17 +26,16 @@ file { '/tmp/fixme':
   </div>
   <label for='magic-console'>Example command line:</label>
   <div class='input-group input-group-sm'>
-    <span class='input-group-addon'>$</span>
+    <span class='input-group-addon magic-console'>$</span>
     <samp>
       <input type='text' class='form-control magic-console' id='magic-console' placeholder='puppet parser validate <filename>' aria-label='Command line'>
     </samp>
   </div>
 </form>
-  <p>
-    <button onclick='test();' class='btn btn-warning'>
-      Test
-    </button>
-  </p>
+<br>
+<button onclick='test();' class='btn btn-warning'>
+  Test
+</button>
 <form id='status_output' hidden>
   <div class='form-inline'>
     <label for='output'>Status:</label> <span id='status'>success</span>

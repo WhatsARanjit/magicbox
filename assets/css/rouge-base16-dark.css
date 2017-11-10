@@ -115,11 +115,18 @@ pre {
     Magicbox
 */
 
-textarea#magic-box, .magic-console {
-  background: #000000;
-  color: #F2F3F4;
+.resizable(@direction: both) {
+  // Options: horizontal, vertical, both
+  resize: @direction;
+  overflow: auto;
 }
 
-textarea#magic-box, textarea#output, magic-console {
-    font-family: monospace;
+textarea#magic-box, .magic-console {
+  background: #000000 !important;
+  color: #F2F3F4 !important;
+}
+
+textarea#magic-box, textarea#output, .magic-console {
+    .resizable();
+    font-family: monospace !important;
 }
