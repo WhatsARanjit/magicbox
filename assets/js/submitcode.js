@@ -1,12 +1,12 @@
 function makeHTMLfriendly(input) {
   formatted = Array();
 
-  // Change \n into <br /> for HTML viewing
+  // Split multiline outputs to array elements for easy formatting
   for (line in input) {
-    if (typeof input['line'] == 'string') {
-      formatted.push(input[line].replace(/\n/g, "<br />"))
+    if (typeof input[line] == 'string') {
+      formatted = formatted.concat(input[line].split("\n"))
     } else {
-      formatted.push(input[line])
+      formatted = formatted.push(input[line])
     };
   };
   return formatted;

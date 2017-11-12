@@ -2,7 +2,7 @@
 function test() {
   data = '{ \
     "code": "' + escape($('#magic-box').val()) + '", \
-    "check": "File%5C%5B%5C/etc%5C/motd%5C%5D.*f0ef7081e1539ac00ef5b761b4fb01b3" \
+    "check": "File%5C%5B%5C/etc%5C/motd%5C%5D.*3e25960a79dbc69b674cd4ec67a72c62" \
   }';
   submitcode('apply', data)
 }
@@ -11,7 +11,7 @@ function test() {
 <form id='magic' action='#'>
   <div class='form-group'>
     <label for="magic-box">Enter code:</label>
-    <quote>Write a file resource that manages the <code>/etc/motd</code>'s content as '<code>Hello world\n</code>'.</quote>
+    <quote>Write a file resource that manages the <code>/etc/motd</code>'s content as '<code>Hello world</code>'.</quote>
     <samp><textarea class='form-control' id='magic-box' rows='5'></textarea></samp>
   </div>
 </form>

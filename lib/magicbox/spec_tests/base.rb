@@ -9,6 +9,8 @@ module Magicbox::SpecTests
         instance_variable_set("@#{k}", v)
       end
 
+      @spec_file = @spec.split('_').reduce('') { |memo, part| "#{memo}#{part.capitalize}" }
+
       load_spec
     end
 
@@ -16,8 +18,7 @@ module Magicbox::SpecTests
 
     # Method will return raw spec contents
     def make_spec
-      spec_file = @spec.split('_').reduce('') { |memo, part| "#{memo}#{part.capitalize}" }
-      klass     = Object.const_get("Magicbox::SpecTests::#{spec_type.capitalize}::#{spec_file}")
+      klass = Object.const_get("Magicbox::SpecTests::#{spec_type.capitalize}::#{@spec_file}")
       klass.make_spec(*opts)
     end
 
@@ -32,7 +33,7 @@ module Magicbox::SpecTests
     # Method will load spec based on asked name
     def load_spec
       begin
-        require File.expand_path(File.dirname(__FILE__) + "/#{spec_type}/#{@spec}.rb")
+        require File.join(LIB_ROOT, 'spec_tests', spec_type, "#{@spec}.rb")
       rescue LoadError
         raise "Unable to load 'spec_tests/#{spec_type}/#{@spec}.rb'"
       end
@@ -40,6 +41,6 @@ module Magicbox::SpecTests
   end
 end
 
-require File.expand_path(File.dirname(__FILE__) + '/sandbox.rb')
-require File.expand_path(File.dirname(__FILE__) + '/shared.rb')
-require File.expand_path(File.dirname(__FILE__) + '/functions.rb')
+Dir[File.join(LIB_ROOT, 'spec_tests', '*.rb')].each do |check|
+  require check
+end

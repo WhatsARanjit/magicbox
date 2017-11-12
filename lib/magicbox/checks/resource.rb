@@ -1,5 +1,5 @@
 module Magicbox::Checks
-  class Resource < Magicbox::Check
+  class Resource < Magicbox::Checks::Base
     def parse
       begin
         code = Magicbox::Webserver.sanitize(@data['code'])

@@ -1,9 +1,17 @@
 require 'tempfile'
 
+# Constants
+PROJECT_ROOT = __dir__
+LIB_ROOT     = File.join(PROJECT_ROOT, 'lib', 'magicbox')
 module Magicbox; end
 
-require File.expand_path(File.dirname(__FILE__) + '/lib/magicbox/webserver.rb')
-require File.expand_path(File.dirname(__FILE__) + '/lib/magicbox/checks.rb')
+%w[
+  webserver.rb
+  checks/base.rb
+  spec_tests/base.rb
+].each do |lib|
+  require File.join(LIB_ROOT, lib)
+end
 
 @web = Magicbox::Webserver.new
 
@@ -24,12 +32,9 @@ end
   validate
   fact
   function
-  function_args
   resource
   compile
-  parser_validate
   apply
-  hello_world
 ].each do |endpoint|
   @web.sample_ui(endpoint)
 end
