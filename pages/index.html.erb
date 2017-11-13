@@ -1,0 +1,8 @@
+<ul>
+<% @scope['sample_pages'].each do |page| %>
+  <% unless page == 'index' %>
+    <li><a href='<%= page %>' alt='<%= page %>'><%= page %></a></li>
+  <% end %>
+<% end %>
+</ul>
+

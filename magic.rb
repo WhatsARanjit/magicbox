@@ -1,4 +1,4 @@
-require 'tempfile'
+require 'yaml'
 
 # Constants
 PROJECT_ROOT = __dir__
@@ -13,29 +13,17 @@ module Magicbox; end
   require File.join(LIB_ROOT, lib)
 end
 
-@web = Magicbox::Webserver.new
+# Read config
+@config = YAML.load_file('config.yaml')
+@web    = Magicbox::Webserver.new(@config)
 
 # Embed pages for iframes
-%w[
-  syntax/hello_world
-  syntax/querying_the_system
-  syntax/modifying_attributes
-  syntax/observe_your_change
-  syntax/validating_your_syntax
-].each do |endpoint|
+@config['embedded_pages'].each do |endpoint|
   @web.sample_ui(endpoint, true)
 end
 
 # Sample UI pages
-%w[
-  index
-  validate
-  fact
-  function
-  resource
-  compile
-  apply
-].each do |endpoint|
+@config['sample_pages'].each do |endpoint|
   @web.sample_ui(endpoint)
 end
 
@@ -60,11 +48,9 @@ def api_check(endpoint, checks, add_data = {})
   end
 end
 
-api_check('validate', %w[validate])
-api_check('fact', %w[validate fact], 'lang' => 'ruby')
-api_check('function', %w[validate function], 'lang' => 'ruby')
-api_check('resource', %w[resource])
-api_check('compile', %w[validate compile], 'lang' => 'puppet')
-api_check('apply', %w[validate apply], 'lang' => 'puppet')
+@config['checks'].each do |endpoint, options|
+  options['merge'] ||= {}
+  api_check(endpoint, options['checks'], options['merge'])
+end
 
 @web.run!

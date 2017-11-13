@@ -5,6 +5,7 @@ class MyApp < Sinatra::Base; end
 
 class Magicbox::Webserver
   def initialize(
+    scope   = nil,
     bind    = '0.0.0.0',
     port    = 80,
     version = '1.0'
@@ -12,6 +13,7 @@ class Magicbox::Webserver
     @bind    = bind
     @port    = port
     @version = version
+    @scope   = scope
 
     setup_webserver
   end
@@ -46,11 +48,15 @@ class Magicbox::Webserver
     subdir = parts
 
     # Choose URI and header based on whether embedded or not
-    header_html = File.join('pages', embed ? 'embed_header.html' : 'header.html')
+    header_html = embed ? :'embed_header.html' : :'header.html'
     MyApp.get "/#{endarr.join}" do
-      html  = File.read(header_html)
-      html += File.read(File.join('pages', *subdir, "#{fendp}.html"))
-      html += File.read(File.join('pages', 'footer.html'))
+      # Bring in scope for ERBs
+      @scope = MyApp.settings.scope
+
+      # Construct HTML from ERBs
+      html  = erb header_html
+      html += erb File.join(*subdir, "#{fendp}.html").to_sym
+      html += erb :'footer.html'
       html
     end
   end
@@ -69,6 +75,8 @@ class Magicbox::Webserver
     MyApp.set :port, @port
     MyApp.set :bind, @bind
     MyApp.set :static, true
+    MyApp.set :views, PROJECT_ROOT + '/pages'
+    MyApp.set :scope, @scope
     MyApp.set :protection, except: :frame_options
     MyApp.mime_type :js, 'application/javascript'
     MyApp.mime_type :css, 'text/css'

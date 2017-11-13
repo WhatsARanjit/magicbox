@@ -1,0 +1,48 @@
+---
+embedded_pages:
+  - syntax/hello_world
+  - syntax/querying_the_system
+  - syntax/modifying_attributes
+  - syntax/observe_your_change
+  - syntax/validating_your_syntax
+
+sample_pages:
+  - index
+  - validate
+  - fact
+  - function
+  - resource
+  - compile
+  - apply
+
+checks:
+  validate:
+    checks:
+      - validate
+  fact:
+    checks:
+      - validate
+      - fact
+    merge:
+      lang: ruby
+  function:
+    checks:
+      - validate
+      - function
+    merge:
+      lang: ruby
+  resource:
+    checks:
+      - resource
+  compile:
+    checks:
+      - validate
+      - compile
+    merge:
+      lang: puppet
+  apply:
+    checks:
+      - validate
+      - apply
+    merge:
+      lang: puppet
