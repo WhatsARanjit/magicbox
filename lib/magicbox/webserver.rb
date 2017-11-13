@@ -77,18 +77,7 @@ class Magicbox::Webserver
     MyApp.set :static, true
     MyApp.set :views, PROJECT_ROOT + '/pages'
     MyApp.set :scope, @scope
+    MyApp.set :public_folder, 'assets'
     MyApp.set :protection, except: :frame_options
-    MyApp.mime_type :js, 'application/javascript'
-    MyApp.mime_type :css, 'text/css'
-    MyApp.mime_type :png, 'image/png'
-    MyApp.mime_type :json, 'application/json'
-    MyApp.mime_type :ico, 'image/x-icon'
-    MyApp.mime_type :fonts, 'application/x-font-woff'
-    MyApp.get '/assets/*/*' do
-      type = params['splat'][0]
-      file = params['splat'][1]
-      content_type type.to_sym
-      File.read "./assets/#{type}/#{file}"
-    end
   end
 end
