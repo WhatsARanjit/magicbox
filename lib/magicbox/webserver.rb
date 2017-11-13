@@ -48,15 +48,15 @@ class Magicbox::Webserver
     subdir = parts
 
     # Choose URI and header based on whether embedded or not
-    header_html = embed ? :'embed_header.html' : :'header.html'
+    header = embed ? :embed_header : :header
     MyApp.get "/#{endarr.join}" do
       # Bring in scope for ERBs
       @scope = MyApp.settings.scope
 
       # Construct HTML from ERBs
-      html  = erb header_html
-      html += erb File.join(*subdir, "#{fendp}.html").to_sym
-      html += erb :'footer.html'
+      html  = erb header
+      html += erb File.join(*subdir, fendp).to_sym
+      html += erb :footer
       html
     end
   end
@@ -74,9 +74,9 @@ class Magicbox::Webserver
   def setup_webserver
     MyApp.set :port, @port
     MyApp.set :bind, @bind
-    MyApp.set :static, true
-    MyApp.set :views, PROJECT_ROOT + '/pages'
     MyApp.set :scope, @scope
+    MyApp.set :static, true
+    MyApp.set :views, 'pages'
     MyApp.set :public_folder, 'assets'
     MyApp.set :protection, except: :frame_options
   end
