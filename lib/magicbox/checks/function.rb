@@ -17,7 +17,13 @@ module Magicbox::Checks
           )
           spec_test = t.make_spec
         else
-          spec_test = "it { is_expected.to run.with_params(*#{function_args}).and_return(#{value}) }"
+          spec_test = (
+            if function_args.is_a?(String)
+              "it { is_expected.to run.with_params(['#{function_args.gsub("'", %q(\\\'))}']).and_return(#{value}) }"
+            else
+              "it { is_expected.to run.with_params(*#{function_args}).and_return(#{value}) }"
+            end
+          )
         end
 
         # Find out v4 or v3 and function name

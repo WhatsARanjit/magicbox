@@ -1,10 +1,10 @@
 <script>
 function test() {
   data = '{ \
-    "function": "sum", \
-    "args": [10,25], \
-    "value": 35, \
-    "code": "' + escape($('#magic-box').val()) + '" \
+    "function": "magic_template", \
+    "code": "Puppet%3A%3AParser%3A%3AFunctions%3A%3Anewfunction%28%0A%20%20%3Amagic_template%2C%0A%20%20%3Atype%20%3D%3E%20%3Arvalue%0A%29%20do%20%7Cargs%7C%0A%20%20function_inline_template%28args%5B0%5D%29%0Aend", \
+    "value": "' + escape("'test string'") + '", \
+    "args": "' + escape($('#magic-box').val()) + '" \
   }';
   submitcode('function', data)
 }
@@ -12,8 +12,8 @@ function test() {
 
 <form id='magic' action='#'>
   <div class='form-group'>
-    <label for='magic-box'>Enter function code:</label>
-    <quote>Write a function called 'sum' that adds 2 numbers.  Usage: <code>sum(10,25)</code> returns <code>35</code>.</quote>
+    <label for='magic-box'>Enter template code:</label>
+    <quote>Create a, ERB template that prints <code>test string</code> on a single line</quote>
     <samp><textarea class='form-control' id='magic-box' rows='10'></textarea></samp>
   </div>
 </form>
