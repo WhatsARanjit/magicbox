@@ -13,6 +13,10 @@ module Magicbox::Checks
           cmd = `puppet parser validate #{tempp.path} --color=false 2>&1`
         when 'ruby'
           cmd = `ruby -c #{tempp.path} 2>&1`
+        when 'erb'
+          cmd = `erb -P -x -T '-' #{tempp.path} | ruby -c 2>&1`
+        when 'epp'
+          cmd = `puppet epp validate #{tempp.path} --color=false 2>&1`
         when 'yaml'
           cmd = `ruby -ryaml -e "YAML.load_file '#{tempp.path}'" 2>&1`
         when 'json'
