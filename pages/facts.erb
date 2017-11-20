@@ -1,21 +1,19 @@
 <script>
 function test() {
   data = '{ \
-    "code": "' + escape($('#magic-box').val()) + '", \
-    "type": "file", \
-    "title": "/etc/motd" \
+    "fact": "' + escape($('#magic-box').val().replace(/facter\s+\-p\s*/, '')) + '" \
   }';
-  submitcode('resource', data)
+  submitcode('facts', data)
 }
 </script>
 
 <form id='magic' action='#'>
   <label for='magic-box'>Enter command:</label>
-  <quote>Use <code>puppet resource</code> to query the <code>/etc/motd</code> file.</quote>
+  <quote>Use <code>facter -p</code> to view all <code>facts</code>.</quote>
   <div class='input-group input-group-sm'>
     <span class='input-group-addon magic-console'>$</span>
     <samp>
-      <input type='text' class='form-control magic-console' id='magic-box' placeholder='puppet resource file /etc/motd' aria-label='Command line'>
+      <input type='text' class='form-control magic-console' id='magic-box' placeholder='facter -p' aria-label='Command line'>
     </samp>
   </div>
 </form>
@@ -32,5 +30,5 @@ function test() {
 
 <script>
   catchEnter();
-  inputCheck('puppet resource file \/etc\/motd');
+  inputCheck('facter -p');
 </script>

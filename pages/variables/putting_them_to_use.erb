@@ -1,0 +1,44 @@
+<script>
+function test() {
+  data = '{ \
+    "code": "' + escape($('#magic-box').val()) + '", \
+    "check": "File%5C%5B%5C/etc%5C/motd%5C%5D.*3e25960a79dbc69b674cd4ec67a72c62", \
+    "error": "Error: The file at /etc/motd was not correctly updated." \
+  }';
+  submitcode('apply', data)
+}
+</script>
+
+<form id='magic' action='#'>
+  <div class='form-group'>
+    <label for='magic-box'>Enter puppet code:</label>
+    <quote>Refactor code to use the <code>$motd_file</code> variable to configure the <code>/etc/motd</code> instead.</quote>
+    <samp><textarea class='form-control' id='magic-box' rows='12'>
+# Example of setting a variable
+$variable = 'some value'
+# Now assign the $motd_file variable below
+$motd_file
+
+file { $motd_file:
+  ensure   => 'file',
+  content  => 'Hello world',
+  owner    => 0,
+  group    => 0,
+  mode     => '0644',
+}
+    </textarea></samp>
+  </div>
+</form>
+  <p><button onclick='test();' class='btn btn-warning'>Test</button></p>
+<form id='status_output' hidden>
+  <div class='form-inline'>
+    <label for='output'>Status:</label> <span id='status'>success</span>
+  </div>
+  <div class='form-group' id='samp_output'>
+    <samp><textarea class='form-control' id='output' rows='5' readonly></textarea></samp>
+  </div>
+</form>
+
+<script>
+  inputCheck('\\$motd_file\\s+=\\s+[\'"]\\/etc\\/motd[\'"]');
+</script>

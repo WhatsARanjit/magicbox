@@ -11,10 +11,10 @@ module Magicbox::Checks
         munge  = Magicbox::Webserver.sanitize(@data['munge'])
         filter = Magicbox::Webserver.sanitize(@data['filter'])
 
-        raise 'Could not understand code' unless m
+        raise 'Error: please submit command in the form of "puppet resource <your type here> <your title here>"' unless m
         type  = m[1]
         title = m[2].empty? ? false : m[2]
-        raise 'Could not find type' unless type
+        raise 'Error: Could not find type' unless type
 
         # Check command against optional type and title
         checks = []

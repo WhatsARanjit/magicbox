@@ -12,13 +12,17 @@ function test() {
 </script>
 
 <form id='magic' action='#'>
-  <div class='form-group'>
-    <label for='magic-box'>Enter command:</label>
-    <quote>Reinspect the <code>/etc/motd</code> file with <code>puppet resource</code>.</quote>
-    <samp><textarea class='form-control' id='magic-box' rows='5'></textarea></samp>
+  <label for='magic-box'>Enter command:</label>
+  <quote>Reinspect the <code>/etc/motd</code> file with <code>puppet resource</code>.</quote>
+  <div class='input-group input-group-sm'>
+    <span class='input-group-addon magic-console'>$</span>
+    <samp>
+      <input type='text' class='form-control magic-console' id='magic-box' placeholder='puppet resource file /etc/motd' aria-label='Command line'>
+    </samp>
   </div>
 </form>
-  <p><button onclick='test();' class='btn btn-warning'>Test</button></p>
+<br>
+<button onclick='test();' class='btn btn-warning'>Test</button>
 <form id='status_output' hidden>
   <div class='form-inline'>
     <label for='output'>Status:</label> <span id='status'>success</span>
@@ -27,3 +31,8 @@ function test() {
     <samp><textarea class='form-control' id='output' rows='5' readonly></textarea></samp>
   </div>
 </form>
+
+<script>
+  catchEnter();
+  inputCheck('puppet resource');
+</script>

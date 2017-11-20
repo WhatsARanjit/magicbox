@@ -5,6 +5,8 @@ embedded_pages:
   - syntax/modifying_attributes
   - syntax/observe_your_change
   - syntax/validating_your_syntax
+  - variables/putting_them_to_use
+  - facts/what_are_they
 
 sample_pages:
   - index
@@ -15,6 +17,8 @@ sample_pages:
   - compile
   - apply
   - template
+  - parser_validate
+  - facts
 
 checks:
   validate:
@@ -53,3 +57,6 @@ checks:
       - template
     merge:
       lang: erb
+  facts:
+    checks:
+      - facts
