@@ -1,14 +1,10 @@
 <script>
   function test() {
-    if ($('#magic-console').val() != 'puppet parser validate test.pp' ) {
-      alert('Please type the correct command!');
-    } else {
-      data = '{ \
-        "lang": "puppet", \
-        "code": "' + escape($('#magic-box').val()) + '" \
-      }'
-      submitcode('validate', data);
-    }
+    data = '{ \
+      "lang": "puppet", \
+      "code": "' + escape($('#magic-box').val()) + '" \
+    }'
+    submitcode('validate', data);
   }
 </script>
 
