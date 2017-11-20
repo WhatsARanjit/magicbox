@@ -34,19 +34,9 @@ file { '/tmp/fixme':
   </div>
 </form>
 <br>
-<button onclick='test();' class='btn btn-warning'>
-  Test
-</button>
-<form id='status_output' hidden>
-  <div class='form-inline'>
-    <label for='output'>Status:</label> <span id='status'>success</span>
-  </div>
-  <div class='form-group' id='samp_output'>
-    <samp><textarea class='form-control' id='output' rows='5' readonly></textarea></samp>
-  </div>
-</form>
 
 <script>
+  formFooter();
   catchEnter('#magic-console');
   inputCheck('puppet parser validate', '#magic-console');
 </script>

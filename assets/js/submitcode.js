@@ -97,6 +97,20 @@ function submitcode(endpoint, data)
   });
 }
 
+function formFooter() {
+  output_html = "\
+  <p><button onclick='test();' class='btn btn-warning'>Test</button></p>\
+<form id='status_output' hidden>\
+  <div class='form-inline'>\
+    <label for='output'>Status:</label> <span id='status'>success</span>\
+  </div>\
+  <div class='form-group' id='samp_output'>\
+    <samp><textarea class='form-control' id='output' rows='5' readonly></textarea></samp>\
+  </div>\
+</form>";
+  document.write(output_html);
+}
+
 function catchEnter(box = '#magic-box') {
   $(box).keypress(function(e) {
     if (e.which == '13') {
