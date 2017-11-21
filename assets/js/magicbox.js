@@ -16,6 +16,11 @@ function resultSuccess(res) {
   console.log(res);
   formatted = makeHTMLfriendly(res['message']);
 
+  // Optional munging
+  if ( typeof munge_success == 'function' ) {
+    formatted = munge_success(formatted);
+  }
+
   // Do status box
   $('#output').attr('rows', formatted.length+2);
   $('#output').val(formatted.join("\n"));
@@ -35,6 +40,11 @@ function resultError(xhr) {
   res = JSON.parse(xhr.responseText);
   console.log(res);
   formatted = makeHTMLfriendly(res['message']);
+
+  // Optional munging
+  if ( typeof munge_error == 'function' ) {
+    formatted = munge_error(formatted);
+  }
 
   // Do status box
   $('#output').attr('rows', formatted.length+2);
