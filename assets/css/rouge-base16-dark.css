@@ -129,4 +129,5 @@ textarea#magic-box, .magic-console {
 textarea#magic-box, textarea#output, .magic-console {
     .resizable();
     font-family: monospace !important;
+    font-size: 14px !important;
 }

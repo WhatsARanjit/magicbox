@@ -11,22 +11,20 @@
 <form id='magic' action='#'>
   <div class='form-group'>
     <label for='magic-box'>Contents of test.pp file:</label>
-    <samp><textarea class='form-control' id='magic-box' rows='7'>
+    <textarea class='form-control' id='magic-box' rows='7'>
 file { '/tmp/fixme':
   ensure   => 'file',
   owner    => 0,
   group    => 0
   mode     => '0644',
 }
-    </textarea></samp>
+    </textarea>
   </div>
   <label for='magic-console'>Enter command:</label>
   <quote>Use <code>puppet parser validate</code> command to validate test.pp file.</quote>
-  <div class='input-group input-group-sm'>
+  <div class='input-group'>
     <span class='input-group-addon magic-console'>$</span>
-    <samp>
-      <input type='text' class='form-control magic-console' id='magic-console' placeholder='puppet parser validate test.pp' aria-label='Command line'>
-    </samp>
+    <input type='text' class='form-control magic-console' id='magic-console' placeholder='puppet parser validate test.pp' aria-label='Command line'>
   </div>
 </form>
 <br>

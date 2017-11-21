@@ -13,7 +13,7 @@ function test() {
   <div class='form-group'>
     <label for='magic-box'>Enter puppet code:</label>
     <quote>Refactor code to use the <code>$motd_file</code> variable to configure the <code>/etc/motd</code> instead.</quote>
-    <samp><textarea class='form-control' id='magic-box' rows='12'>
+    <textarea class='form-control' id='magic-box' rows='12'>
 # Example of setting a variable
 $variable = 'some value'
 # Now assign the $motd_file variable below
@@ -26,7 +26,7 @@ file { $motd_file:
   group    => 0,
   mode     => '0644',
 }
-    </textarea></samp>
+    </textarea>
   </div>
 </form>
 

@@ -13,14 +13,14 @@ function test() {
   <div class='form-group'>
     <label for='magic-box'>Enter puppet code:</label>
     <quote>change the 'mode' attribute from '<code>0644</code>' to '<code>0600</code>'.</quote>
-    <samp><textarea class='form-control' id='magic-box' rows='7'>
+    <textarea class='form-control' id='magic-box' rows='7'>
 file { '/etc/motd':
   ensure => 'file',
   owner  => 0,
   group  => 0,
   mode   => '0644',
 }
-    </textarea></samp>
+    </textarea>
   </div>
 </form>
 
