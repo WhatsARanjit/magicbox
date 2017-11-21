@@ -4,7 +4,7 @@ output = '{"exitcode":0,"message":["Linux"]}'
 
 subject = Magicbox::Checks::Facts.new(
   {
-    'fact'  => 'kernel',
+    'fact' => 'kernel',
   }
 )
 
