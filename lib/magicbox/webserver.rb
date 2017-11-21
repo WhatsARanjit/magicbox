@@ -7,7 +7,7 @@ class Magicbox::Webserver
   def initialize(
     scope   = nil,
     bind    = '0.0.0.0',
-    port    = 80,
+    port    = 8443,
     version = '1.0'
   )
     @bind    = bind
@@ -38,18 +38,18 @@ class Magicbox::Webserver
   end
 
   def sample_ui(endpoint, embed = false)
-    parts  = endpoint.split(File::SEPARATOR)
+    parts = endpoint.split(File::SEPARATOR)
     # Filename of page to load
-    fendp  = parts.pop
+    fendp = parts.pop
     # Update URI to / if index
     # Add embed_ if embedded page true
     endarr = Array(fendp == 'index' ? '' : fendp)
-    endarr.unshift('embed_') if embed
     subdir = parts
+    endarr.unshift(File.join(*parts)) unless parts.empty?
 
     # Choose URI and header based on whether embedded or not
     header = embed ? :embed_header : :header
-    MyApp.get "/#{endarr.join}" do
+    MyApp.get "/#{endarr.join('/')}" do
       # Bring in scope for ERBs
       @scope = MyApp.settings.scope
 
