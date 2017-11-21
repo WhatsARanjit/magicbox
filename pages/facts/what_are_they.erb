@@ -21,4 +21,17 @@ function test() {
   formFooter();
   catchEnter();
   inputCheck('facter -p');
+
+  // Make output look like CLI with hash rockets
+  function munge_success(input) {
+    output = Array();
+    for (line in input) {
+      if (typeof input[line] == 'string') {
+        output = output.concat(input[line].replace(/: /, ' => '));
+      } else {
+        output = output.push(input[line]);
+      };
+    };
+    return output;
+  }
 </script>

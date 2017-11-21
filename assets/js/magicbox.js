@@ -18,6 +18,7 @@ function resultSuccess(res) {
 
   // Optional munging
   if ( typeof munge_success == 'function' ) {
+    console.log('munge_success triggered');
     formatted = munge_success(formatted);
   }
 
@@ -43,6 +44,7 @@ function resultError(xhr) {
 
   // Optional munging
   if ( typeof munge_error == 'function' ) {
+    console.log('munge_error triggered');
     formatted = munge_error(formatted);
   }
 
