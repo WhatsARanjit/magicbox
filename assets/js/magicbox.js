@@ -34,7 +34,7 @@ function resultSuccess(res) {
 
   // Success modal
   $('#successModal').modal('show');
-  setTimeout(function() { $('#successModal').modal('hide') }, 4000);
+  setTimeout(function() { $('#successModal').modal('hide') }, 2000);
 }
 
 function resultError(xhr) {
@@ -56,7 +56,7 @@ function resultError(xhr) {
   $('#status').removeClass('text-success');
   $('#status').removeClass('text-warning');
   $('#status').addClass('text-danger');
-  $('#status').html('failure');
+  $('#status').html('Something didn\'t work...check the error message below for more details');
 }
 
 function resultComplete(xhr) {
@@ -100,7 +100,7 @@ function submitcode(endpoint, data)
     // Submit API request
     $.ajax({ 
       type:'post',
-      url:'api/1.0/' + endpoint,
+      url:'/api/1.0/' + endpoint,
       data: data,
       dataType:'json',
       success: function(res) { resultSuccess(res) },

@@ -7,6 +7,11 @@ embedded_pages:
   - syntax/validating_your_syntax
   - variables/putting_them_to_use
   - facts/what_are_they
+  - facts/working_with_facts
+  - facts/working_with_arrays
+  - facts/working_with_hashes
+  - resources/exploring_package
+  - resources/exploring_service
 
 sample_pages:
   - index
