@@ -1,3 +1,4 @@
+<h4 label='sample_pages'>Sample pages</h4>
 <ul>
 <% @scope['sample_pages'].each do |page| %>
   <% unless page == 'index' %>
@@ -6,3 +7,32 @@
 <% end %>
 </ul>
 
+<h4 label='embedded_pages'>Embedded pages</h4>
+<ul>
+<% @scope['embedded_pages'].each do |page| %>
+  <% unless page == 'index' %>
+    <li><a href='<%= page %>' alt='<%= page %>'><%= page %></a></li>
+  <% end %>
+<% end %>
+</ul>
+
+<script>
+  $('h1,h2,h3,h4,h5,h6').filter('[label]').each(function () {
+    $(this).html(
+      '<a name="' + $(this).attr('label') + '"></a>' +
+      $(this).text() +
+      ' <a href="#' +
+      $(this).attr('label') +
+      '" hidden=true>' +
+      '<span class="glyphicon glyphicon-link small" aria-hidden="true"></span>' +
+      '</a>'
+    );
+  });
+  $('h1,h2,h3,h4,h5,h6').hover(
+    function() {
+      $(this).find('a').show();
+    }, function() {
+      $(this).find('a').hide();
+    }
+  );
+</script>

@@ -29,10 +29,23 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                 <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
-                Tests <span class="caret"></span>
+                Samples <span class="caret"></span>
               </a>
               <ul class="dropdown-menu">
                 <% @scope['sample_pages'].each do |page| %>
+                  <% unless page == 'index' %>
+                    <li><a href='<%= page %>' alt='<%= page %>'><%= page %></a></li>
+                  <% end %>
+                <% end %>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                Embedded <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <% @scope['embedded_pages'].each do |page| %>
                   <% unless page == 'index' %>
                     <li><a href='<%= page %>' alt='<%= page %>'><%= page %></a></li>
                   <% end %>
