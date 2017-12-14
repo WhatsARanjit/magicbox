@@ -1,0 +1,28 @@
+<script>
+function test() {
+  data = '{ \
+    "code": "' + escape($('#magic-box').val()) + '", \
+    "type": "service", \
+    "title": "puppet", \
+    "munge": { "ensure": "running" }, \
+    "filter": [ "ensure" ] \
+  }';
+  submitcode('resource', data)
+}
+</script>
+
+<form id='magic' action='#'>
+  <label for='magic-box'>Enter command:</label>
+  <quote>Inspect the <code>puppet</code> service with <code>puppet resource</code>.</quote>
+  <div class='input-group'>
+    <span class='input-group-addon magic-console'>$</span>
+    <input type='text' class='form-control magic-console' id='magic-box' placeholder='puppet resource service puppet' aria-label='Command line'>
+  </div>
+</form>
+<br>
+
+<script>
+  formFooter();
+  catchEnter();
+  inputCheck('puppet resource');
+</script>

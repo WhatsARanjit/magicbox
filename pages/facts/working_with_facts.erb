@@ -1,0 +1,27 @@
+<script>
+function test() {
+  data = '{ \
+    "code": "' + escape($('#magic-box').val()) + '", \
+    "check": "File%5C%5B%5C/etc%5C/motd%5C%5D.*d41d8cd98f00b204e9800998ecf8427e", \
+    "error": "Error: The file at /etc/motd was not correctly updated." \
+  }';
+  submitcode('apply', data)
+}
+</script>
+
+<form id='magic' action='#'>
+  <div class='form-group'>
+    <label for='magic-box'>Enter puppet code:</label>
+    <quote>Using the resource example here, update the content attribute to use the <code>$osfamily</code> fact.</quote>
+    <textarea class='form-control' id='magic-box' rows='5'>
+file { '/etc/motd':
+  content => "My OS family: <OS FAMILY HERE>",
+}
+    </textarea>
+  </div>
+</form>
+
+<script>
+  formFooter();
+  inputCheck('content => "My OS family:\\s+\\$osfamily"');
+</script>

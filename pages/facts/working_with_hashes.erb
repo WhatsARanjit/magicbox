@@ -1,0 +1,29 @@
+<script>
+function test() {
+  data = '{ \
+    "code": "' + escape($('#magic-box').val()) + '; notice%28%24description%29", \
+    "check": ": field", \
+    "error": "Error: $job variable was not correctly set." \
+  }';
+  submitcode('apply', data)
+}
+</script>
+
+<form id='magic' action='#'>
+  <div class='form-group'>
+    <label for='magic-box'>Enter puppet code:</label>
+    <quote>Set the variable <code>$description</code> to the value paired with the <code>'worker'</code> key.</quote>
+    <textarea class='form-control' id='magic-box' rows='12'>
+# Sample hash
+$job_type = { 'worker' => 'field', 'manager' => 'exec', 'engineer' => 'developer' }
+
+# Set to the value paired with 'worker'
+$description = <PUT ANSWER HERE>
+</textarea>
+  </div>
+</form>
+
+<script>
+  formFooter();
+  inputCheck('\\$job_type\\[\'\\w+\\\']');
+</script>

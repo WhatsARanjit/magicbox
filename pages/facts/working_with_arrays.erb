@@ -1,0 +1,28 @@
+<script>
+function test() {
+  data = '{ \
+    "code": "' + escape($('#magic-box').val()) + '; notice%28%24job%29", \
+    "check": ": manager", \
+    "error": "Error: $job variable was not correctly set." \
+  }';
+  submitcode('apply', data)
+}
+</script>
+
+<form id='magic' action='#'>
+  <div class='form-group'>
+    <label for='magic-box'>Enter puppet code:</label>
+    <quote>Set the variable <code>$job</code> to the 2nd value in the <code>$office_party</code> array.</quote>
+    <textarea class='form-control' id='magic-box' rows='12'>
+# Sample array
+$office_party = ['worker', 'manager', 'engineer' ]
+
+# Set to the 2nd value in $office_party
+$job = <PUT ANSWER HERE></textarea>
+  </div>
+</form>
+
+<script>
+  formFooter();
+  inputCheck('\\$office_party\\[\\d\\]');
+</script>
