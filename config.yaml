@@ -10,6 +10,7 @@ embedded_pages:
   - facts/working_with_facts
   - facts/working_with_arrays
   - facts/working_with_hashes
+  - facts/using_logic_with_facts
   - resources/exploring_package
   - resources/exploring_service
 
@@ -24,6 +25,7 @@ sample_pages:
   - template
   - parser_validate
   - facts
+  - factlogic
 
 checks:
   validate:
@@ -65,3 +67,9 @@ checks:
   facts:
     checks:
       - facts
+  factlogic:
+    checks:
+      - validate
+      - factlogic
+    merge:
+      lang: puppet

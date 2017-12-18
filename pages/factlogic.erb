@@ -1,0 +1,44 @@
+<script>
+function test() {
+  data = '{ \
+    "code": "class magic_module { ' + escape($('#magic-box').val()) + ' }", \
+    "spec": "kernel", \
+    "facts_hash": { \
+      "kernel": { \
+        "linux": { \
+          "type": "file", \
+          "title": "/etc/motd" \
+        }, \
+        "windows": { \
+          "type": "file", \
+          "title": "C:\\\\motd.txt" \
+        } \
+      } \
+    } \
+  }';
+  submitcode('factlogic', data)
+}
+</script>
+
+<form id='magic' action='#'>
+  <div class='form-group'>
+    <label for='magic-box'>Enter puppet code:</label>
+    <quote>Set the <code>$motd_file</code> to <code>C:\motd.txt</code> when the <code>$kernel</code> fact is <code>windows</code> or else set the <code>$motd_file</code> to <code>/etc/motd</code></quote>
+    <textarea class='form-control' id='magic-box' rows='10'>
+if $kernel == 'windows' {
+    $motd_file = <PUT VALUE HERE>
+}
+else {
+    $motd_file = <PUT VALUE HERE>
+}
+
+file { $motd_file:
+  content => 'Hello world',
+}
+    </textarea>
+  </div>
+</form>
+
+<script>
+  formFooter();
+</script>
