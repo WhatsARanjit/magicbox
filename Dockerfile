@@ -1,4 +1,4 @@
-FROM ruby:2.2.7
+FROM ruby:2.4.1
 
 RUN  mkdir -p /opt/magicbox
 COPY . /opt/magicbox
@@ -9,5 +9,8 @@ WORKDIR /opt/magicbox
 RUN bundle install
 
 EXPOSE 8443
+
+HEALTHCHECK --interval=1m --timeout=3s \
+  CMD curl -s -I -f http://localhost:8443/ || exit 1
 
 CMD ["bundle", "exec", "ruby", "magic.rb"]
