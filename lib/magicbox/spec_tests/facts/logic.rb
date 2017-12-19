@@ -1,5 +1,5 @@
 module Magicbox::SpecTests::Facts
-  class Kernel
+  class Logic
     def self.make_spec(*opts)
       opts_hash  = opts.to_h
       facts_hash = opts_hash[:facts_hash]

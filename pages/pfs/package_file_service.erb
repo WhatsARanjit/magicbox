@@ -1,0 +1,40 @@
+<script>
+function test() {
+  data = '{ \
+    "code": "class magic_module { ' + escape($('#magic-box').val()) + ' }", \
+    "spec": "relationship", \
+    "relationships": { \
+      "File[/etc/puppetlabs/puppet/puppet.conf]": { \
+        "require": "Package[puppet]" \
+      }, \
+      "File[/etc/puppetlabs/puppet/puppet.conf]": { \
+        "notify": "Service[puppet]" \
+      } \
+    } \
+  }';
+  submitcode('relationship', data)
+}
+</script>
+
+<form id='magic' action='#'>
+  <div class='form-group'>
+    <label for='magic-box'>Enter puppet code:</label>
+    <quote>Add relationships so the resources are managed in <code>package</code>, <code>file</code>, <code>service</code> order and the <code>service</code> restarts if the <code>file</code> changes.</quote>
+    <textarea class='form-control' id='magic-box' rows='12'>
+package { 'puppet':
+  ensure => installed,
+}
+file { '/etc/puppetlabs/puppet/puppet.conf':
+  ensure  => file,
+  content => "[main]\nserver = master.domain.com",
+}
+service { 'puppet':
+  ensure => running,
+}
+    </textarea>
+  </div>
+</form>
+
+<script>
+  formFooter();
+</script>

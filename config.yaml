@@ -13,6 +13,9 @@ embedded_pages:
   - facts/using_logic_with_facts
   - resources/exploring_package
   - resources/exploring_service
+  - pfs/package_file
+  - pfs/file_service
+  - pfs/package_file_service
 
 sample_pages:
   - index
@@ -26,6 +29,7 @@ sample_pages:
   - parser_validate
   - facts
   - factlogic
+  - relationship
 
 checks:
   validate:
@@ -71,5 +75,11 @@ checks:
     checks:
       - validate
       - factlogic
+    merge:
+      lang: puppet
+  relationship:
+    checks:
+      - validate
+      - relationship
     merge:
       lang: puppet

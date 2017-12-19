@@ -4,7 +4,7 @@ module Magicbox::Checks
       begin
         code      = Magicbox::Webserver.sanitize(@data['code'])
         item      = Magicbox::Webserver.sanitize(@data['item'])
-        t         = Magicbox::SpecTests::Share.new('compile', {})
+        t         = Magicbox::SpecTests::Catalog.new('compile', {})
         spec_test = t.make_spec
         sandbox   = Magicbox::SpecTests::Sandbox.new(
           item,

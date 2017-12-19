@@ -1,11 +1,11 @@
-module Magicbox::SpecTests::Shared; end
+module Magicbox::SpecTests::Catalogs; end
 
 module Magicbox::SpecTests
-  class Share < Magicbox::SpecTests::Base
+  class Catalog < Magicbox::SpecTests::Base
     private
 
     def spec_type
-      'shared'
+      'catalogs'
     end
   end
 end

@@ -1,0 +1,34 @@
+<script>
+function test() {
+  data = '{ \
+    "code": "class magic_module { ' + escape($('#magic-box').val()) + ' }", \
+    "spec": "relationship", \
+    "relationships": { \
+      "Package[puppet]": { \
+        "before": "File[/etc/puppetlabs/puppet/puppet.conf]" \
+      } \
+    } \
+  }';
+  submitcode('relationship', data)
+}
+</script>
+
+<form id='magic' action='#'>
+  <div class='form-group'>
+    <label for='magic-box'>Enter puppet code:</label>
+    <quote>Add a relationship so that the <code>package</code> is managed before the <code>file</code>.</quote>
+    <textarea class='form-control' id='magic-box' rows='9'>
+package { 'puppet':
+  ensure => installed,
+}
+file { '/etc/puppetlabs/puppet/puppet.conf':
+  ensure  => file,
+  content => "[main]\nserver = master.domain.com",
+}
+    </textarea>
+  </div>
+</form>
+
+<script>
+  formFooter();
+</script>
