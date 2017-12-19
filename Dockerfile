@@ -3,7 +3,7 @@ FROM ruby:2.4.1
 RUN  mkdir -p /opt/magicbox
 COPY . /opt/magicbox
 
-RUN gem install bundler --no-ri --no-rdoc
+RUN gem install bundler --without development --no-ri --no-rdoc
 
 WORKDIR /opt/magicbox
 RUN bundle install
