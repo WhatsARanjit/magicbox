@@ -75,7 +75,7 @@ function resultWorking() {
   $('#status').addClass('text-warning');
   $('#status_output').show('fast');
   $('#samp_output').hide('fast');
-  $('#status').html('working...');
+  $('#status').html('processing...');
 }
 
 function fakeFail(msg) {
