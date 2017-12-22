@@ -89,7 +89,7 @@ function fakeFail(msg) {
   resultComplete(xhr);
 }
 
-function submitcode(endpoint, data)
+function submitcode(endpoint, data, host = '')
   {
     resultWorking();
 
@@ -99,8 +99,8 @@ function submitcode(endpoint, data)
 
     // Submit API request
     $.ajax({ 
-      type:'post',
-      url:'/api/1.0/' + endpoint,
+      type: 'post',
+      url: host + '/api/1.0/' + endpoint,
       data: data,
       dataType:'json',
       success: function(res) { resultSuccess(res) },
