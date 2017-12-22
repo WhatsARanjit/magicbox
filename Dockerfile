@@ -6,7 +6,7 @@ COPY . /opt/magicbox
 RUN gem install bundler --without development --no-ri --no-rdoc
 
 WORKDIR /opt/magicbox
-RUN bundle install
+RUN bundle install --without development
 
 EXPOSE 8443
 
