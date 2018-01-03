@@ -1,4 +1,6 @@
 require 'yaml'
+require 'webrick'
+require 'webrick/https'
 
 # Constants
 PROJECT_ROOT = __dir__
@@ -16,6 +18,18 @@ end
 # Read config
 @config = YAML.load_file('config.yaml')
 @web    = Magicbox::Webserver.new(@config)
+
+# Webserver options
+w_opts                      = @config['webserver']
+@woptions                   = { app: MyApp }
+@woptions[:Host]            = w_opts['host'] if w_opts.key?('host')
+@woptions[:Port]            = w_opts['port'] if w_opts.key?('port')
+@woptions[:Logger]          = w_opts['logger'] if w_opts.key?('logger')
+@woptions[:SSLEnable]       = w_opts['ssl_enable'] if w_opts.key?('ssl_enable')
+@woptions[:SSLVerifyClient] = w_opts['ssl_verify_client'] if w_opts.key?('ssl_verify_client')
+@woptions[:SSLCertName]     = w_opts['ssl_certname'] if w_opts.key?('ssl_certname')
+@woptions[:SSLCertificate]  = OpenSSL::X509::Certificate.new(File.read(w_opts['ssl_certificate'])) if w_opts.key?('ssl_certificate')
+@woptions[:SSLPrivateKey]   = OpenSSL::PKey::RSA.new(File.read(w_opts['ssl_private_key'])) if w_opts.key?('ssl_private_key')
 
 # Embed pages for iframes
 @config['embedded_pages'].each do |endpoint|
@@ -53,4 +67,5 @@ end
   api_check(endpoint, options['checks'], options['merge'])
 end
 
-@web.run!
+# @web.run!
+Rack::Server.start @woptions

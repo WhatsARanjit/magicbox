@@ -10,3 +10,4 @@ nohup.out
 pkg/*
 spec/fixtures/
 vendor/
+keys/
