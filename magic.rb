@@ -16,7 +16,7 @@ module Magicbox; end
 end
 
 # Read config
-@config = YAML.load_file('config.yaml')
+@config = YAML.load_file(File.join(PROJECT_ROOT, 'config.yaml'))
 @web    = Magicbox::Webserver.new(@config)
 
 # Webserver options
