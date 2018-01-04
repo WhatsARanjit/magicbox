@@ -78,6 +78,7 @@ class Magicbox::Webserver
     MyApp.set :static, true
     MyApp.set :views, 'pages'
     MyApp.set :public_folder, 'assets'
+    MyApp.set :static_cache_control, [:public, max_age: 60 * 60 * 24]
     MyApp.set :protection, except: :frame_options
   end
 end
