@@ -18,6 +18,7 @@ Metrics/BlockNesting:
 Naming/FileName:
   Exclude:
     - Gemfile
+    - Rakefile
 
 Lint/UriEscapeUnescape:
   Enabled: false
