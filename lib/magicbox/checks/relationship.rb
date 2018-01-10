@@ -27,13 +27,13 @@ module Magicbox::Checks
       else
         json    = JSON.parse(cmd_out)
         message = if exitstatus.zero?
-                    json.dig('examples', 0, 'status')
+                    [json.dig('examples', 0, 'status')]
                   else
-                    json.dig('examples', 0, 'exception', 'message')
+                    json['examples'].map { |x| x['description'] if x.key?('exception') }.compact
                   end
         {
           'exitcode' => exitstatus,
-          'message'  => [message],
+          'message'  => message,
         }
       end
     end
