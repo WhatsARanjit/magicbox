@@ -1,0 +1,8 @@
+---
+commands:
+  create_webapp_homedir:
+    command:
+      - puppet resource file /home/webapp ensure=directory owner=webapp group=webapp
+  motd_link:
+    command:
+      - puppet resource file /etc/motd ensure=file
