@@ -11,7 +11,7 @@ function test() {
         }, \
         "windows": { \
           "type": "file", \
-          "title": "C:\\\\motd.txt" \
+          "title": "C:/Users/Administrator/Desktop/README.txt" \
         } \
       } \
     } \
@@ -23,16 +23,16 @@ function test() {
 <form id='magic' action='#'>
   <div class='form-group'>
     <label for='magic-box'>Enter puppet code:</label>
-    <quote>Set the <code>$motd_file</code> to <code>C:\motd.txt</code> when the <code>$kernel</code> fact is <code>windows</code> or else set the <code>$motd_file</code> to <code>/etc/motd</code></quote>
+    <quote>Set the <code>$hello_file</code> to <code>C:/Users/Administrator/Desktop/README.txt</code> when the <code>$kernel</code> fact is <code>windows</code> or else set the <code>$hello_file</code> to <code>/etc/motd</code></quote>
     <textarea class='form-control' id='magic-box' rows='12'>
 if $kernel == 'windows' {
-    $motd_file = <PUT VALUE HERE>
+    $hello_file = <PUT VALUE HERE>
 }
 else {
-    $motd_file = <PUT VALUE HERE>
+    $hello_file = <PUT VALUE HERE>
 }
 
-file { $motd_file:
+file { $hello_file:
   content => 'Hello world',
 }
     </textarea>
