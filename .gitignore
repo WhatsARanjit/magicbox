@@ -11,3 +11,4 @@ pkg/*
 spec/fixtures/
 vendor/
 keys/
+build/

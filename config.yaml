@@ -1,10 +1,12 @@
 ---
 webserver:
+  version: 1.0
   host: 0.0.0.0
-  port: 8443
-  ssl_enable: true
-  ssl_certificate: keys/magicbox.crt
-  ssl_private_key: keys/magicbox.key
+  port: 80
+  # port: 8443
+  # ssl_enable: true
+  # ssl_certificate: keys/magicbox.crt
+  # ssl_private_key: keys/magicbox.key
 
 embedded_pages:
   - syntax/hello_world
@@ -24,36 +26,36 @@ embedded_pages:
   - pfs/file_service
   - pfs/package_file_service
 
-sample_pages:
-  - index
-  - validate
-  - fact
-  - function
-  - resource
-  - compile
-  - apply
-  - template
-  - parser_validate
-  - facts
-  - factlogic
-  - relationship
+# sample_pages:
+#   - index
+#   - validate
+#   - fact
+#   - function
+#   - resource
+#   - compile
+#   - apply
+#   - template
+#   - parser_validate
+#   - facts
+#   - factlogic
+#   - relationship
 
 checks:
   validate:
     checks:
       - validate
-  fact:
-    checks:
-      - validate
-      - fact
-    merge:
-      lang: ruby
-  function:
-    checks:
-      - validate
-      - function
-    merge:
-      lang: ruby
+  # fact:
+  #   checks:
+  #     - validate
+  #     - fact
+  #   merge:
+  #     lang: ruby
+  # function:
+  #   checks:
+  #     - validate
+  #     - function
+  #   merge:
+  #     lang: ruby
   resource:
     checks:
       - resource
@@ -69,12 +71,12 @@ checks:
       - apply
     merge:
       lang: puppet
-  template:
-    checks:
-      - validate
-      - template
-    merge:
-      lang: erb
+  # template:
+  #   checks:
+  #     - validate
+  #     - template
+  #   merge:
+  #     lang: erb
   facts:
     checks:
       - facts

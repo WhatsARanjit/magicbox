@@ -32,13 +32,17 @@ w_opts                      = @config['webserver']
 @woptions[:SSLPrivateKey]   = OpenSSL::PKey::RSA.new(File.read(w_opts['ssl_private_key'])) if w_opts.key?('ssl_private_key')
 
 # Embed pages for iframes
-@config['embedded_pages'].each do |endpoint|
-  @web.sample_ui(endpoint, true)
+if @config.key?('embedded_pages')
+  @config['embedded_pages'].each do |endpoint|
+    @web.sample_ui(endpoint, true)
+  end
 end
 
 # Sample UI pages
-@config['sample_pages'].each do |endpoint|
-  @web.sample_ui(endpoint)
+if @config.key?('sample_pages')
+  @config['sample_pages'].each do |endpoint|
+    @web.sample_ui(endpoint)
+  end
 end
 
 def api_check(endpoint, checks, add_data = {})
@@ -68,4 +72,9 @@ end
 end
 
 # @web.run!
-Rack::Server.start @woptions
+# Don't start app if called by Passenger
+if caller.empty?
+  Rack::Server.start @woptions
+else
+  Rack::Server.start @woptions unless File.basename(caller(1..1).first) =~ /config\.ru/
+end

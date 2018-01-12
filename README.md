@@ -14,6 +14,7 @@
     * [/api/1.0/resource](#api10resource)
     * [/api/1.0/compile](#api10compile)
     * [/api/1.0/apply](#api10apply)
+    * [/api/1.0/facts](#api10facts)
 
 ## Overview
 
@@ -328,3 +329,27 @@ curl -s -X POST -d \
 ```
 
 NOTE: `code`, and `check` should be supplied as an escaped string.
+
+### `/api/1.0/facts`
+
+Return a single fact or the complete fact set.
+
+__Parameters:__
+
+```json
+{
+  "fact": {
+    "description": "The fact value to retrieve.",
+    "type": "Optional[String[1]]"
+  }
+}
+```
+
+__cURL example__
+
+```shell
+# curl -s -X POST -d \
+> '{ "fact": "kernel" }' \
+> http://10.32.160.187/api/1.0/facts
+{"exitcode":0,"message":["Linux"]}
+```

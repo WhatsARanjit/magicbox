@@ -14,3 +14,5 @@ Dockerfile
 scripts/
 spec/
 README.md
+.ebextensions/
+build/
