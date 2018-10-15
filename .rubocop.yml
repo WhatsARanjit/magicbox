@@ -38,7 +38,9 @@ Style/Documentation:
   Enabled: false
 Style/RedundantBegin:
   Enabled: false
-Style/TrailingCommaInLiteral:
+Style/TrailingCommaInArrayLiteral:
+  Enabled: false
+Style/TrailingCommaInHashLiteral:
   Enabled: false
 #Consider for later
 Style/SpecialGlobalVars:

@@ -2,60 +2,60 @@
 webserver:
   version: 1.0
   host: 0.0.0.0
-  port: 80
-  # port: 8443
+  port: 8443
   # ssl_enable: true
   # ssl_certificate: keys/magicbox.crt
   # ssl_private_key: keys/magicbox.key
 
-embedded_pages:
-  - syntax/hello_world
-  - syntax/querying_the_system
-  - syntax/modifying_attributes
-  - syntax/observe_your_change
-  - syntax/validating_your_syntax
-  - variables/putting_them_to_use
-  - facts/what_are_they
-  - facts/working_with_facts
-  - facts/working_with_arrays
-  - facts/working_with_hashes
-  - facts/using_logic_with_facts
-  - resources/exploring_package
-  - resources/exploring_service
-  - pfs/package_file
-  - pfs/file_service
-  - pfs/package_file_service
+embedded_pages: {}
+#  - puppet/syntax/hello_world
+#  - puppet/syntax/querying_the_system
+#  - puppet/syntax/modifying_attributes
+#  - puppet/syntax/observe_your_change
+#  - puppet/syntax/validating_your_syntax
+#  - puppet/variables/putting_them_to_use
+#  - puppet/facts/what_are_they
+#  - puppet/facts/working_with_facts
+#  - puppet/facts/working_with_arrays
+#  - puppet/facts/working_with_hashes
+#  - puppet/facts/using_logic_with_facts
+#  - puppet/resources/exploring_package
+#  - puppet/resources/exploring_service
+#  - puppet/pfs/package_file
+#  - puppet/pfs/file_service
+#  - puppet/pfs/package_file_service
 
-# sample_pages:
-#   - index
-#   - validate
-#   - fact
-#   - function
-#   - resource
-#   - compile
-#   - apply
-#   - template
-#   - parser_validate
-#   - facts
-#   - factlogic
-#   - relationship
+sample_pages:
+  - index
+  - hashicorp/json2hcl
+  - puppet/validate
+  - puppet/fact
+  - puppet/function
+  - puppet/resource
+  - puppet/compile
+  - puppet/apply
+  - puppet/template
+  - puppet/parser_validate
+  - puppet/facts
+  - puppet/factlogic
+  - puppet/relationship
 
 checks:
   validate:
     checks:
       - validate
-  # fact:
-  #   checks:
-  #     - validate
-  #     - fact
-  #   merge:
-  #     lang: ruby
-  # function:
-  #   checks:
-  #     - validate
-  #     - function
-  #   merge:
-  #     lang: ruby
+  fact:
+    checks:
+      - validate
+      - fact
+    merge:
+      lang: ruby
+  function:
+    checks:
+      - validate
+      - function
+    merge:
+      lang: ruby
   resource:
     checks:
       - resource
@@ -71,12 +71,12 @@ checks:
       - apply
     merge:
       lang: puppet
-  # template:
-  #   checks:
-  #     - validate
-  #     - template
-  #   merge:
-  #     lang: erb
+  template:
+    checks:
+      - validate
+      - template
+    merge:
+      lang: erb
   facts:
     checks:
       - facts
@@ -92,3 +92,6 @@ checks:
       - relationship
     merge:
       lang: puppet
+  json2hcl:
+    checks:
+      - json2hcl
