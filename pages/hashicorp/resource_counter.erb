@@ -11,19 +11,40 @@
 </script>
 
 <form id='magic' action='#'>
-  <div class='form-inline'>
-    <label for='tfe_server'>TFE Server:</label>
-    <input type='text' id='tfe_server' value='app.terraform.io'>
-    <br>
-    <label for='tfe_org'>TFE Organization:</label>
-    <input type='text' id='tfe_org'>
-    <br>
-    <label for='tfe_token'>TFE Token:</label>
-    <input type='text' id='tfe_token'>
-    <br>
-    <label for='type'>Resource type:</label>
-    <input type='text' id='type'>
+<div class='form-inline'>
+  <div class="row">
+    <div class="col-md-2">
+      <label for='tfe_server'>TFE Server:</label>
+    </div>
+    <div class="col-md-4">
+      <input type='text' id='tfe_server' value='app.terraform.io'>
+    </div>
   </div>
+  <div class="row">
+    <div class="col-md-2">
+      <label for='tfe_org'>TFE Organization:</label>
+    </div>
+    <div class="col-md-4">
+      <input type='text' id='tfe_org' placeholder='my_org'>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2">
+      <label for='tfe_token'>TFE Token:</label>
+    </div>
+    <div class="col-md-4">
+      <input type='password' id='tfe_token' placeholder='mYT0k3n'>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2">
+      <label for='type'>Resource type:</label>
+    </div>
+    <div class="col-md-4">
+      <input type='text' id='type' placeholder='null_resource'>
+    </div>
+  </div>
+</div>
 </form>
 
 <script>
