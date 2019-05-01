@@ -20,6 +20,9 @@ Naming/FileName:
   Exclude:
     - Gemfile
     - Rakefile
+Performance/RegexpMatch:
+  Exclude:
+    - 'magic.rb'
 
 Lint/UriEscapeUnescape:
   Enabled: false
