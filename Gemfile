@@ -15,5 +15,6 @@ gem 'rhcl', '~> 0.1.0'
 gem 'sinatra', '2.0.0'
 
 group :development do
+  gem 'pry', '0.11.3'
   gem 'rubocop', '~> 0.51.0'
 end

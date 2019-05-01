@@ -1,4 +1,5 @@
 AllCops:
+  TargetRubyVersion: 2.4.1
   Include:
     - '*.rb'
     - 'lib/**/*.rb'
@@ -36,11 +37,11 @@ Style/ClassAndModuleChildren:
   EnforcedStyle: compact
 Style/Documentation:
   Enabled: false
+Style/FrozenStringLiteralComment:
+  Enabled: false
 Style/RedundantBegin:
   Enabled: false
-Style/TrailingCommaInArrayLiteral:
-  Enabled: false
-Style/TrailingCommaInHashLiteral:
+Style/TrailingCommaInLiteral:
   Enabled: false
 #Consider for later
 Style/SpecialGlobalVars:

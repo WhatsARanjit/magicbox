@@ -24,11 +24,11 @@ module Magicbox::Checks
           line.gsub!(/ \(noop\)/, '') || line
           line.gsub!(/should be/, 'changed to') || line
           line.gsub!(/Would have (\w)/) do
-            Regexp.last_match[1].upcase if Regexp.last_match[1]
+            Regexp.last_match[1]&.upcase
           end || line
           if check
             match_pattern = /#{check}/
-            check_code    = 0 if line.match(match_pattern)
+            check_code    = 0 if line.match?(match_pattern)
           end
           line
         end

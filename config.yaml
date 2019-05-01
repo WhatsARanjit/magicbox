@@ -28,6 +28,7 @@ embedded_pages: {}
 sample_pages:
   - index
   - hashicorp/json2hcl
+  - hashicorp/resource_counter
   - puppet/validate
   - puppet/fact
   - puppet/function
@@ -95,3 +96,6 @@ checks:
   json2hcl:
     checks:
       - json2hcl
+  resourcecounter:
+    checks:
+      - resourcecounter
