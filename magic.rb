@@ -76,5 +76,5 @@ end
 if caller.empty?
   Rack::Server.start @woptions
 else
-  Rack::Server.start @woptions unless File.basename(caller(1..1).first).match?(/config\.ru/)
+  Rack::Server.start @woptions unless File.basename(caller(1..1).first).match(/config\.ru/) == true
 end

@@ -8,6 +8,8 @@
 1. [Example UI](#example-ui)
 1. [API](#api)
     * [Schema](#schema)
+    * [/api/1.0/json2hcl](#api10json2hcl)
+    * [/api/1.0/resourcecounter](#api10resourcecounter)
     * [/api/1.0/validate](#api10validate)
     * [/api/1.0/fact](#api10fact)
     * [/api/1.0/function](#api10function)
@@ -89,9 +91,75 @@ format for all endpoints is:
 If the code submission is correct, the API will return a `200` response code.
 Incorrect code will receive a `400` and server failures a `500`.
 
+### `/api/1.0/json2hcl`
+
+Convert code between HCL and JSON.
+
+__Parameters:__
+
+```json
+{
+  "lang": {
+    "description": "Which language to convert to.",
+    "type": "Enum[hcl, json]"
+  },
+  "code": {
+    "description": "The code to convert.",
+    "type": "String[1]"
+  }
+}
+```
+
+__cURL example__
+
+```shell
+# curl -s -X POST -d \
+> '{ "lang": "json", "code": "resource%20%22mytype%22%20%22myname%22%20%7B%0A%20%20foo%20%3D%20%22bar%22%0A%7D" }' \
+> https://whatsaranjit.herokuapp.com/api/1.0/json2hcl
+=> {"exitcode":0,"message":["{","  \"resource\": {","    \"mytype\": {","      \"myname\": {","        \"foo\": \"bar\"","      }","    }","  }","}"]}
+```
+
+NOTE: `code` should be supplied as an escape string
+
+### `/api/1.0/resourcecounter`
+
+Count the number of a resource type in a Terraform Enterprise organization.
+
+__Parameters:__
+
+```json
+{
+  "tfe_server": {
+    "description": "DNS name of Terraform Enterprise server",
+    "type": "String[1]"
+  },
+  "tfe_org": {
+    "description": "Terraform Enterprise organization to inspect",
+    "type": "String[1]"
+  },
+    "tfe_token": {
+    "description": "Terraform Enterprise token to inspect organizations and workspace states",
+    "type": "String[1]"
+  },
+    "type": {
+    "description": "Terraform resource type to count",
+    "type": "String[1]"
+  }
+}
+```
+
+__cURL example__
+
+```shell
+# curl -s -X POST -d \
+> "{\"tfe_token\": \"$TFE_TOKEN\", \"tfe_org\": \"WhatsARanjit\", \"type\": \"null_resource\"}" \
+> https://whatsaranjit.herokuapp.com/api/1.0/resourcecounter
+=> {"exitcode":0,"message":["[{\"ws-zyYr86jQMdnKegtI\":{\"name\":\"WhatsARanjit-test-prod\",\"state_url\":\"https://archivist.terraform.io/v1/object/state_guid\",\"targets\":[\"null_resource.test.0\",\"null_resource.test.1\",\"null_resource.test.2\"],\"count\":3}},{\"ws-4muVUIMemmrOmXU3\":{\"name\":\"WhatsARanjit-test-dev\",\"state_url\":\"null\",\"count\":0}},{\"timestamp\":\"2019-04-30 23:00:15 -0400\",\"organization\":\"WhatsARanjit\",\"type\":\"null_resource\",\"total\":3}]"]}
+```
+
 ### `/api/1.0/validate`
 
-Submit code for syntax validation.
+Submit Puppet code for syntax validation.
 
 __Parameters:__
 
@@ -113,12 +181,12 @@ __cURL example__
 ```shell
 # curl -s -X POST -d \
 > '{ "lang": "puppet", "code": "notice%28%24ipaddress%29" }' \
-> http://10.32.160.187/api/1.0/validate
+> https://whatsaranjit.herokuapp.com/api/1.0/validate
 => {"exitcode":0,"message":[]}
 
 # curl -s -X POST -d \
 > '{ "lang": "puppet", "code": "notice%28%24ipaddress%29%29" }' \
-> http://10.32.160.187/api/1.0/validate
+> https://whatsaranjit.herokuapp.com/api/1.0/validate
 => {"exitcode":1,"message":["Error: Could not parse for environment production: Syntax error at ')' at /tmp/pp20171103-10522-1bocvzq:1:19"]}
 ```
 
@@ -152,12 +220,12 @@ __cURL example__
 ```shell
 # curl -s -X POST -d \
 > '{ "fact": "ranjit", "value": true, "code": "Facter.add%28%27ranjit%27%29%20do%0A%20%20setcode%20do%0A%20%20%20%20true%0A%20%20end%0Aend" }' \
-> http://10.32.160.187/api/1.0/fact
+> https://whatsaranjit.herokuapp.com/api/1.0/fact
 => {"exitcode":0,"message":["expected: true","actual: true"]}
 
 # curl -s -X POST -d \
 > '{ "fact": "ranjit", "value": true, "code": "Facter.add%28%27ranjit%27%29%20do%0A%20%20setcode%20do%0A%20%20%20%20false%0A%20%20end%0Aend" }' \
-> http://10.32.160.187/api/1.0/fact
+> https://whatsaranjit.herokuapp.com/api/1.0/fact
 => {"exitcode":0,"message":["expected: true","actual: false"]}
 ```
 
@@ -165,7 +233,7 @@ NOTE: `code` and `value` should be supplied as an escaped string.
 
 ### `/api/1.0/function`
 
-Test that a function produces an expected value or error.
+Test that a Puppet function produces an expected value or error.
 
 __Parameters:__
 
@@ -199,17 +267,17 @@ __cURL example__
 ```shell
 # curl -s -X POST -d \
 > '{ "function": "sum", "args": "10%2C25", "value": 35, "code": "Puppet%3A%3AFunctions.create_function%28%3Asum%29%20do%0A%20%20dispatch%20%3Asum%20do%0A%20%20%20%20required_param%20%27Integer%27%2C%20%3Aa%0A%20%20%20%20required_param%20%27Integer%27%2C%20%3Ab%0A%20%20end%0A%0A%20%20def%20sum%28a%2Cb%29%0A%20%20%20%20a+b%0A%20%20end%0Aend" }' \
-> http://10.32.160.187/api/1.0/function
+> https://whatsaranjit.herokuapp.com/api/1.0/function
 => {"exitcode":0,"message":["passed"]}
 
 # curl -s -X POST -d \
 > '{ "function": "sum", "args": "10%2C25", "value": 35, "code": "Puppet%3A%3AFunctions.create_function%28%3Asum%29%20do%0A%20%20dispatch%20%3Asum%20do%0A%20%20%20%20required_param%20%27Integer%27%2C%20%3Aa%0A%20%20%20%20required_param%20%27Integer%27%2C%20%3Ab%0A%20%20end%0A%0A%20%20def%20sum%28a%2Cb%29%0A%20%20%20%20a-b%0A%20%20end%0Aend" }' \
-> http://10.32.160.187/api/1.0/function
+> https://whatsaranjit.herokuapp.com/api/1.0/function
 => {"exitcode":1,"message":["expected sum(10, 25) to have returned 35 instead of -15"]}
 
 # curl -s -X POST -d \
 > '{ "function": "number", "args": "%27this%20is%20a%20String%27", "code": "Puppet%3A%3AFunctions.create_function%28%3Anumber%29%20do%0A%20%20dispatch%20%3Anumber%20do%0A%20%20%20%20required_param%20%27Any%27%2C%20%3Aa%0A%20%20end%0A%0A%20%20def%20number%28a%29%0A%20%20%20%20a%0A%20%20end%0Aend", "spec": "raise_error", "value": "ArgumentError%2C/expects%20an%20Integer%20value/" }' \
-> http://10.32.160.187/api/1.0/function
+> https://whatsaranjit.herokuapp.com/api/1.0/function
 => {"exitcode":1,"message":["expected number(\"this is a String\") to have raised ArgumentError matching /expects an Integer value/ instead of returning \"this is a String\""]}
 ```
 
@@ -251,12 +319,12 @@ __cURL example__
 ```shell
 # curl -s -X POST -d \
 > '{ "code": "puppet%20resource%20host" }' \
-> http://10.32.160.187/api/1.0/resource
+> https://whatsaranjit.herokuapp.com/api/1.0/resource
 => {"exitcode":0,"message":["host { 'localhost':\n  ensure       => 'present',\n  comment      => '',\n  host_aliases => ['localhost.localdomain', 'localhost4', 'localhost4.localdomain4', 'whatsaranjit'],\n  ip           => '127.0.0.1',\n  loglevel     => 'notice',\n  provider     => 'parsed',\n  target       => '/etc/hosts',\n}"]}
 
 # curl -s -X POST -d \
 > '{ "code": "puppet%20resource%20user%20ranjit", "type": "package", "title": "puppet" }' \
-> http://10.32.160.187/api/1.0/resource
+> https://whatsaranjit.herokuapp.com/api/1.0/resource
 => {"exitcode":1,"message":["Supplied type 'user' does not match 'package'","Supplied title 'ranjit' does not match 'puppet'"]}
 ```
 
@@ -264,7 +332,7 @@ NOTE: `code`, and `title` should be supplied as an escaped string.
 
 ### `/api/1.0/compile`
 
-Query with `puppet resource` and optionally test the command arguments.
+Test that a set of Puppet code compiles.
 
 __Parameters:__
 
@@ -286,7 +354,7 @@ __cURL example__
 ```shell
 # curl -s -X POST -d \
 > '{ "code": "class magic_module { notice%28%27hello%20world%27%29 }", "item": "magic_module" }' \
-> http://10.32.160.187/api/1.0/compile
+> https://whatsaranjit.herokuapp.com/api/1.0/compile
 => {"exitcode":0,"message":["passed"]}
 ```
 
@@ -320,11 +388,11 @@ __cURL example__
 ```shell
 curl -s -X POST -d \
 > '{ "code": "notice%28%27hello%20world%27%29", "check": "hello%20world" }' \
-> http://10.32.160.187/api/1.0/apply
+> https://whatsaranjit.herokuapp.com/api/1.0/apply
 => {"exitcode":0,"message":["Notice: Scope(Class[main]): hello world","Notice: Compiled catalog for whatsaranjit in environment production in 0.03 seconds","Notice: Applied catalog in 0.02 seconds"]}
 # curl -s -X POST -d \
 > '{ "code": "notice%28%27hello%20world%27%29", "check": "bye%20world", "error": "Mistake" }' \
-> http://10.32.160.187/api/1.0/apply
+> https://whatsaranjit.herokuapp.com/api/1.0/apply
 => {"exitcode":1,"message":["Mistake","Notice: Scope(Class[main]): hello world","Notice: Compiled catalog for whatsaranjit in environment production in 0.02 seconds","Notice: Applied catalog in 0.02 seconds"]}
 ```
 
@@ -350,6 +418,6 @@ __cURL example__
 ```shell
 # curl -s -X POST -d \
 > '{ "fact": "kernel" }' \
-> http://10.32.160.187/api/1.0/facts
+> https://whatsaranjit.herokuapp.com/api/1.0/facts
 {"exitcode":0,"message":["Linux"]}
 ```

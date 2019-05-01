@@ -1,0 +1,36 @@
+<script>
+  function test() {
+    data = '{ \
+      "tfe_server": "' + $('#tfe_server').val() + '", \
+      "tfe_org": "' + $('#tfe_org').val() + '", \
+      "tfe_token": "' + $('#tfe_token').val() + '", \
+      "type": "' + $('#type').val() + '" \
+    }'
+    submitcode('resourcecounter', data);
+  }
+</script>
+
+<form id='magic' action='#'>
+  <div class='form-inline'>
+    <label for='tfe_server'>TFE Server:</label>
+    <input type='text' id='tfe_server' value='app.terraform.io'>
+    <br>
+    <label for='tfe_org'>TFE Organization:</label>
+    <input type='text' id='tfe_org'>
+    <br>
+    <label for='tfe_token'>TFE Token:</label>
+    <input type='text' id='tfe_token'>
+    <br>
+    <label for='type'>Resource type:</label>
+    <input type='text' id='type'>
+  </div>
+</form>
+
+<script>
+  formFooter();
+  $('.btn-warning').html('Count')
+  function munge_success(input) {
+    out = [JSON.stringify(JSON.parse(input), null, 2)];
+    return out[0].split("\n")
+  }
+</script>
