@@ -105,6 +105,7 @@ module Magicbox::Checks
         ret            = json_ret << {
           'timestamp'    => @now,
           'organization' => @org,
+          'workspaces'   => workspace_list.length,
           'type'         => @type,
           'total'        => @total,
         }
