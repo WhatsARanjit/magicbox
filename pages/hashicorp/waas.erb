@@ -1,0 +1,87 @@
+<script src="/js/tfe.js"></script>
+
+<form id='magic' action='#'>
+<div class='form-horizontal'>
+  <div class='form-group' id='form-fetch-workspaces'>
+    <label for='source_tfe_server' class='col-md-2 control-label'>Source TFE Server:</label>
+    <div class="col-md-4">
+      <input type='text' id='source_tfe_server' class='form-control' value='app.terraform.io'>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for='source_tfe_org' class='col-md-2 control-label'>Source TFE Organization:</label>
+    <div class="col-md-4">
+      <input type='text' id='source_tfe_org' class='form-control' placeholder='my_org'>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for='source_tfe_token' class='col-md-2 control-label'>Source TFE Token:</label>
+    <div class="col-md-4">
+      <input type='text' id='source_tfe_token' class='form-control' placeholder='mYT0k3n'>
+    </div>
+  </div>
+  <p><button type='button' onclick='fetch_workspaces();' class='btn btn-info'>Retrieve Workspaces</button></p>
+  <div class='form-group' id='form-select-workspaces'>
+    <label for='workspace' class='col-md-2 control-label'>Workspaces:</label>
+    <div class="col-md-4">
+      <select class='form-control' id='workspaces'>
+        <option><i>None</i></option>
+      </select>
+    </div>
+    <p><button type='button' onclick='fetch_variables();' class='btn btn-info'>Retrieve Variables</button></p>
+  </div>
+  <div class='form-group' id='form-set-tf-variables'>
+    <p>Terraform Variables</p>
+  </div>
+  <div class='form-group' id='form-set-env-variables'>
+    <p>Environment Variables</p>
+  </div>
+  <div class='form-group' id='create-workspace'>
+    <div class="form-group">
+      <label for='target_tfe_server' class='col-md-2 control-label'>Target TFE Server:</label>
+      <div class="col-md-4">
+        <input type='text' id='target_tfe_server' class='form-control' value='app.terraform.io'>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for='target_tfe_org' class='col-md-2 control-label'>Target TFE Organization:</label>
+      <div class="col-md-4">
+        <input type='text' id='target_tfe_org' class='form-control' placeholder='my_org'>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for='target_tfe_token' class='col-md-2 control-label'>Target TFE Token:</label>
+      <div class="col-md-4">
+        <input type='text' id='target_tfe_token' class='form-control' placeholder='mYT0k3n'>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for='target_workspace' class='col-md-2 control-label'>New Workspace Name:</label>
+      <div class="col-md-4">
+        <input type='text' id='target_workspace' class='form-control' placeholder='my_workspace'>
+      </div>
+    </div>
+    <p><button type='button' onclick='test();' class='btn btn-info'>Create Workspace</button></p>
+  </div>
+</div>
+</form>
+
+<script>
+  $('#form-select-workspaces').hide();
+  $('#form-set-tf-variables').hide();
+  $('#form-set-env-variables').hide();
+  $('#create-workspace').hide();
+  formFooter();
+  $('.btn-warning').hide();
+  function munge_success(input) {
+    output = Array();
+    for (line in input) {
+      if (typeof input[line] == 'string') {
+        output = output.concat(input[line].replace(/&quot;/g, '"'));
+      } else {
+        output = output.push(input[line]);
+      };
+    };
+    return output;
+  }
+</script>

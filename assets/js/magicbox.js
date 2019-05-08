@@ -78,6 +78,17 @@ function resultWorking() {
   $('#status').html('processing...');
 }
 
+function fakeSuccess(msg) {
+  resultWorking();
+
+  stuff = '{ "message": ["' + msg  + '"] }';
+  xhr = new Object;
+  xhr.responseText = stuff;
+
+  resultSuccess({ "message": [msg] });
+  resultComplete(xhr);
+}
+
 function fakeFail(msg) {
   resultWorking();
 

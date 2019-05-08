@@ -29,6 +29,7 @@ sample_pages:
   - index
   - hashicorp/json2hcl
   - hashicorp/resource_counter
+  - hashicorp/waas
   - puppet/validate
   - puppet/fact
   - puppet/function
@@ -99,3 +100,6 @@ checks:
   resourcecounter:
     checks:
       - resourcecounter
+  tfe_call:
+    checks:
+      - tfecall
