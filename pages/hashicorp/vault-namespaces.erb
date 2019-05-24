@@ -1,0 +1,75 @@
+<script>
+var aggregate_msg = [];
+function vault_read(path) {
+  $.ajax({
+    type: 'get',
+    async: false,
+    timeout: 30000,
+    url: $('#vault_addr').val() + '/v1/' + path,
+    dataType:'json',
+    headers: {
+      'X-Vault-Token': $('#vault_token').val()
+    },
+    success: function(res) {
+      console.log(res);
+      ret = res['data']['data'];
+    },
+    error: function(xhr) {
+      console.log(xhr);
+      ret = { "error": "Access denied to " + path };
+      //resultWorking();
+      //resultError(xhr);
+      //resultComplete(xhr);
+    }
+  });
+  return ret;
+}
+
+function test() {
+  common = vault_read('secret/data/shared_secrets');
+  app1   = vault_read('app1/secret/data/app_secrets');
+  app2   = vault_read('app2/secret/data/app_secrets');
+
+  ret =  JSON.stringify(common).replace(/"/g, '&quot;');
+  ret += JSON.stringify(app1).replace(/"/g, '&quot;'); 
+  ret += JSON.stringify(app2).replace(/"/g, '&quot;'); 
+  console.log(ret);
+  fakeSuccess(ret);
+}
+
+</script>
+
+<form id='magic' action='#'>
+<div class='form-horizontal'>
+  <div class='form-group' id='form-fetch-secrets'>
+    <label for='vault_addr' class='col-md-2 control-label'>Vault Address:</label>
+    <div class="col-md-4">
+      <input type='text' id='vault_addr' class='form-control' value='http://127.0.0.1:8200'>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for='vault_token' class='col-md-2 control-label'>Vault Token:</label>
+    <div class="col-md-4">
+      <input type='text' id='vault_token' class='form-control' placeholder='mYT0k3n'>
+    </div>
+    <p><button type='button' onclick='test();' class='btn btn-info'>Retrieve Secrets</button></p>
+  </div>
+</div>
+</form>
+
+<script>
+  $('h3:first').html('Vault Shared/Private Secrets Demo')
+  formFooter();
+  $('.btn-warning').hide();
+  function munge_success(input) {
+    output = Array();
+    for (line in input) {
+      if (typeof input[line] == 'string') {
+        output = output.concat(input[line].replace(/&quot;/g, '"').replace(/}{/g, "}\n{"));
+      } else {
+        output = output.push(input[line]);
+      };
+    };
+    return output;
+  }
+</script>

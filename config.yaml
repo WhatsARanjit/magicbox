@@ -29,6 +29,7 @@ sample_pages:
   - index
   - hashicorp/json2hcl
   - hashicorp/resource_counter
+  - hashicorp/vault-namespaces
   - hashicorp/waas
   - puppet/validate
   - puppet/fact
