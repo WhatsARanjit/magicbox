@@ -148,7 +148,7 @@ function test() {
   });
   console.log(aggregate_msg);
   workspace_id = aggregate_msg['message']['id'];
-  $('div#form-set-env-variables').children('div').each(function() {
+  $('div[id*=variables]').children('div').each(function() {
     console.log($(this));
     variable  = $(this).attr('var');
     value     = $(this).find('input').val();
