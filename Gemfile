@@ -12,7 +12,7 @@ gem 'semantic_puppet', '1.0.1'
 gem 'rhcl', '~> 0.1.0'
 
 # Core
-gem 'sinatra', '2.0.0'
+gem 'sinatra', '2.0.2'
 
 group :development do
   gem 'pry', '0.11.3'
