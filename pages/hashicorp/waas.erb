@@ -36,6 +36,14 @@
   <div class='form-group' id='form-set-env-variables'>
     <p>Environment Variables</p>
   </div>
+  <div class='form-group' id='form-set-advanced'>
+    <div class="col-md-2">
+      <button type="button" class="btn btn-link" onclick='$("#ws-attributes").toggle("slow");'>Advanced Options <span class="caret"></span></button>
+    </div>
+    <div class="col-md-4">
+      <textarea id='ws-attributes' class="form-control" rows='10'></textarea>
+    </div>
+  </div>
   <div class='form-group' id='create-workspace'>
     <div class="form-group">
       <label for='target_tfe_server' class='col-md-2 control-label'>Target TFE Server:</label>
@@ -71,6 +79,8 @@
   $('#form-select-workspaces').hide();
   $('#form-set-tf-variables').hide();
   $('#form-set-env-variables').hide();
+  $('#form-set-advanced').hide();
+  $('#ws-attributes').hide();
   $('#create-workspace').hide();
   formFooter();
   $('.btn-warning').hide();

@@ -1,4 +1,5 @@
 var workspaces_cache = '';
+var ws_attributes = '';
 
 function fetch_workspaces() {
   data = '{ \
@@ -95,11 +96,16 @@ function fetch_variables() {
         $(type)
           .append($(variable_html));
       });
+      ws_attributes = $.grep(workspaces_cache, function(ws) { return ws['id'] == $('#workspaces option:selected').attr('workspace_id') })[0]['attributes'];
+      delete ws_attributes.name;
+      console.log(ws_attributes);
       $(document).ready(function() {
         $('#target_tfe_org').val($('#source_tfe_org').val());
         $('#target_tfe_token').val($('#source_tfe_token').val());
+        $('#ws-attributes').val(JSON.stringify(ws_attributes, null, 2));
         $('#form-set-tf-variables').slideDown();
         $('#form-set-env-variables').slideDown();
+        $('#form-set-advanced').slideDown();
         $('#create-workspace').slideDown();
       });
     },
@@ -112,7 +118,7 @@ function fetch_variables() {
 }
 
 function test() {
-  attributes         = $.grep(workspaces_cache, function(ws) { return ws['id'] == $('#workspaces option:selected').attr('workspace_id') })[0]['attributes'];
+  attributes         = JSON.parse($('#ws-attributes').val());
   attributes['name'] = $('#target_workspace').val();
 
   data = '{ \
@@ -155,6 +161,11 @@ function test() {
     sensitive = $(this).attr('sensitive');
     hcl       = $(this).attr('hcl');
     category  = $(this).attr('category');
+
+    // Escape double-quotes in HCL
+    if (hcl) {
+      value = value.replace(/"/g, '\\"')
+    }
 
     data = '{ \
       "tfe_server": "' + $('#target_tfe_server').val() + '", \
