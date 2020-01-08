@@ -90,6 +90,12 @@ function fetch_variables() {
                 HCL\
               </label>\
             </div>\
+            <div class='checkbox-inline'>\
+              <label class='col-md-1 control-label'>\
+                <input type='checkbox' id='ignore-" + name + "'>\
+                Ignore\
+              </label>\
+            </div>\
           </div>\
         ";
         type = category == 'terraform' ? '#form-set-tf-variables' : '#form-set-env-variables';
@@ -155,11 +161,13 @@ function test() {
   console.log(aggregate_msg);
   workspace_id = aggregate_msg['message']['id'];
   $('div[id*=variables]').children('div').each(function() {
+    //Skip ignored variables
+    if ($(this).find('input[id*=ignore]').is(':checked')) { return }
     console.log($(this));
     variable  = $(this).attr('var');
-    value     = $(this).find('input').val();
-    sensitive = $(this).attr('sensitive');
-    hcl       = $(this).attr('hcl');
+    value     = $(this).find('input[id*=var]').val();
+    sensitive = $(this).find('input[id*=sensitive]').is(':checked');
+    hcl       = $(this).find('input[id*=hcl]').is(':checked');
     category  = $(this).attr('category');
 
     // Escape double-quotes in HCL
