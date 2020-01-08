@@ -4,6 +4,8 @@ matrix:
   # 2017.3.1
   - rvm: 2.4.1
     env: PUPPET_VERSION=5.3.1
+before_install:
+  - gem install bundler
 script:
   - 'bundle exec rubocop -D'
   - 'bundle exec rspec'
