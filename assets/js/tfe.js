@@ -81,7 +81,7 @@ function fetch_variables() {
           <div class='form-group' var=" + name + " sensitive=" + sensitive + " hcl=" + hcl + " category=" + category + ">\
             <label for='var-" + name + "' class='col-md-2 control-label'>" + name + ":</label>\
             <div class='col-md-4'>\
-              <input type='text' id='var-" + name + "' class='form-control' value='" + (value == null ? '' : value) + "' placeholder='" + (sensitive ? 'sensitive' : '') + "'>\
+              <input type='" + (sensitive ? 'password' : 'text') + "' id='var-" + name + "' class='form-control' value='" + (value == null ? '' : value) + "' placeholder='" + (sensitive ? 'sensitive' : '') + "'>\
             </div>\
             <div class='checkbox-inline'>\
               <label class='col-md-1 control-label'>\
@@ -119,6 +119,15 @@ function fetch_variables() {
         $('#form-set-env-variables').slideDown();
         $('#form-set-advanced').slideDown();
         $('#create-workspace').slideDown();
+
+        // Toggle sensitive inputs to password type
+        $('input[type=checkbox][id^=sensitive').click(function() {
+          raw_id = $(this).attr('id');
+          id = raw_id.replace(/sensitive-/, '');
+          console.log(type);
+          mask = ( $(this).is(':checked') ? 'password' : 'text' );
+          $('input#var-' + id).attr('type', mask);
+        })
       });
     },
     error: function(xhr) {
