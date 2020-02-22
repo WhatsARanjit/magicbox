@@ -2,6 +2,7 @@ var workspaces_cache = '';
 var ws_attributes = '';
 
 function fetch_workspaces() {
+  tfe_workingMessage('Retrieving workspaces...');
   data = '{ \
     "tfe_server": "' + $('#source_tfe_server').val() + '", \
     "tfe_token": "' + $('#source_tfe_token').val() + '", \
@@ -36,11 +37,15 @@ function fetch_workspaces() {
       resultWorking();
       resultError(xhr);
       resultComplete(xhr);
+    },
+    complete: function(xhr) {
+      workingDone();
     }
   });
 }
 
 function fetch_variables() {
+  tfe_workingMessage('Retrieving variables...');
   args = encodeURIComponent('filter[organization][name]=' + $('#source_tfe_org').val() + '&filter[workspace][name]=' + $('#workspaces').val());
   data = '{ \
     "tfe_server": "' + $('#source_tfe_server').val() + '", \
@@ -108,6 +113,7 @@ function fetch_variables() {
       $(document).ready(function() {
         $('#target_tfe_org').val($('#source_tfe_org').val());
         $('#target_tfe_token').val($('#source_tfe_token').val());
+        $('#target_workspace').val($('#workspaces').val());
         $('#ws-attributes').val(JSON.stringify(ws_attributes, null, 2));
         $('#form-set-tf-variables').slideDown();
         $('#form-set-env-variables').slideDown();
@@ -119,11 +125,18 @@ function fetch_variables() {
       resultWorking();
       resultError(xhr);
       resultComplete(xhr);
+    },
+    complete: function(xhr) {
+      workingDone();
     }
   });
 }
 
 function test() {
+  // Set loader and pause
+  // Sync AJAX calls lock the browser
+  tfe_workingMessage('Creating workspace...');
+
   attributes         = JSON.parse($('#ws-attributes').val());
   attributes['name'] = $('#target_workspace').val();
 
@@ -141,7 +154,7 @@ function test() {
     } \
   }'
   console.log(data.replace(/ {2,}/g, ' '));
-  $.ajax({
+  setTimeout(function() { $.ajax({
     type: 'post',
     async: false,
     timeout: 30000,
@@ -151,15 +164,22 @@ function test() {
     success: function(xhr) {
       console.log(xhr);
       aggregate_msg = xhr;
+      workspace_id = aggregate_msg['message']['id'];
+      create_variables(workspace_id);
+      workingDone();
+      ret = JSON.stringify(aggregate_msg['message']).replace(/"/g, '&quot;');
+      console.log(ret);
+      fakeSuccess(ret);
     },
     error: function(xhr) {
       resultWorking();
       resultError(xhr);
       resultComplete(xhr);
     }
-  });
-  console.log(aggregate_msg);
-  workspace_id = aggregate_msg['message']['id'];
+  }); }, 1000);
+}
+
+function create_variables(workspace_id) {
   $('div[id*=variables]').children('div').each(function() {
     //Skip ignored variables
     if ($(this).find('input[id*=ignore]').is(':checked')) { return }
@@ -221,8 +241,55 @@ function test() {
       }
     });
   });
-  //ret = JSON.stringify(aggregate_msg['message']).replace(/"/g, '\\"');
-  ret = JSON.stringify(aggregate_msg['message']).replace(/"/g, '&quot;');
-  console.log(ret);
-  fakeSuccess(ret);
+}
+
+var tfe_load = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40px" height="45px" viewBox="0 0 40 45" version="1.1" id="terraform-loading">
+	<style>
+		#terraform-loading polygon {
+			animation: terraform-loading-animation 1.5s infinite ease-in-out;
+			transform-origin: 50% 50%;
+			fill: #D5D2F7;
+		}
+		#terraform-loading .terraform-loading-order-2 {
+			animation-delay: .1s;
+		}
+		#terraform-loading .terraform-loading-order-3 {
+			animation-delay: .2s;
+		}
+		#terraform-loading .terraform-loading-order-4 {
+			animation-delay: .3s;
+		}
+		#terraform-loading .terraform-loading-order-5 {
+			animation-delay: .4s;
+		}
+		@keyframes terraform-loading-animation {
+			0%,
+			70% {
+				transform: scale3D(1, 1, 1);
+			}
+			35% {
+				transform: scale3D(0, 0, 1);
+			}
+		}
+	</style>
+	<g id="terraform-loading-y-1">
+		<polygon class="terraform-loading-order-4" points="0,0 12,4 12,14 0,10" style="transform-origin: 6px 7px" />
+		<polygon class="terraform-loading-order-5" points="14,5 26,9 26,19 14,15" style="transform-origin: 20px 12px" />
+		<polygon class="terraform-loading-order-4" points="28,9 40,5 40,15 28,19" style="transform-origin: 34px 12px" />
+	</g>
+	<g id="terraform-loading-y-2">
+		<polygon class="terraform-loading-order-2" points="0,13 12,17 12,27 0,23" style="transform-origin: 6px 20px" />
+		<polygon class="terraform-loading-order-4" points="14,18 26,22 26,32 14,28" style="transform-origin: 20px 25px" />
+		<polygon class="terraform-loading-order-2" points="28,22 40,18 40,28 28,32" style="transform-origin: 34px 25px" />
+	</g>
+	<g id="terraform-loading-y-3">
+		<polygon class="terraform-loading-order-1" points="0,25 12,30 12,40 0,36" style="transform-origin: 6px 33px" />
+		<polygon class="terraform-loading-order-2" points="14,31 26,35 26,45 14,41" style="transform-origin: 20px 38px" />
+		<polygon class="terraform-loading-order-1" points="28,35 40,31 40,41 28,45" style="transform-origin: 34px 38px" />
+	</g>
+</svg>`
+
+function tfe_workingMessage(message) {
+  console.log('Working message: ' + message);
+  workingMessage('<h3>' + tfe_load + '<br>' + message + '</h3>');
 }

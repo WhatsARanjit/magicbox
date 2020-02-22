@@ -12,6 +12,15 @@ function makeHTMLfriendly(input) {
   return formatted;
 }
 
+function workingMessage(message) {
+  $('#workingModal').find('p').html(message);
+  $('#workingModal').modal('show');
+}
+
+function workingDone() {
+  $('#workingModal').modal('hide');
+}
+
 function resultSuccess(res) {
   console.log(res);
   formatted = makeHTMLfriendly(res['message']);
