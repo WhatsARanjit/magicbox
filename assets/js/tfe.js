@@ -133,8 +133,6 @@ function fetch_variables() {
 }
 
 function test() {
-  // Set loader and pause
-  // Sync AJAX calls lock the browser
   tfe_workingMessage('Creating workspace...');
 
   attributes         = JSON.parse($('#ws-attributes').val());
@@ -154,9 +152,8 @@ function test() {
     } \
   }'
   console.log(data.replace(/ {2,}/g, ' '));
-  setTimeout(function() { $.ajax({
+  $.ajax({
     type: 'post',
-    async: false,
     timeout: 30000,
     url: '/api/1.0/tfe_call',
     data: data,
@@ -176,10 +173,12 @@ function test() {
       resultError(xhr);
       resultComplete(xhr);
     }
-  }); }, 1000);
+  });
 }
 
 function create_variables(workspace_id) {
+  tfe_workingMessage('Creating workspace...');
+
   $('div[id*=variables]').children('div').each(function() {
     //Skip ignored variables
     if ($(this).find('input[id*=ignore]').is(':checked')) { return }
@@ -225,7 +224,6 @@ function create_variables(workspace_id) {
     console.log(data.replace(/ {2,}/g, ' '));
     $.ajax({
       type: 'post',
-      async: false,
       timeout: 30000,
       url: '/api/1.0/tfe_call',
       data: data,
