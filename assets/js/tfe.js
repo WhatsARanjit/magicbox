@@ -177,7 +177,7 @@ function test() {
 }
 
 function create_variables(workspace_id) {
-  tfe_workingMessage('Creating workspace...');
+  tfe_workingMessage('Creating variables...');
 
   $('div[id*=variables]').children('div').each(function() {
     //Skip ignored variables
