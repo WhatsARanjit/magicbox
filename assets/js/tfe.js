@@ -124,7 +124,6 @@ function fetch_variables() {
         $('input[type=checkbox][id^=sensitive').click(function() {
           raw_id = $(this).attr('id');
           id = raw_id.replace(/sensitive-/, '');
-          console.log(type);
           mask = ( $(this).is(':checked') ? 'password' : 'text' );
           $('input#var-' + id).attr('type', mask);
         })
@@ -299,4 +298,10 @@ var tfe_load = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.
 function tfe_workingMessage(message) {
   console.log('Working message: ' + message);
   workingMessage('<h3>' + tfe_load + '<br>' + message + '</h3>');
+}
+
+function toggle_advanced() {
+  status = ( $("#ws-attributes").is(':visible') ? 'up' : 'down' );
+  $("#ws-attributes").toggle("slow");
+  $('#advanced_options').html('Advanced Options <span class="glyphicon glyphicon-menu-' + status + '"></span>');
 }
