@@ -109,6 +109,7 @@ function fetch_variables() {
       });
       ws_attributes = $.grep(workspaces_cache, function(ws) { return ws['id'] == $('#workspaces option:selected').attr('workspace_id') })[0]['attributes'];
       delete ws_attributes.name;
+      delete ws_attributes.operations;
       console.log(ws_attributes);
       $(document).ready(function() {
         $('#target_tfe_org').val($('#source_tfe_org').val());
