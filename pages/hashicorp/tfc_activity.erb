@@ -1,8 +1,14 @@
 <script src="/js/tfe.js"></script>
 <script>
   function fetch_runs() {
-    goutput = {'workspaces': {}}
-    gtotals = {};
+    goutput = {'workspaces': {}, 'totals': {}}
+    //Global totals holder
+    gtotals = {
+      'applied-at': 0,
+      'planned-at': 0,
+      'cost-estimated-at': 0,
+      'policy-checked-at': 0  
+    }
     resultWorking();
     tfe_workingMessage('Retrieving activity...');
 
@@ -19,6 +25,15 @@
     }
 
     workspaces_list.forEach(function(workspace_id) {
+      console.log('Processing ' + workspace_id + '...')
+      //Totals holder
+      totals = {
+        'applied-at': 0,
+        'planned-at': 0,
+        'cost-estimated-at': 0,
+        'policy-checked-at': 0  
+      }
+
       data = '{ \
         "tfe_server": "' + $('#source_tfe_server').val() + '", \
         "tfe_token": "' + $('#source_tfe_token').val() + '", \
@@ -29,6 +44,7 @@
 
       $.ajax({
         type: 'post',
+        async: false,
         timeout: 30000,
         url: '/api/1.0/tfe_call',
         data: data,
@@ -102,9 +118,11 @@
         <option value='planned-at'><i>Plans</i></option>
         <option value='policy-checked-at'><i>Policy Checks</i></option>
         <option value='cost-estimated-at'><i>Cost Estimations</i></option>
-        <option value='all'><i>ALL</i></option>
       </select>
     </div>
+    <div class="checkbox-inline col-md-3"><label class="control-label">
+      <input type="checkbox" id="filters_all">All Runs
+    </label> </div>
   </div>
   <p><button type='button' onclick='fetch_runs();' class='btn btn-info'>Retrieve Activity</button></p>
   </div>
@@ -118,37 +136,48 @@
   $('.btn-warning').hide();
 
   function munge_success(input) {
-    metric = $('#filter option:selected').text()
-    filter = $('#filter option:selected').val()
-    total = 0
+    if ($('#filter option:selected').val() == 'ALL') {
+      filter_list = ['applied-at', 'planned-at', 'cost-estimated-at', 'policy-checked-at']
+    } else {
+      filter_list = [$('#filter option:selected').val()]
+    }
 
     input.forEach(function(run) {
-      run_id = run['id']
-      workspace_id = run['relationships']['workspace']['data']['id']
-      console.log('Processing ' + run_id + '...')
-      if (run['attributes']['status-timestamps'][filter]) {
-        total = total+1
-        console.log('New workspace total: ' + total)
-        //Local totals
-        if (workspace_id in goutput['workspaces']) {
-          console.log('Appending ' + workspace_id + ' data...')
-        } else {
-          console.log('Creating ' + workspace_id + ' data...')
-          goutput['workspaces'][workspace_id] = {}
+      run_id         = run['id']
+      workspace_id   = run['relationships']['workspace']['data']['id']
+      workspace_name = $('#workspaces option[workspace_id=' + workspace_id + ']').val()
+      console.log('Processing run: ' + run_id + '...')
+      filter_list.forEach(function(f) {
+        //Find human term
+        metric = $('#filter option[value=' + f + ']').text()
+        if (run['attributes']['status-timestamps'][f]) {
+
+          //Local totals
+          totals[f] = totals[f]+1
+          console.log('- Found a new ' + f)
+          if (workspace_name in goutput['workspaces']) {
+            console.log('-- Incrementing ' + f + ' data...')
+          } else {
+            console.log('-- Creating ' + f + ' data...')
+            goutput['workspaces'][workspace_name] = {}
+          }
+          goutput['workspaces'][workspace_name][metric] = totals[f]
+          console.log('-- New workspace ' + f + ' total: ' + goutput['workspaces'][workspace_name][metric])
+
+          //Grand totals
+          //gtotals[f] = gtotals[f]+totals[f]
+          //console.log('New ' + metric + ' total: ' + gtotals[f])
+          //if (metric in goutput['totals']) {
+          //  console.log('Appending ' + metric + ' data...')
+          //} else {
+          //  console.log('Creating ' + metric + ' data...')
+          //  goutput['totals'][metric] = {}
+          //}
+          //goutput['totals'][metric] = gtotals[f]
         }
-        goutput['workspaces'][workspace_id][metric] = total;
-        //Grand totals
-        if (metric in gtotals) {
-          console.log('Appending ' + metric + ' total...')
-        } else {
-          console.log('Creating ' + metric + ' total...')
-          gtotals[metric] = 0
-        }
-        gtotals[metric] = gtotals[metric]+1;
-      }
+      });
     });
-    goutput['totals'] = gtotals;
-    pretty = JSON.stringify(goutput, null, 2)
+    pretty = JSON.stringify(goutput, null, 2);
     return pretty.split("\n");
   }
 
@@ -168,6 +197,25 @@
         .end()
       $('#workspaces').removeAttr('disabled');
       $('#workspaces').find('option[value=ALL]').removeAttr('selected')
+    }
+  });
+
+  $('input#filters_all').click(function() {
+    if ($(this).is(':checked')) {
+      $('#filter')
+        .append($("<option></option>")
+        .attr('value', 'ALL')
+        .attr('workspace_id', 'all')
+        .text('ALL'));
+      $('#filter').find('option[value=ALL]').attr('selected', 'selected')
+      $('#filter').attr('disabled', 'disabled');
+    } else {
+      $('#filter')
+        .find('option[value=ALL]')
+        .remove()
+        .end()
+      $('#filter').removeAttr('disabled');
+      $('#filter').find('option[value=ALL]').removeAttr('selected')
     }
   });
 </script>
