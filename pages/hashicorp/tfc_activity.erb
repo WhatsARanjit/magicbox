@@ -1,6 +1,6 @@
 <script src="/js/tfe.js"></script>
 <script>
-  function fetch_runs() {
+  function fetch_runs(page=1) {
     runs_cache = {
       'workspaces': {}, 'totals': {
         'applied-at': 0,
@@ -40,7 +40,7 @@
       data = '{ \
         "tfe_server": "' + $('#source_tfe_server').val() + '", \
         "tfe_token": "' + $('#source_tfe_token').val() + '", \
-        "endpoint": "workspaces/' + workspace_id + '/runs", \
+        "endpoint": "workspaces/' + workspace_id + '/runs?page%5B' + page + '%5D", \
         "method" : "GET", \
         "e_codes": [200] \
       }'
@@ -103,13 +103,13 @@
   <div class="form-group">
     <label for='start_date' class='col-md-2 control-label'>Start Date:</label>
     <div class="col-md-4">
-      <input type='text' id='start_date' class='form-control' placeholder='mm/dd/YYYY'>
+      <input type='date' id='start_date' class='form-control' placeholder='mm/dd/YYYY'>
     </div>
   </div>
   <div class="form-group">
     <label for='end_date' class='col-md-2 control-label'>End Date:</label>
     <div class="col-md-4">
-      <input type='text' id='end_date' class='form-control' placeholder='mm/dd/YYYY'>
+      <input type='date' id='end_date' class='form-control' placeholder='mm/dd/YYYY'>
     </div>
   </div>
   <div class='form-group' id='form-select-filter'>
@@ -153,21 +153,38 @@
         //Find human term
         metric = $('#filter option[value=' + f + ']').text()
         if (run['attributes']['status-timestamps'][f]) {
-          //Local totals
-          console.log('- Found a new ' + f)
-          runs_cache['workspaces'][workspace_id][f]     = runs_cache['workspaces'][workspace_id][f]+1
-          goutput['workspaces'][workspace_name][metric] = runs_cache['workspaces'][workspace_id][f]
-          console.log('-- New workspace ' + f + ' total: ' + goutput['workspaces'][workspace_name][metric])
+          if (dateCheck(run['attributes']['status-timestamps'][f])) {
+            //Local totals
+            console.log('- Found a new ' + f)
+            runs_cache['workspaces'][workspace_id][f]     = runs_cache['workspaces'][workspace_id][f]+1
+            goutput['workspaces'][workspace_name][metric] = runs_cache['workspaces'][workspace_id][f]
+            console.log('-- New workspace ' + f + ' total: ' + goutput['workspaces'][workspace_name][metric])
 
-          //Grand totals
-          runs_cache['totals'][f]   = runs_cache['totals'][f]+1
-          goutput['totals'][metric] = runs_cache['totals'][f]
+            //Grand totals
+            runs_cache['totals'][f]   = runs_cache['totals'][f]+1
+            goutput['totals'][metric] = runs_cache['totals'][f]
+          }
         }
       });
     });
     console.log(runs_cache);
     pretty = JSON.stringify(goutput, null, 2);
     return pretty.split("\n");
+  }
+
+  function dateCheck(check) {
+    check_date = new Date(check)
+    start_date = new Date($('#start_date').val())
+    end_date   = new Date($('#end_date').val())
+    //Adjust for timezone
+    start_date = new Date(start_date.setMinutes(start_date.getMinutes() + start_date.getTimezoneOffset()))
+    end_date   = new Date(end_date.setMinutes(end_date.getMinutes() + end_date.getTimezoneOffset()))
+
+    if ((check_date < start_date) || (check_date > end_date)) {
+      return false
+    } else {
+      return true
+    }
   }
 
   function allOption(list) {
