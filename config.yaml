@@ -30,6 +30,7 @@ sample_pages:
   - hashicorp/json2hcl
   - hashicorp/resource_counter
   - hashicorp/vault-namespaces
+  - hashicorp/tfc_activity
   - hashicorp/waas
   - puppet/validate
   - puppet/fact
@@ -102,5 +103,8 @@ checks:
     checks:
       - resourcecounter
   tfe_call:
+    checks:
+      - tfecall
+  tfc_activity:
     checks:
       - tfecall

@@ -3,7 +3,10 @@ function makeHTMLfriendly(input) {
 
   // Split multiline outputs to array elements for easy formatting
   for (line in input) {
-    if (typeof input[line] == 'string') {
+    if (typeof input[line] == 'object') {
+      formatted = input
+      break;
+    } else if (typeof input[line] == 'string') {
       formatted = formatted.concat(input[line].split("\n"))
     } else {
       formatted = formatted.push(input[line])

@@ -1,0 +1,173 @@
+<script src="/js/tfe.js"></script>
+<script>
+  function fetch_runs() {
+    goutput = {'workspaces': {}}
+    gtotals = {};
+    resultWorking();
+    tfe_workingMessage('Retrieving activity...');
+
+    workspaces_list = Array();
+    if ($('#workspaces option:selected').val() == 'ALL') {
+      workspaces_list = Array();
+      $('#workspaces option').each(function(){
+        if ($(this).attr('workspace_id') != 'all') {
+          workspaces_list.push($(this).attr('workspace_id'))
+        }
+      });
+    } else {
+      workspaces_list.push($('#workspaces option:selected').attr('workspace_id'))
+    }
+
+    workspaces_list.forEach(function(workspace_id) {
+      data = '{ \
+        "tfe_server": "' + $('#source_tfe_server').val() + '", \
+        "tfe_token": "' + $('#source_tfe_token').val() + '", \
+        "endpoint": "workspaces/' + workspace_id + '/runs", \
+        "method" : "GET", \
+        "e_codes": [200] \
+      }'
+
+      $.ajax({
+        type: 'post',
+        timeout: 30000,
+        url: '/api/1.0/tfe_call',
+        data: data,
+        dataType:'json',
+        success: function(xhr) {
+          console.log(xhr);
+          aggregate_msg = xhr;
+          workingDone();
+          resultSuccess(xhr);
+          $('#samp_output').show('fast');
+        },
+        error: function(xhr) {
+          resultWorking();
+          resultError(xhr);
+          resultComplete(xhr);
+        }
+      });
+    });
+  }
+</script>
+
+<form id='magic' action='#'>
+<div class='form-horizontal'>
+  <div class='form-group' id='form-workspace-runs'>
+    <label for='source_tfe_server' class='col-md-2 control-label'>TFC Server:</label>
+    <div class="col-md-4">
+      <input type='text' id='source_tfe_server' class='form-control' value='app.terraform.io'>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for='source_tfe_org' class='col-md-2 control-label'>TFC Organization:</label>
+    <div class="col-md-4">
+      <input type='text' id='source_tfe_org' class='form-control' placeholder='my_org'>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for='source_tfe_token' class='col-md-2 control-label'>TFC Token:</label>
+    <div class="col-md-4">
+      <input type='password' id='source_tfe_token' class='form-control' placeholder='mYT0k3n'>
+    </div>
+  </div>
+  <p><button type='button' onclick='fetch_workspaces();' class='btn btn-info'>Retrieve Workspaces</button></p>
+  <div id='form-select-workspaces'><div class='form-group'>
+    <label for='workspace' class='col-md-2 control-label'>Workspaces:</label>
+    <div class="col-md-4">
+      <select class='form-control' id='workspaces'>
+        <option><i>None</i></option>
+      </select>
+    </div>
+    <div class="checkbox-inline col-md-3"><label class="control-label">
+      <input type="checkbox" id="workspaces_all">All Workspaces
+    </label> </div>
+  </div>
+  <div class="form-group">
+    <label for='start_date' class='col-md-2 control-label'>Start Date:</label>
+    <div class="col-md-4">
+      <input type='text' id='start_date' class='form-control' placeholder='mm/dd/YYYY'>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for='end_date' class='col-md-2 control-label'>End Date:</label>
+    <div class="col-md-4">
+      <input type='text' id='end_date' class='form-control' placeholder='mm/dd/YYYY'>
+    </div>
+  </div>
+  <div class='form-group' id='form-select-filter'>
+    <label for='filter' class='col-md-2 control-label'>Metric:</label>
+    <div class="col-md-4">
+      <select class='form-control' id='filter'>
+        <option value='applied-at'><i>Applies</i></option>
+        <option value='planned-at'><i>Plans</i></option>
+        <option value='policy-checked-at'><i>Policy Checks</i></option>
+        <option value='cost-estimated-at'><i>Cost Estimations</i></option>
+        <option value='all'><i>ALL</i></option>
+      </select>
+    </div>
+  </div>
+  <p><button type='button' onclick='fetch_runs();' class='btn btn-info'>Retrieve Activity</button></p>
+  </div>
+</div>
+</form>
+
+<script>
+  $('h3:first').html('TFC Activity Meter')
+  $('#form-select-workspaces').hide();
+  formFooter();
+  $('.btn-warning').hide();
+
+  function munge_success(input) {
+    metric = $('#filter option:selected').text()
+    filter = $('#filter option:selected').val()
+    total = 0
+
+    input.forEach(function(run) {
+      run_id = run['id']
+      workspace_id = run['relationships']['workspace']['data']['id']
+      console.log('Processing ' + run_id + '...')
+      if (run['attributes']['status-timestamps'][filter]) {
+        total = total+1
+        console.log('New workspace total: ' + total)
+        //Local totals
+        if (workspace_id in goutput['workspaces']) {
+          console.log('Appending ' + workspace_id + ' data...')
+        } else {
+          console.log('Creating ' + workspace_id + ' data...')
+          goutput['workspaces'][workspace_id] = {}
+        }
+        goutput['workspaces'][workspace_id][metric] = total;
+        //Grand totals
+        if (metric in gtotals) {
+          console.log('Appending ' + metric + ' total...')
+        } else {
+          console.log('Creating ' + metric + ' total...')
+          gtotals[metric] = 0
+        }
+        gtotals[metric] = gtotals[metric]+1;
+      }
+    });
+    goutput['totals'] = gtotals;
+    pretty = JSON.stringify(goutput, null, 2)
+    return pretty.split("\n");
+  }
+
+  $('input#workspaces_all').click(function() {
+    if ($(this).is(':checked')) {
+      $('#workspaces')
+        .append($("<option></option>")
+        .attr('value', 'ALL')
+        .attr('workspace_id', 'all')
+        .text('ALL'));
+      $('#workspaces').find('option[value=ALL]').attr('selected', 'selected')
+      $('#workspaces').attr('disabled', 'disabled');
+    } else {
+      $('#workspaces')
+        .find('option[workspace_id=all]')
+        .remove()
+        .end()
+      $('#workspaces').removeAttr('disabled');
+      $('#workspaces').find('option[value=ALL]').removeAttr('selected')
+    }
+  });
+</script>
