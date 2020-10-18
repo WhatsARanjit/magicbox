@@ -1,6 +1,17 @@
 <script src="/js/tfe.js"></script>
 <script>
-  function fetch_runs(page=1) {
+  //Starting variables
+  var page = 1
+  var runs_cache = {
+    'workspaces': {}, 'totals': {
+      'applied-at': 0,
+      'planned-at': 0,
+      'cost-estimated-at': 0,
+      'policy-checked-at': 0
+    }
+  }
+  function reset_cache() {
+    page = 1
     runs_cache = {
       'workspaces': {}, 'totals': {
         'applied-at': 0,
@@ -9,6 +20,11 @@
         'policy-checked-at': 0
       }
     }
+    console.log('Reset cache');
+  }
+  //////////
+
+  function fetch_runs() {
     goutput = {'workspaces': {}, 'totals': {}}
     resultWorking();
     tfe_workingMessage('Retrieving activity...');
@@ -40,7 +56,7 @@
       data = '{ \
         "tfe_server": "' + $('#source_tfe_server').val() + '", \
         "tfe_token": "' + $('#source_tfe_token').val() + '", \
-        "endpoint": "workspaces/' + workspace_id + '/runs?page%5B' + page + '%5D", \
+        "endpoint": "workspaces/' + workspace_id + '/runs?page%5Bnumber%5D=' + page + '", \
         "method" : "GET", \
         "e_codes": [200] \
       }'
@@ -126,7 +142,7 @@
       <input type="checkbox" id="filter_all">All Runs
     </label> </div>
   </div>
-  <p><button type='button' onclick='fetch_runs();' class='btn btn-info'>Retrieve Activity</button></p>
+  <p><button type='button' onclick='reset_cache(); fetch_runs();' class='btn btn-info'>Retrieve Activity</button></p>
   </div>
 </div>
 </form>
@@ -142,6 +158,18 @@
       filter_list = ['applied-at', 'planned-at', 'cost-estimated-at', 'policy-checked-at']
     } else {
       filter_list = [$('#filter option:selected').val()]
+    }
+
+    //For last (oldest) run on the page, if later than start_date, check next page also
+    if (dateCheck(input[0]['attributes']['created-at'], pager='start')) {
+      console.log('This next page\'s runs could fall in the time interval')
+    }
+
+    //For first (newest) run on page, if later than end_date, skip to next page
+    //Also check that there is a next page
+    if (dateCheck(input[input.length-1]['attributes']['created-at'], pager='end') 
+      && input['meta']['pagination']['next-page'] != null) {
+      console.log('This page\'s runs are after the end date')
     }
 
     input.forEach(function(run) {
@@ -172,7 +200,7 @@
     return pretty.split("\n");
   }
 
-  function dateCheck(check) {
+  function dateCheck(check, pager=false) {
     check_date = new Date(check)
     start_date = new Date($('#start_date').val())
     end_date   = new Date($('#end_date').val())
@@ -180,10 +208,27 @@
     start_date = new Date(start_date.setMinutes(start_date.getMinutes() + start_date.getTimezoneOffset()))
     end_date   = new Date(end_date.setMinutes(end_date.getMinutes() + end_date.getTimezoneOffset()))
 
-    if ((check_date < start_date) || (check_date > end_date)) {
-      return false
+    if (pager == 'end') {
+      //If last run on page is past end_date, skip to next page
+      if (check_date < end_date) {
+        return false
+      } else {
+        return true
+      }
+    } else if (pager == 'start') {
+      //If last run on is past start_date, check next page
+      if (check_date < start_date) {
+        return false
+      } else {
+        return true
+      }
     } else {
-      return true
+      //Check that run is within start/end parameters
+      if ((check_date < start_date) || (check_date > end_date)) {
+        return false
+      } else {
+        return true
+      }
     }
   }
 

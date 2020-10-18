@@ -107,4 +107,4 @@ checks:
       - tfecall
   tfc_activity:
     checks:
-      - tfecall
+      - tfcruns
