@@ -25,7 +25,7 @@
         }
       }).get();
     } else {
-      workspaces_list = $('#workspaces option:selected').val()
+      workspaces_list = $('#workspaces option:selected').attr('workspace_id')
     }
     return workspaces_list
   }
@@ -137,18 +137,29 @@
     message = input[0]
     friendly = {'workspaces': {}}
     $.each(message['workspaces'], function(ws, counts) {
-      workspace_name = $('#workspaces option[workspace_id='+ ws).val()
+      workspace_name                         = $('#workspaces option[workspace_id='+ ws).val()
       friendly['workspaces'][workspace_name] = {}
+      unsorted                               = {}
       $.each(counts, function(f, count) {
+        unsorted[f] = count
+      });
+      //Sort by key
+      Object.keys(unsorted).sort().forEach(function(f) {
+        console.log(f)
         metric = $('#filter option[value=' + f + ']').text()
-        friendly['workspaces'][workspace_name][metric] = count
+        friendly['workspaces'][workspace_name][metric] = unsorted[f]
       });
     });
 
     friendly['totals'] = {}
+    unsorted           = {}
     $.each(message['totals'], function(f, count) {
+      unsorted[f] = count
+    });
+    //Sort by key
+    Object.keys(unsorted).sort().forEach(function(f) {
       metric = $('#filter option[value=' + f + ']').text()
-      friendly['totals'][metric] = count
+      friendly['totals'][metric] = unsorted[f]
     });
     workingDone();
     pretty = JSON.stringify(friendly, null, 2);
