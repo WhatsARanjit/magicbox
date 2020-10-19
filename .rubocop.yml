@@ -50,6 +50,8 @@ Style/FrozenStringLiteralComment:
   Enabled: false
 Style/RedundantBegin:
   Enabled: false
+Style/TrailingCommaInLiteral:
+  Enabled: false
 Style/TrailingCommaInArrayLiteral:
   Enabled: false
 Style/TrailingCommaInHashLiteral:
