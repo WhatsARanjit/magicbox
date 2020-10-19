@@ -1,0 +1,213 @@
+<script src="/js/tfe.js"></script>
+<script>
+  //Convert to 00:00:00 in current timezone
+  function createStartDateTZ() {
+    start_date = new Date($('#start_date').val())
+    console.log('User start_date: ' + start_date)
+    start_date = new Date(start_date.setMinutes(start_date.getMinutes() + start_date.getTimezoneOffset()))
+    return start_date
+  }
+
+  //Convert to 23:59:59 in current timezone
+  function createEndDateTZ() {
+    end_date = new Date($('#end_date').val() + ' 23:59:59')
+    console.log('User end_date: ' + end_date)
+    //end_date = new Date(end_date.setMinutes(end_date.getMinutes() + end_date.getTimezoneOffset()))
+    return end_date
+  }
+
+  //Check for ALL workspaces
+  function createWorkspaceList() {
+    if ($('#workspaces option:selected').val() == 'ALL') {
+      workspaces_list = $('#workspaces option').map(function() {
+        if ($(this).attr('workspace_id') != 'all') {
+          return $(this).attr('workspace_id')
+        }
+      }).get();
+    } else {
+      workspaces_list = $('#workspaces option:selected').attr('workspace_id')
+    }
+    return workspaces_list
+  }
+
+  //Check for ALL filters
+  function createFilterList() {
+    if ($('#filter option:selected').val() == 'ALL') {
+      filter_list = $('#filter option').map(function() {
+        if (this.value != 'ALL') {
+          return this.value
+        }
+      }).get();
+    } else {
+      filter_list = $('#filter option:selected').val()
+    }
+    return filter_list
+  }
+  function test() {
+    tfe_workingMessage('Retrieving activity...')
+
+    //Calculate info
+    startDate     = createStartDateTZ();
+    endDate       = createEndDateTZ();
+    filterList    = createFilterList();
+    workspaceList = createWorkspaceList();
+
+    data = '{ \
+      "tfe_server": "' + $('#source_tfe_server').val() + '", \
+      "tfe_token": "' + $('#source_tfe_token').val() + '", \
+      "workspace_id": "' + workspaceList + '", \
+      "start_date" : "' + startDate + '", \
+      "end_date" : "' + endDate + '", \
+      "filter": "' + filterList + '" \
+    }'
+    submitcode('tfc_activity', data)
+  }
+</script>
+
+<form id='magic' action='#'>
+<div class='form-horizontal'>
+  <div class='form-group' id='form-workspace-runs'>
+    <label for='source_tfe_server' class='col-md-2 control-label'>TFC Server:</label>
+    <div class="col-md-4">
+      <input type='text' id='source_tfe_server' class='form-control' value='app.terraform.io'>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for='source_tfe_org' class='col-md-2 control-label'>TFC Organization:</label>
+    <div class="col-md-4">
+      <input type='text' id='source_tfe_org' class='form-control' placeholder='my_org'>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for='source_tfe_token' class='col-md-2 control-label'>TFC Token:</label>
+    <div class="col-md-4">
+      <input type='password' id='source_tfe_token' class='form-control' placeholder='mYT0k3n'>
+    </div>
+  </div>
+  <p><button type='button' onclick='fetch_workspaces();' class='btn btn-info'>Retrieve Workspaces</button></p>
+  <div id='form-select-workspaces'><div class='form-group'>
+    <label for='workspace' class='col-md-2 control-label'>Workspaces:</label>
+    <div class="col-md-4">
+      <select class='form-control' id='workspaces'>
+        <option><i>None</i></option>
+      </select>
+    </div>
+    <div class="checkbox-inline col-md-3"><label class="control-label">
+      <input type="checkbox" id="workspaces_all">All Workspaces
+    </label> </div>
+  </div>
+  <div class="form-group">
+    <label for='start_date' class='col-md-2 control-label'>Start Date:</label>
+    <div class="col-md-4">
+      <input type='date' id='start_date' class='form-control' placeholder='mm/dd/YYYY'>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for='end_date' class='col-md-2 control-label'>End Date:</label>
+    <div class="col-md-4">
+      <input type='date' id='end_date' class='form-control' placeholder='mm/dd/YYYY'>
+    </div>
+  </div>
+  <div class='form-group' id='form-select-filter'>
+    <label for='filter' class='col-md-2 control-label'>Metric:</label>
+    <div class="col-md-4">
+      <select class='form-control' id='filter'>
+        <option value="planning-at">Plan started</option>
+        <option value="plan-queueable-at">Plan ready to be queued</option>
+        <option value="plan-queued-at">Plan queued</option>
+        <option value="planned-at">Plan completed</option>
+        <option value="planned-and-finished-at">Plan without Apply</option>
+        <option value="cost-estimating-at">Cost estimation started</option>
+        <option value="cost-estimated-at">Cost estimation completed</option>
+        <option value="policy-checked-at">Policy check completed</option>
+        <option value="apply-queued-at">Apply queued</option>
+        <option value="applying-at">Apply started</option>
+        <option value="applied-at">Apply completed</option>
+
+        <option value="discarded-at">Discard logged</option>
+        <option value="errored-at">Error logged</option>
+        <option value="policy-soft-failed-at">Policy soft fail detected</option>
+        <option value="policy-hard-failed-at">Policy hard fail detected</option>
+        <option value="confirmed-at">Run confirmed</option>
+
+        <!---
+        <option value='applied-at'><i>Applies</i></option>
+        <option value='planned-at'><i>Plans</i></option>
+        <option value='policy-checked-at'><i>Policy Checks</i></option>
+        <option value='cost-estimated-at'><i>Cost Estimations</i></option>
+        --->
+      </select>
+    </div>
+    <div class="checkbox-inline col-md-3"><label class="control-label">
+      <input type="checkbox" id="filter_all">All Runs
+    </label> </div>
+  </div>
+  <p><button type='button' onclick='test();' class='btn btn-info'>Retrieve Activity</button></p>
+  </div>
+</div>
+</form>
+
+<script>
+  $('h3:first').html('TFC Activity Meter')
+  $('#form-select-workspaces').hide();
+  formFooter();
+  $('.btn-warning').hide()
+
+  function munge_success(input) {
+    message = input[0]
+    friendly = {'workspaces': {}}
+    $.each(message['workspaces'], function(ws, counts) {
+      workspace_name                         = $('#workspaces option[workspace_id='+ ws).val()
+      friendly['workspaces'][workspace_name] = {}
+      unsorted                               = {}
+      $.each(counts, function(f, count) {
+        unsorted[f] = count
+      });
+      //Sort by key
+      Object.keys(unsorted).sort().forEach(function(f) {
+        console.log(f)
+        metric = $('#filter option[value=' + f + ']').text()
+        friendly['workspaces'][workspace_name][metric] = unsorted[f]
+      });
+    });
+
+    if ($('#filter option:selected').val() == 'ALL') {
+      friendly['totals'] = {}
+      unsorted           = {}
+      $.each(message['totals'], function(f, count) {
+        unsorted[f] = count
+      });
+      //Sort by key
+      Object.keys(unsorted).sort().forEach(function(f) {
+        metric = $('#filter option[value=' + f + ']').text()
+        friendly['totals'][metric] = unsorted[f]
+      });
+    };
+    workingDone();
+    pretty = JSON.stringify(friendly, null, 2);
+    return pretty.split("\n");
+  }
+
+  function allOption(list) {
+    $('input#' + list + '_all').click(function() {
+      if ($(this).is(':checked')) {
+        $('#' + list)
+          .append($("<option></option>")
+          .attr('value', 'ALL')
+          .attr('workspace_id', 'all')
+          .text('ALL'));
+        $('#' + list).find('option[value=ALL]').attr('selected', 'selected')
+        $('#' + list).attr('disabled', 'disabled');
+      } else {
+        $('#' + list)
+          .find('option[value=ALL]')
+          .remove()
+          .end()
+        $('#' + list).removeAttr('disabled');
+        $('#' + list).find('option[value=ALL]').removeAttr('selected')
+      }
+    });
+  }
+  allOption('workspaces');
+  allOption('filter');
+</script>

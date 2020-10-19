@@ -16,6 +16,9 @@ Metrics/BlockLength:
 Metrics/BlockNesting:
   Exclude:
     - 'lib/magicbox/checks/*.rb'
+Metrics/ClassLength:
+  Exclude:
+    - 'lib/magicbox/checks/*.rb'
 Naming/FileName:
   Exclude:
     - Gemfile
@@ -23,6 +26,9 @@ Naming/FileName:
 Performance/RegexpMatch:
   Exclude:
     - 'magic.rb'
+Style/RedundantReturn:
+  Exclude:
+    - 'lib/magicbox/checks/*.rb'
 
 Lint/UriEscapeUnescape:
   Enabled: false
@@ -45,6 +51,10 @@ Style/FrozenStringLiteralComment:
 Style/RedundantBegin:
   Enabled: false
 Style/TrailingCommaInLiteral:
+  Enabled: false
+Style/TrailingCommaInArrayLiteral:
+  Enabled: false
+Style/TrailingCommaInHashLiteral:
   Enabled: false
 #Consider for later
 Style/SpecialGlobalVars:
