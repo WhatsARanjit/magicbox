@@ -10,7 +10,6 @@ module Magicbox::Checks
         @token        = Magicbox::Webserver.sanitize(@data['tfe_token'])
         @workspace_id = Magicbox::Webserver.sanitize(@data['workspace_id'])
         @filter       = Magicbox::Webserver.sanitize(@data['filter'])
-        @page         = Magicbox::Webserver.sanitize(@data['page'])
         @start_date   = Date.parse(Magicbox::Webserver.sanitize(@data['start_date']))
         @end_date     = Date.parse(Magicbox::Webserver.sanitize(@data['end_date']))
 
@@ -46,14 +45,17 @@ module Magicbox::Checks
           end
 
           # TODO: Single workspace call
-          def tfe_call(workspace_id, page)
-            @runs_cache['workspaces'][workspace_id] = {
-              'applied-at'        => 0,
-              'planned-at'        => 0,
-              'cost-estimated-at' => 0,
-              'policy-checked-at' => 0
-            }
-            @goutput['workspaces'][workspace_id] = {}
+          def tfe_call(workspace_id, page = 1)
+            # Only reset if starting from page 1
+            if page == 1
+              @runs_cache['workspaces'][workspace_id] = {
+                'applied-at'        => 0,
+                'planned-at'        => 0,
+                'cost-estimated-at' => 0,
+                'policy-checked-at' => 0
+              }
+              @goutput['workspaces'][workspace_id] = {}
+            end
 
             http_call(
               'GET',
@@ -63,7 +65,16 @@ module Magicbox::Checks
             )
           end
 
-          def fetch_runs(input)
+          def fetch_runs(input, meta)
+            # For last (oldest) run on page, if later than end_date, skip to next page
+            # Also check that there is a next page
+            if Date.parse(input.last['attributes']['created-at']) > @end_date &&
+               !meta['pagination']['next-page'].nil?
+              raw = JSON.parse(tfe_call(@workspace_id, meta['pagination']['next-page']))
+              ret = fetch_runs(raw['data'], raw['meta'])
+              return ret
+            end
+
             filter_list =
               if @filter == 'ALL'
                 ['applied-at', 'planned-at', 'cost-estimated-at', 'policy-checked-at']
@@ -85,13 +96,22 @@ module Magicbox::Checks
                 @goutput['totals'][f]      = @runs_cache['totals'][f]
               end
             end
-            #return @goutput
+
+            # # For last (oldest) run on the page, if later than start_date, check next page also
+            # # Also check that there is a next page
+            # if Date.parse(input.first['attributes']['created-at']) > @start_date &&
+            #    !meta['pagination']['next-page'].nil?
+            #   raw = JSON.parse(tfe_call(@workspace_id, meta['pagination']['next-page']))
+            #   fetch_runs(raw['data'], raw['meta'])
+            # end
+
+            return @goutput
           end
         end
 
         # Workflow
-        raw = JSON.parse(tfe_call(@workspace_id, @page))
-        ret = fetch_runs(raw['data'])
+        raw = JSON.parse(tfe_call(@workspace_id))
+        ret = fetch_runs(raw['data'], raw['meta'])
       rescue RuntimeError => e
         {
           'exitcode' => 2,
