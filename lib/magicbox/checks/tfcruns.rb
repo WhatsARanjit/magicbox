@@ -17,13 +17,24 @@ module Magicbox::Checks
         @runs_cache = {
           'workspaces' => {},
           'totals'     => {
-            'applied-at'        => 0,
-            'planned-at'        => 0,
+            'applied-at' => 0,
+            'apply-queued-at' => 0,
+            'applying-at' => 0,
+            'confirmed-at' => 0,
             'cost-estimated-at' => 0,
-            'policy-checked-at' => 0
+            'cost-estimating-at' => 0,
+            'discarded-at' => 0,
+            'errored-at' => 0,
+            'plan-queueable-at' => 0,
+            'plan-queued-at' => 0,
+            'planned-and-finished-at' => 0,
+            'planned-at' => 0,
+            'planning-at' => 0,
+            'policy-checked-at' => 0,
+            'policy-soft-failed-at' => 0,
           }
         }
-        @goutput = { 'workspaces' => {}, 'totals' => {} }
+        @goutput = { 'workspaces' => {} }
 
         class << self
           def http_call(method, url, data, e_codes)
@@ -48,10 +59,21 @@ module Magicbox::Checks
             # Only reset if starting from page 1
             if page == 1
               @runs_cache['workspaces'][workspace_id] = {
-                'applied-at'        => 0,
-                'planned-at'        => 0,
+                'applied-at' => 0,
+                'apply-queued-at' => 0,
+                'applying-at' => 0,
+                'confirmed-at' => 0,
                 'cost-estimated-at' => 0,
-                'policy-checked-at' => 0
+                'cost-estimating-at' => 0,
+                'discarded-at' => 0,
+                'errored-at' => 0,
+                'plan-queueable-at' => 0,
+                'plan-queued-at' => 0,
+                'planned-and-finished-at' => 0,
+                'planned-at' => 0,
+                'planning-at' => 0,
+                'policy-checked-at' => 0,
+                'policy-soft-failed-at' => 0,
               }
               @goutput['workspaces'][workspace_id] = {}
             end
@@ -84,7 +106,8 @@ module Magicbox::Checks
                 # Local totals
                 @runs_cache['workspaces'][workspace_id][f] += 1
                 @goutput['workspaces'][workspace_id][f]     = @runs_cache['workspaces'][workspace_id][f]
-                # Grand totals
+                # Grand totals if more than one workspace
+                next unless @workspace_list.length > 1
                 @runs_cache['totals'][f]  += 1
                 @goutput['totals'][f]      = @runs_cache['totals'][f]
               end
@@ -101,8 +124,10 @@ module Magicbox::Checks
         end
 
         # Workflow
-        workspace_list = @workspace_id.split(',')
-        workspace_list.each do |workspace_id|
+        @workspace_list = @workspace_id.split(',')
+        # Grand totals if more than one workspace
+        @goutput['totals'] = {} if @workspace_list.length > 1
+        @workspace_list.each do |workspace_id|
           raw = JSON.parse(tfe_call(workspace_id))
           fetch_runs(raw['data'], raw['meta'], workspace_id)
         end

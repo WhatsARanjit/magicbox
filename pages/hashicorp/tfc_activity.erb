@@ -112,10 +112,30 @@
     <label for='filter' class='col-md-2 control-label'>Metric:</label>
     <div class="col-md-4">
       <select class='form-control' id='filter'>
+        <option value="planning-at">Plan started</option>
+        <option value="plan-queueable-at">Plan ready to be queued</option>
+        <option value="plan-queued-at">Plan queued</option>
+        <option value="planned-at">Plan completed</option>
+        <option value="planned-and-finished-at">Plan without Apply</option>
+        <option value="cost-estimating-at">Cost estimation started</option>
+        <option value="cost-estimated-at">Cost estimation completed</option>
+        <option value="policy-checked-at">Policy check completed</option>
+        <option value="apply-queued-at">Apply queued</option>
+        <option value="applying-at">Apply started</option>
+        <option value="applied-at">Apply completed</option>
+
+        <option value="discarded-at">Discard logged</option>
+        <option value="errored-at">Error logged</option>
+        <option value="policy-soft-failed-at">Policy soft fail detected</option>
+        <option value="policy-hard-failed-at">Policy hard fail detected</option>
+        <option value="confirmed-at">Run confirmed</option>
+
+        <!---
         <option value='applied-at'><i>Applies</i></option>
         <option value='planned-at'><i>Plans</i></option>
         <option value='policy-checked-at'><i>Policy Checks</i></option>
         <option value='cost-estimated-at'><i>Cost Estimations</i></option>
+        --->
       </select>
     </div>
     <div class="checkbox-inline col-md-3"><label class="control-label">
@@ -151,16 +171,18 @@
       });
     });
 
-    friendly['totals'] = {}
-    unsorted           = {}
-    $.each(message['totals'], function(f, count) {
-      unsorted[f] = count
-    });
-    //Sort by key
-    Object.keys(unsorted).sort().forEach(function(f) {
-      metric = $('#filter option[value=' + f + ']').text()
-      friendly['totals'][metric] = unsorted[f]
-    });
+    if ($('#filter option:selected').val() == 'ALL') {
+      friendly['totals'] = {}
+      unsorted           = {}
+      $.each(message['totals'], function(f, count) {
+        unsorted[f] = count
+      });
+      //Sort by key
+      Object.keys(unsorted).sort().forEach(function(f) {
+        metric = $('#filter option[value=' + f + ']').text()
+        friendly['totals'][metric] = unsorted[f]
+      });
+    };
     workingDone();
     pretty = JSON.stringify(friendly, null, 2);
     return pretty.split("\n");
