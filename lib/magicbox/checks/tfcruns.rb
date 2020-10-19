@@ -44,7 +44,6 @@ module Magicbox::Checks
             res.body
           end
 
-          # TODO: Single workspace call
           def tfe_call(workspace_id, page = 1)
             # Only reset if starting from page 1
             if page == 1
@@ -65,23 +64,17 @@ module Magicbox::Checks
             )
           end
 
-          def fetch_runs(input, meta)
+          def fetch_runs(input, meta, workspace_id)
             # For last (oldest) run on page, if later than end_date, skip to next page
             # Also check that there is a next page
             if Date.parse(input.last['attributes']['created-at']) > @end_date &&
                !meta['pagination']['next-page'].nil?
-              raw = JSON.parse(tfe_call(@workspace_id, meta['pagination']['next-page']))
-              ret = fetch_runs(raw['data'], raw['meta'])
+              raw = JSON.parse(tfe_call(workspace_id, meta['pagination']['next-page']))
+              ret = fetch_runs(raw['data'], raw['meta'], workspace_id)
               return ret
             end
 
-            filter_list =
-              if @filter == 'ALL'
-                ['applied-at', 'planned-at', 'cost-estimated-at', 'policy-checked-at']
-              else
-                [@filter]
-              end
-
+            filter_list = @filter.split(',')
             input.each do |run|
               workspace_id = run['relationships']['workspace']['data']['id']
 
@@ -99,19 +92,21 @@ module Magicbox::Checks
 
             # # For last (oldest) run on the page, if later than start_date, check next page also
             # # Also check that there is a next page
-            # if Date.parse(input.first['attributes']['created-at']) > @start_date &&
-            #    !meta['pagination']['next-page'].nil?
-            #   raw = JSON.parse(tfe_call(@workspace_id, meta['pagination']['next-page']))
-            #   fetch_runs(raw['data'], raw['meta'])
-            # end
-
-            return @goutput
+            if Date.parse(input.first['attributes']['created-at']) > @start_date &&
+               !meta['pagination']['next-page'].nil?
+              raw = JSON.parse(tfe_call(workspace_id, meta['pagination']['next-page']))
+              fetch_runs(raw['data'], raw['meta'], workspace_id)
+            end
           end
         end
 
         # Workflow
-        raw = JSON.parse(tfe_call(@workspace_id))
-        ret = fetch_runs(raw['data'], raw['meta'])
+        workspace_list = @workspace_id.split(',')
+        workspace_list.each do |workspace_id|
+          raw = JSON.parse(tfe_call(workspace_id))
+          fetch_runs(raw['data'], raw['meta'], workspace_id)
+        end
+        ret = [@goutput]
       rescue RuntimeError => e
         {
           'exitcode' => 2,
