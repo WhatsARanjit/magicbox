@@ -8,6 +8,7 @@
 1. [Example UI](#example-ui)
 1. [API](#api)
     * [Schema](#schema)
+    * [/api/1.0/tfc_activity](#api10tfc_activity)
     * [/api/1.0/json2hcl](#api10json2hcl)
     * [/api/1.0/resourcecounter](#api10resourcecounter)
     * [/api/1.0/validate](#api10validate)
@@ -91,6 +92,53 @@ format for all endpoints is:
 If the code submission is correct, the API will return a `200` response code.
 Incorrect code will receive a `400` and server failures a `500`.
 
+### `/api/1.0/tfc_activity`
+
+Count the number of plans/applies/policy checks/etc per workspace or organization 
+for a given period of time.
+
+__Parameters:__
+
+```json
+{
+  "tfe_server": {
+    "description": "DNS name of Terraform Enterprise server",
+    "type": "String[1]"
+  },
+  "tfe_token": {
+    "description": "Terraform Enterprise token to inspect organizations and workspace states",
+    "type": "String[1]"
+  },
+  "workspace_id": {
+    "description": "Single workspace ID or a comma-separated list of IDs to query",
+    "type": "String[1]"
+  },
+  "filter": {
+    "description": "Single metric filter or a comma-separated list of metric filters to query",
+    "type": "Variant[Enum['applied-at', 'apply-queued-at', 'applying-at', 'confirmed-at', 'cost-estimated-at', 'cost-estimating-at', 'discarded-at', 'errored-at', 'plan-queueable-at', 'plan-queued-at', 'planned-and-finished-at', 'planned-at', 'planning-at', 'policy-checked-at', 'policy-soft-failed-at'], String[1]]"
+  },
+  "start_date": {
+    "description": "The day/time to start counting runs"
+    "type": "DateTime"
+  },
+  "end_date": {
+    "description": "The day/time to end counting runs"
+    "type": "DateTime"
+  }
+}
+```
+
+NOTE: `start_date` and `end_date` should follow Ruby's [Date::parse](https://ruby-doc.org/stdlib-2.4.1/libdoc/date/rdoc/Date.html#method-c-parse) format
+
+__cURL example__
+
+```shell
+# curl -s -X POST -d \
+"{ \"tfe_token\": \"$TFE_TOKEN\", \"workspace_id\": \"ws-12345abcd\", \"start_date\": \"2020-02-18\", \"end_date\": \"2020-03-07\", \"filter\": \"planned-at,applied-at\"}" \
+https://whatsaranjit.herokuapp.com/api/1.0/tfc_activity
+{"exitcode":0,"message":[{"workspaces":{"ws-12345abcd\":{"planned-at":24,"applied-at":11}}}]}
+```
+
 ### `/api/1.0/json2hcl`
 
 Convert code between HCL and JSON.
@@ -133,20 +181,30 @@ __Parameters:__
     "description": "DNS name of Terraform Enterprise server",
     "type": "String[1]"
   },
-  "tfe_org": {
-    "description": "Terraform Enterprise organization to inspect",
-    "type": "String[1]"
-  },
-    "tfe_token": {
+  "tfe_token": {
     "description": "Terraform Enterprise token to inspect organizations and workspace states",
     "type": "String[1]"
   },
-    "type": {
-    "description": "Terraform resource type to count",
+  "workspace_id": {
+    "description": "Single workspace ID or a comma-separated list of IDs to query",
     "type": "String[1]"
+  },
+  "filter": {
+    "description": "Single metric filter or a comma-separated list of metric filters to query",
+    "type": "Variant[Enum['applied-at', 'apply-queued-at', 'applying-at', 'confirmed-at', 'cost-estimated-at', 'cost-estimating-at', 'discarded-at', 'errored-at', 'plan-queueable-at', 'plan-queued-at', 'planned-and-finished-at', 'planned-at', 'planning-at', 'policy-checked-at', 'policy-soft-failed-at'], String[1]"
+  },
+  "start_date": {
+    "description": "The day/time to start counting runs"
+    "type": "DateTime"
+  },
+  "end_date": {
+    "description": "The day/time to end counting runs"
+    "type": "DateTime"
   }
 }
 ```
+
+NOTE: `start_date` and `end_date` should follow Ruby's [Date::parse](https://ruby-doc.org/stdlib-2.4.1/libdoc/date/rdoc/Date.html#method-c-parse) format
 
 __cURL example__
 
