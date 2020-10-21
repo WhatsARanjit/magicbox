@@ -168,8 +168,44 @@
   formFooter();
   $('.btn-warning').hide()
 
+  var plot_data;
   function munge_success(input) {
     message = input[0]
+    //Plot data
+    plot_data = message['plot_data']
+    formatted_plot_data = []
+    $.each(plot_data, function(f, points) {
+      formatted_plot_data[f] = []
+      data = {
+        name: $('#filter option[value=' + f + ']').text(),
+        type: 'line',
+        showInLegend: true,
+        dataPoints:[]
+      }
+      $.each(points, function(point, count) {
+        entry = {}
+        entry['x'] = new Date(point)
+        entry['y'] = count
+        data['dataPoints'].push(entry)
+      });
+      formatted_plot_data.push(data)
+    });
+    console.log(formatted_plot_data)
+
+    chart = new CanvasJS.Chart('canvasjs', {
+      title: {
+        text: 'Runs over time'
+      },
+      axisX: {
+        gridThickness: 1
+      },
+      axisY: {
+        title: 'Runs'
+      },
+      data: formatted_plot_data
+    });
+    chart.render();
+
     friendly = {'workspaces': {}}
     $.each(message['workspaces'], function(ws, counts) {
       workspace_name                         = $('#workspaces option[workspace_id='+ ws).val()

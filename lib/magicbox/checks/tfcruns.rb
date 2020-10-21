@@ -34,7 +34,8 @@ module Magicbox::Checks
             'policy-soft-failed-at'   => 0,
           }
         }
-        @goutput = { 'workspaces' => {} }
+        @goutput    = { 'workspaces' => {} }
+        @plot_cache = {}
 
         class << self
           def http_call(method, url, data, e_codes)
@@ -105,11 +106,15 @@ module Magicbox::Checks
                 next unless Date.parse(run['attributes']['status-timestamps'][f]).between?(@start_date, @end_date)
                 # Local totals
                 @runs_cache['workspaces'][workspace_id][f] += 1
+                @runs_cache['totals'][f]                   += 1
                 @goutput['workspaces'][workspace_id][f]     = @runs_cache['workspaces'][workspace_id][f]
+                # Plot data
+                plot_day                 = Date.parse(run['attributes']['status-timestamps'][f]).strftime('%m-%d-%Y')
+                @plot_cache[f]           = {} unless @plot_cache.key?(f)
+                @plot_cache[f][plot_day] = @plot_cache[f][plot_day].nil? ? 1 : @plot_cache[f][plot_day] += 1
                 # Grand totals if more than one workspace
                 next unless @workspace_list.length > 1
-                @runs_cache['totals'][f]  += 1
-                @goutput['totals'][f]      = @runs_cache['totals'][f]
+                @goutput['totals'][f] = @runs_cache['totals'][f]
               end
             end
 
@@ -131,6 +136,8 @@ module Magicbox::Checks
           raw = JSON.parse(tfe_call(workspace_id))
           fetch_runs(raw['data'], raw['meta'], workspace_id)
         end
+        # Add plotting data
+        @goutput['plot_data'] = @plot_cache
         ret = [@goutput]
       rescue RuntimeError => e
         {
