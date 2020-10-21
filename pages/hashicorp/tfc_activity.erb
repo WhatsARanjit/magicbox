@@ -39,7 +39,9 @@
         }
       }).get();
     } else {
-      filter_list = $('#filter option:selected').val()
+      filter_list = $('#filter option:selected').map(function() {
+        return $(this).val()
+      }).get().join();
     }
     return filter_list
   }
@@ -126,7 +128,7 @@
   <div class='form-group' id='form-select-filter'>
     <label for='filter' class='col-md-2 control-label'>Metric:</label>
     <div class="col-md-4">
-      <select class='form-control' id='filter'>
+      <select class='form-control' id='filter' multiple>
         <option value="planning-at">Plan started</option>
         <option value="plan-queueable-at">Plan ready to be queued</option>
         <option value="plan-queued-at">Plan queued</option>
@@ -175,10 +177,9 @@
     plot_data = message['plot_data']
     formatted_plot_data = []
     $.each(plot_data, function(f, points) {
-      formatted_plot_data[f] = []
       data = {
         name: $('#filter option[value=' + f + ']').text(),
-        type: 'line',
+        type: 'column',
         showInLegend: true,
         dataPoints:[]
       }
@@ -193,8 +194,23 @@
     console.log(formatted_plot_data)
 
     chart = new CanvasJS.Chart('canvasjs', {
+      zoomEnabled: true,
+      panEnabled: true,
+      legend: {
+        cursor: "pointer",
+        fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+        itemclick: function (e) {
+          if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+            e.dataSeries.visible = false;
+          } else {
+            e.dataSeries.visible = true;
+          }
+          e.chart.render();
+        }
+      },
       title: {
-        text: 'Runs over time'
+        text: 'Runs over time',
+        fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'
       },
       axisX: {
         gridThickness: 1
@@ -222,7 +238,7 @@
       });
     });
 
-    if ($('#filter option:selected').val() == 'ALL') {
+    if ($('#workspaces option:selected').val() == 'ALL') {
       friendly['totals'] = {}
       unsorted           = {}
       $.each(message['totals'], function(f, count) {
@@ -247,6 +263,7 @@
           .attr('value', 'ALL')
           .attr('workspace_id', 'all')
           .text('ALL'));
+        $('#' + list).find('option').removeAttr('selected')
         $('#' + list).find('option[value=ALL]').attr('selected', 'selected')
         $('#' + list).attr('disabled', 'disabled');
       } else {
