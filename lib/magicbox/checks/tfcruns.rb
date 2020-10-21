@@ -137,7 +137,7 @@ module Magicbox::Checks
           fetch_runs(raw['data'], raw['meta'], workspace_id) unless raw['data'].empty?
         end
         # Add sorted plotting data
-        @goutput['plot_data'] = @plot_cache.collect { |f, points| { f => points.sort.to_h } }[0]
+        @goutput['plot_data'] = @plot_cache.collect { |f, points| { f => points.sort.to_h } }.reduce({}, :merge)
         ret = [@goutput]
       rescue RuntimeError => e
         {
