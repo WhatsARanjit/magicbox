@@ -112,23 +112,22 @@ function fakeFail(msg) {
   resultComplete(xhr);
 }
 
-function submitcode(endpoint, data, host = '')
-  {
-    resultWorking();
+function submitcode(endpoint, data, host = '') {
+  resultWorking();
 
-    // Make it pretty for logging/debugging
-    console.log(data.replace(/ {2,}/g, ' '));
-    console.log($('#magic-box').val());
+  // Make it pretty for logging/debugging
+  console.log(data.replace(/ {2,}/g, ' '));
+  console.log($('#magic-box').val());
 
-    // Submit API request
-    $.ajax({ 
-      type: 'post',
-      url: host + '/api/1.0/' + endpoint,
-      data: data,
-      dataType:'json',
-      success: function(res) { resultSuccess(res) },
-      error: function(xhr) { resultError(xhr) },
-      complete: function(xhr) { resultComplete(xhr) }
+  // Submit API request
+  $.ajax({ 
+    type: 'post',
+    url: host + '/api/1.0/' + endpoint,
+    data: data,
+    dataType:'json',
+    success: function(res) { resultSuccess(res) },
+    error: function(xhr) { resultError(xhr) },
+    complete: function(xhr) { resultComplete(xhr) }
   });
 }
 
@@ -167,4 +166,36 @@ function inputCheck(check, box = '#magic-box') {
       $('button').attr('disabled', 'disabled');
     }
   });
+}
+
+//Sample array: [{ "check": "[a-zA-z0-9\.\-/]", "box": "#source_tfe_org"}]
+function formValidation(check_array, error_msg = false) {
+  score = 0;
+  check_array.forEach(function(item) {
+    check = item['check'];
+    box   = item['box'];
+    console.log('Checking ' + box + ' for ' + check)
+
+    check_regex = new RegExp(check);
+    if (!check_regex.exec($(box).val())) {
+      $(box).parents('.form-group').addClass('has-error')
+      $(box).parents('.form-group').addClass('has-feedback')
+      $(box).parent().append('<span class="glyphicon glyphicon-remove form-control-feedback"></span>')
+
+      score = score += 1
+      $(box).focusin(function() {
+        $(this).parents('.form-group').removeClass('has-error')
+        $(this).parents('.form-group').removeClass('has-feedback')
+        $(this).siblings('.glyphicon').remove()
+      });
+    }
+  });
+  if (score > 0) {
+    if (error_msg) {
+      fakeFail(error_msg);
+    }
+    return false;
+  } else {
+    return true;
+  }
 }

@@ -44,6 +44,20 @@
     return filter_list
   }
   function test() {
+    check_array = [
+      {
+        "check": "[0-9]{4}-[0-9]{2}-[0-9]{2}",
+        "box": "#start_date"
+      },
+      {
+        "check": "[0-9]{4}-[0-9]{2}-[0-9]{2}",
+        "box": "#end_date"
+      }
+    ];
+    if (!formValidation(check_array, 'Please select start and end dates!')) {
+      return;
+    }
+
     tfe_workingMessage('Retrieving activity...')
 
     //Calculate info
@@ -62,6 +76,7 @@
     }'
     submitcode('tfc_activity', data)
   }
+
 </script>
 
 <form id='magic' action='#'>

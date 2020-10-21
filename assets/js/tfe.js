@@ -2,6 +2,19 @@ var workspaces_cache = '';
 var ws_attributes = '';
 
 function fetch_workspaces() {
+  check_array = [
+    {
+      "check": "[a-zA-z0-9\.\-/]",
+      "box": "#source_tfe_org"
+    },
+    {
+      "check": "[a-zA-z0-9\.\-/]",
+      "box": "#source_tfe_token"
+    }
+  ];
+  if (!formValidation(check_array, 'Form field validation failed!')) {
+    return;
+  }
   tfe_workingMessage('Retrieving workspaces...');
   data = '{ \
     "tfe_server": "' + $('#source_tfe_server').val() + '", \
