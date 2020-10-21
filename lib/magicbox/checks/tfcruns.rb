@@ -134,10 +134,10 @@ module Magicbox::Checks
         @goutput['totals'] = {} if @workspace_list.length > 1
         @workspace_list.each do |workspace_id|
           raw = JSON.parse(tfe_call(workspace_id))
-          fetch_runs(raw['data'], raw['meta'], workspace_id)
+          fetch_runs(raw['data'], raw['meta'], workspace_id) unless raw['data'].empty?
         end
-        # Add plotting data
-        @goutput['plot_data'] = @plot_cache
+        # Add sorted plotting data
+        @goutput['plot_data'] = @plot_cache.sort_by { |_f, points| points.keys }.to_h
         ret = [@goutput]
       rescue RuntimeError => e
         {
