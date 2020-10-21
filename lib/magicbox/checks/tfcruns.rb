@@ -109,7 +109,7 @@ module Magicbox::Checks
                 @runs_cache['totals'][f]                   += 1
                 @goutput['workspaces'][workspace_id][f]     = @runs_cache['workspaces'][workspace_id][f]
                 # Plot data
-                plot_day                 = Date.parse(run['attributes']['status-timestamps'][f]).strftime('%m-%d-%Y')
+                plot_day                 = Date.parse(run['attributes']['status-timestamps'][f]).strftime('%Y-%m-%d')
                 @plot_cache[f]           = {} unless @plot_cache.key?(f)
                 @plot_cache[f][plot_day] = @plot_cache[f][plot_day].nil? ? 1 : @plot_cache[f][plot_day] += 1
                 # Grand totals if more than one workspace
@@ -137,7 +137,7 @@ module Magicbox::Checks
           fetch_runs(raw['data'], raw['meta'], workspace_id) unless raw['data'].empty?
         end
         # Add sorted plotting data
-        @goutput['plot_data'] = @plot_cache.sort_by { |_f, points| points.keys }.to_h
+        @goutput['plot_data'] = @plot_cache.collect { |f, points| { f => points.sort.to_h } }[0]
         ret = [@goutput]
       rescue RuntimeError => e
         {
