@@ -125,6 +125,19 @@
       <input type='date' id='end_date' class='form-control' placeholder='mm/dd/YYYY'>
     </div>
   </div>
+  <div id='date_presets' class="form-group">
+    <label for='date-preset' class='col-md-2 control-label'>Presets:</label>
+    <div class="col-md-8">
+      <div id='date-preset' class="btn-group btn-group-sm" role="group">
+        <button type="button" class="btn btn-primary">This week</button>
+        <button type="button" class="btn btn-primary">Last week</button>
+        <button type="button" class="btn btn-primary">This month</button>
+        <button type="button" class="btn btn-primary">Last month</button>
+        <button type="button" class="btn btn-primary">Last 6 months</button>
+        <button type="button" class="btn btn-primary">Last year</button>
+      </div>
+    </div>
+  </div>
   <div class='form-group' id='form-select-filter'>
     <label for='filter' class='col-md-2 control-label'>Metric:</label>
     <div class="col-md-4">
@@ -276,6 +289,54 @@
       }
     });
   }
+  function setPeriod(start, end) {
+    $('#start_date').val(start);
+    $('#end_date').val(end);
+  }
   allOption('workspaces');
   allOption('filter');
+
+  //Presets
+  function datePreset(text, start, end) {
+    currentDay = new Date()
+    $('#date_presets button:contains(' + text + ')').click(function() {
+      setStart = new Date(new Date(start).setHours(0,0,0,0))
+      setEnd   = new Date(new Date(end).setHours(23,59,59,59))
+
+      console.log('Preset: ' + text + ' - start: ' + setStart + ', end: ' + setEnd)
+      $('#start_date').val([setStart.getFullYear(), ('0'+(setStart.getMonth()+1)).slice(-2), ('0'+setStart.getDate()).slice(-2)].join('-'))
+      $('#end_date').val([setEnd.getFullYear(), ('0'+(setEnd.getMonth()+1)).slice(-2), ('0'+setEnd.getDate()).slice(-2)].join('-'))
+    });
+  }
+  currentDay = new Date()
+  datePreset(
+    'This week',
+    new Date(currentDay.getTime() - currentDay.getDay()*24*3600*1000),
+    new Date(currentDay.getTime() + (6 - currentDay.getDay())*24*3600*1000)
+  );
+  datePreset(
+    'Last week',
+    new Date(currentDay.getTime() - 604800000 - currentDay.getDay()*24*3600*1000),
+    new Date(currentDay.getTime() - 604800000 + (6 - currentDay.getDay())*24*3600*1000)
+  );
+  datePreset(
+    'This month',
+    new Date(currentDay.getFullYear(), currentDay.getMonth(), 1),
+    new Date(currentDay.getFullYear(), currentDay.getMonth()+1, 0)
+  );
+  datePreset(
+    'Last month',
+    new Date(currentDay.getFullYear(), currentDay.getMonth()-1, 1),
+    new Date(currentDay.getFullYear(), currentDay.getMonth(), 0)
+  );
+  datePreset(
+    'Last 6 months',
+    new Date(currentDay.setMonth(currentDay.getMonth()-6)),
+    new Date(new Date())
+  );
+  datePreset(
+    'Last year',
+    new Date(currentDay.getFullYear()-1, currentDay.getMonth(), currentDay.getDate()),
+    new Date(new Date())
+  );
 </script>
