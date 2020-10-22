@@ -159,18 +159,21 @@
         <option value="policy-soft-failed-at">Policy soft fail detected</option>
         <option value="policy-hard-failed-at">Policy hard fail detected</option>
         <option value="confirmed-at">Run confirmed</option>
-
-        <!---
-        <option value='applied-at'><i>Applies</i></option>
-        <option value='planned-at'><i>Plans</i></option>
-        <option value='policy-checked-at'><i>Policy Checks</i></option>
-        <option value='cost-estimated-at'><i>Cost Estimations</i></option>
-        --->
       </select>
     </div>
     <div class="checkbox-inline col-md-3"><label class="control-label">
       <input type="checkbox" id="filter_all">All Runs
     </label> </div>
+  </div>
+  <div id='filter_presets' class="form-group">
+    <label for='filter-preset' class='col-md-2 control-label'>Presets:</label>
+    <div class="col-md-8">
+      <div id='filter-preset' class="btn-group btn-group-sm" role="group">
+        <button type="button" class="btn btn-primary">Plans & Applies</button>
+        <button type="button" class="btn btn-primary">Policy checks</button>
+        <button type="button" class="btn btn-primary">Errors</button>
+      </div>
+    </div>
   </div>
   <p><button type='button' onclick='test();' class='btn btn-info'>Retrieve Activity</button></p>
   </div>
@@ -289,14 +292,10 @@
       }
     });
   }
-  function setPeriod(start, end) {
-    $('#start_date').val(start);
-    $('#end_date').val(end);
-  }
   allOption('workspaces');
   allOption('filter');
 
-  //Presets
+  //Date presets
   function datePreset(text, start, end) {
     currentDay = new Date()
     $('#date_presets button:contains(' + text + ')').click(function() {
@@ -339,4 +338,15 @@
     new Date(currentDay.getFullYear()-1, currentDay.getMonth(), currentDay.getDate()),
     new Date(new Date())
   );
+
+  //Filter presets
+  function filterPreset(text, filters) {
+    $('#filter_presets button:contains(' + text + ')').click(function() {
+      $('#filter').find('option').removeAttr('selected')
+      $('#filter').val(filters)
+    });
+  }
+  filterPreset('Plans & Applies', ['planned-at', 'applied-at'])
+  filterPreset('Policy check', ['policy-checked-at', 'policy-soft-failed-at', 'policy-hard-failed-at'])
+  filterPreset('Errors', ['errored-at'])
 </script>
