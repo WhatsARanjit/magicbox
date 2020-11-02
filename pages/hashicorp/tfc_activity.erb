@@ -207,6 +207,8 @@
       });
       formatted_plot_data.push(data)
     });
+    //For whatever reason, if only a single dataset, CanvasJS doesn't stick to one color
+    formatted_plot_data.push({name: "Dummy", type: "column", showInLegend: false, dataPoints: []})
     console.log(formatted_plot_data)
 
     chart = new CanvasJS.Chart('canvasjs', {
@@ -229,10 +231,12 @@
         fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'
       },
       axisX: {
-        gridThickness: 1
+        gridThickness: 1,
+        intervalType: "day"
       },
       axisY: {
-        title: 'Runs'
+        title: 'Runs',
+        intervalType: "number"
       },
       data: formatted_plot_data
     });
@@ -350,3 +354,5 @@
   filterPreset('Policy check', ['policy-checked-at', 'policy-soft-failed-at', 'policy-hard-failed-at'])
   filterPreset('Errors', ['errored-at'])
 </script>
+
+<div just='clear things'></div>
