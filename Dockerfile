@@ -14,6 +14,7 @@ WORKDIR /opt/magicbox
 RUN bundle install --without development
 
 EXPOSE $port
+ENV BUNDLER_VERSION=2.1.4
 
 HEALTHCHECK --interval=1m --timeout=3s \
   CMD curl -sk -I -f ${protocol}://localhost:${port}/?healthcheck=1 || exit 1
