@@ -37,6 +37,9 @@ module Magicbox::Checks
         @goutput    = { 'workspaces' => {} }
         @plot_cache = {}
 
+        # Addition for concurrency
+        @concurrency_cache = {}
+
         class << self
           def http_call(method, url, data, e_codes)
             uri  = URI(url)
@@ -99,6 +102,7 @@ module Magicbox::Checks
 
             filter_list = @filter.split(',')
             input.each do |run|
+              run_id       = run['id']
               workspace_id = run['relationships']['workspace']['data']['id']
 
               filter_list.each do |f|
@@ -112,6 +116,22 @@ module Magicbox::Checks
                 plot_day                 = Date.parse(run['attributes']['status-timestamps'][f]).strftime('%Y-%m-%d')
                 @plot_cache[f]           = {} unless @plot_cache.key?(f)
                 @plot_cache[f][plot_day] = @plot_cache[f][plot_day].nil? ? 1 : @plot_cache[f][plot_day] += 1
+                # Concurrency data
+                if run['attributes']['status'] == 'applied'
+                  start_time                   = DateTime.parse(run['attributes']['status-timestamps']['apply-queued-at'])
+                  end_time                     = DateTime.parse(run['attributes']['status-timestamps']['applied-at'])
+                  current_time                 = start_time
+                  current_time_str             = start_time.strftime('%Y-%m-%d %H:%M') + ':00'
+
+                  while current_time < end_time do
+                    @concurrency_cache[current_time_str]         = @concurrency_cache.key?(current_time_str) ? @concurrency_cache[current_time_str] : []
+                    @concurrency_cache[current_time_str].push(run_id)
+                    @concurrency_cache[current_time_str].uniq!
+                    current_time                                 = current_time + Rational(60, 86400)
+                    current_time_str                             = current_time.strftime('%Y-%m-%d %H:%M') + ':00'
+                  end
+
+                end
                 # Grand totals if more than one workspace
                 next unless @workspace_list.length > 1
                 @goutput['totals'][f] = @runs_cache['totals'][f]
@@ -137,7 +157,11 @@ module Magicbox::Checks
           fetch_runs(raw['data'], raw['meta'], workspace_id) unless raw['data'].empty?
         end
         # Add sorted plotting data
-        @goutput['plot_data'] = @plot_cache.collect { |f, points| { f => points.sort.to_h } }.reduce({}, :merge)
+        @goutput['plot_data']         = @plot_cache
+        #@goutput['plot_data']         = @plot_cache.collect { |f, points| { f => points.sort.to_h } }.reduce({}, :merge)
+        #@goutput['concurrency_cache'] = @concurrency_cache.collect { |f, points| { f => points } }.reduce({}, :merge)
+        @goutput['concurrency_cache'] = @concurrency_cache
+
         ret = [@goutput]
       rescue RuntimeError => e
         {

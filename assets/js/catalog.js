@@ -26,13 +26,13 @@ function makeCatalog(title, list, type = 'workspace') {
       icon = "<div class='glyphicon glyphicon-wrench'></div>"
     }
     //HTML output for templates
-    if (raw_name.match(/template/)) {
+    if (raw_name.match(/template/) || type == 'module') {
       variable_html = variable_html + "\
       <label class='btn btn-link col-md-3'>\
         <div class='btn btn-primary btn-lg col-md-12 square'>\
           " + icon + "\
           <div class='glyphicon-class' raw='" + raw_name + "' id='" + catalog_id + "'>" + catalog_name
-      if (type == 'modules') {
+      if (type == 'module') {
         variable_html = variable_html + "<br><small>v" + version + "</small>"
       }
       variable_html = variable_html + "\
@@ -97,10 +97,7 @@ function fetch_workspaces_catalog() {
   });
 }
 
-function fetch_variables() {
-  [workspace_id, workspace_name] = $('#template .btn.square.active > .glyphicon-class').map(function() {
-    return [$(this).attr('id'),$(this).attr('raw')]
-  }).get();
+function fetch_variables(workspace_id, workspace_name, tf_form = '#form-set-tf-variables', env_form = '#form-set-env-variables') {
   tfe_workingMessage('Retrieving options...');
   args = encodeURIComponent('filter[organization][name]=' + $('#source_tfe_org').val() + '&filter[workspace][name]=' + workspace_name);
   data = '{ \
@@ -116,11 +113,11 @@ function fetch_variables() {
     dataType:'json',
     success: function(xhr) {
       console.log(xhr)
-      $('#form-set-tf-variables')
+      $(tf_form)
         .find('div')
         .remove()
         .end()
-      $('#form-set-env-variables')
+      $(env_form)
         .find('div')
         .remove()
         .end()
@@ -165,7 +162,7 @@ function fetch_variables() {
             </div>\
           </div>\
         ";
-        type = category == 'terraform' ? '#form-set-tf-variables' : '#form-set-env-variables';
+        type = category == 'terraform' ? tf_form : env_form;
         $(type)
           .append($(variable_html));
       });
@@ -178,8 +175,8 @@ function fetch_variables() {
         $('#target_tfe_token').val($('#source_tfe_token').val());
         $('#target_workspace').val($('#workspaces').val());
         $('#ws-attributes').val(JSON.stringify(ws_attributes, null, 2));
-        $('#form-set-tf-variables').slideDown();
-        $('#form-set-env-variables').slideDown();
+        $(tf_form).slideDown();
+        $(env_form).slideDown();
         $('#form-set-advanced').slideDown();
         $('#create-workspace').slideDown();
 
@@ -487,6 +484,117 @@ function getOutputs(state_url) {
       console.log('Done')
     }
   });
+}
+
+//Module stuff
+//Get module list
+function fetch_modules_catalog() {
+  check_array = [
+    {
+      "check": "[a-zA-z0-9\.\-/]",
+      "box": "#source_tfe_org"
+    },
+    {
+      "check": "[a-zA-z0-9\.\-/]",
+      "box": "#source_tfe_token"
+    }
+  ];
+  if (!formValidation(check_array, 'Form field validation failed!')) {
+    return;
+  }
+  tfe_workingMessage('Retrieving modules...');
+  data = '{ \
+    "tfe_server": "' + $('#source_tfe_server').val() + '", \
+    "tfe_token": "' + $('#source_tfe_token').val() + '", \
+    "tfe_api_version": "registry/v1", \
+    "return_key": "modules", \
+    "endpoint": "modules/' + $('#source_tfe_org').val() + '" \
+  }'
+  console.log(data.replace(/ {2,}/g, ' '));
+  $.ajax({
+    type:'post',
+    url:'http://localhost:9292/api/1.0/tfe_call',
+    data: data,
+    dataType:'json',
+    success: function(res) {
+      console.log(res)
+      module_list = res['message'];
+      getModules(module_list);
+    },
+    error: function(xhr) {
+      resultWorking();
+      resultError(xhr);
+      resultComplete(xhr);
+    },
+    complete: function(xhr) {
+      console.log(JSON.parse(xhr.responseText))
+    }
+  });
+}
+
+//Need to wait for all modules to be cached before moving on
+//See waitForModules()
+//Wait to cache all module data before moving on
+module_cache_count = 0
+var modules_cache  = [];
+function getModules(modules_list) {
+  modules_list.forEach(function(mod) {
+    data = '{ \
+      "tfe_server": "' + $('#source_tfe_server').val() + '", \
+      "tfe_token": "' + $('#source_tfe_token').val() + '", \
+      "tfe_api_version": "registry/v1", \
+      "return_key": "", \
+      "endpoint": "modules/' + mod['id'] + '" \
+    }'
+    console.log(data.replace(/ {2,}/g, ' '));
+    $.ajax({
+      type:'post',
+      url:'http://localhost:9292/api/1.0/tfe_call',
+      data: data,
+      dataType:'json',
+      success: function(res) {
+        modules_cache.push(res['message'])
+        module_cache_count += 1
+      },
+      error: function(xhr) {
+        resultWorking();
+        resultError(xhr);
+        resultComplete(xhr);
+      },
+      complete: function(xhr) {
+        console.log(JSON.parse(xhr.responseText))
+      }
+    });
+  });
+  waitForModules(modules_list.length);
+}
+
+module_poll = 1
+function waitForModules(list_length, limit = 24) {
+  //All modules cached
+  if (module_cache_count >= list_length) {
+    ms = makeCatalog('Modules', modules_cache, type = 'module')
+    $('#template')
+      .find('label')
+      .remove()
+      .end()
+    $('#template').append(ms)
+    $(document).ready(function() {
+      $('#form-select-workspaces').slideDown();
+    });
+    workingDone();
+  }
+  //Still waiting
+  else {
+    module_poll += 1
+    //Enough retries
+    if (module_poll >= limit) {
+      console.log('ERROR: waitForModules limit reached')
+      return false
+    } else {
+      setTimeout(function() { waitForModules(list_length, limit) }, 5000)
+    }
+  }
 }
 
 var tfe_load = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40px" height="45px" viewBox="0 0 40 45" version="1.1" id="terraform-loading">

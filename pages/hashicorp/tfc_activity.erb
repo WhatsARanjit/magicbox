@@ -110,8 +110,9 @@
       </select>
     </div>
     <div class="checkbox-inline col-md-3"><label class="control-label">
-      <input type="checkbox" id="workspaces_all">All Workspaces
-    </label> </div>
+        <input type="checkbox" id="workspaces_all">All Workspaces
+      </label>
+    </div>
   </div>
   <div class="form-group">
     <label for='start_date' class='col-md-2 control-label'>Start Date:</label>
@@ -161,9 +162,15 @@
         <option value="confirmed-at">Run confirmed</option>
       </select>
     </div>
-    <div class="checkbox-inline col-md-3"><label class="control-label">
-      <input type="checkbox" id="filter_all">All Runs
-    </label> </div>
+    <div class="col-md-3">
+      <div class="checkbox-inline"><label class="control-label">
+        <input type="checkbox" id="filter_all">All Runs
+      </label></div>
+      <br>
+      <div class="checkbox-inline"><label class="control-label">
+        <input type="checkbox" id="filter_concurrency">Concurrent Runs
+      </label></div>
+    </div>
   </div>
   <div id='filter_presets' class="form-group">
     <label for='filter-preset' class='col-md-2 control-label'>Presets:</label>

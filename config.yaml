@@ -33,6 +33,7 @@ sample_pages:
   - hashicorp/tfc_activity
   - hashicorp/waas
   - hashicorp/template_catalog
+  #- hashicorp/module_catalog
   - puppet/validate
   - puppet/fact
   - puppet/function
