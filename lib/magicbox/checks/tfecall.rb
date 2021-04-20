@@ -6,12 +6,14 @@ module Magicbox::Checks
         require 'net/http'
         require 'uri'
         @server      = Magicbox::Webserver.sanitize(@data['tfe_server']) || 'app.terraform.io'
+        @api_prefix  = Magicbox::Webserver.sanitize(@data['api_prefix']) || 'api'
         @api_version = Magicbox::Webserver.sanitize(@data['tfe_api_version']) || 'v2'
         @token       = Magicbox::Webserver.sanitize(@data['tfe_token'])
         @method      = Magicbox::Webserver.sanitize(@data['method']) || 'GET'
         @endpoint    = Magicbox::Webserver.sanitize(@data['endpoint'])
         @e_codes     = Magicbox::Webserver.sanitize(@data['e_codes']) || [200, 204]
         @keys        = Magicbox::Webserver.sanitize(@data['keys']) || {}
+        @return_key  = Magicbox::Webserver.sanitize(@data['return_key']) || 'data'
 
         class << self
           def http_call(method, url, data, e_codes)
@@ -33,21 +35,32 @@ module Magicbox::Checks
           end
         end
 
-        ret = http_call(
+        # Construct URL
+        url = [
+          "https://#{@server}",
+          @api_prefix,
+          @api_version,
+          @endpoint
+        ].join('/')
+
+        raw = http_call(
           @method,
-          "https://#{@server}/api/#{@api_version}/#{@endpoint}",
+          url,
           @keys,
           @e_codes
         )
+
+        # Return the requested key
+        ret = @return_key.empty? ? JSON.parse(raw) : JSON.parse(raw)[@return_key]
       rescue RuntimeError => e
         {
           'exitcode' => 2,
-          'message'  => [e.message],
+          'message'  => [url, e.message, e.backtrace.inspect],
         }
       else
         {
           'exitcode' => 0,
-          'message'  => JSON.parse(ret)['data'],
+          'message'  => ret,
         }
       end
     end

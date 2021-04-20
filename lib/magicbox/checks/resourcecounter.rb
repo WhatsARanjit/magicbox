@@ -51,6 +51,7 @@ module Magicbox::Checks
           end
 
           def get_targets(state)
+            return [] unless JSON.parse(state).key?('modules')
             JSON.parse(state)['modules'].map do |m|
               resources = m['resources']
               resources.map { |r, attr| r if attr['type'] == @type }.compact

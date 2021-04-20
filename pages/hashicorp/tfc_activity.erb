@@ -110,8 +110,9 @@
       </select>
     </div>
     <div class="checkbox-inline col-md-3"><label class="control-label">
-      <input type="checkbox" id="workspaces_all">All Workspaces
-    </label> </div>
+        <input type="checkbox" id="workspaces_all">All Workspaces
+      </label>
+    </div>
   </div>
   <div class="form-group">
     <label for='start_date' class='col-md-2 control-label'>Start Date:</label>
@@ -161,9 +162,15 @@
         <option value="confirmed-at">Run confirmed</option>
       </select>
     </div>
-    <div class="checkbox-inline col-md-3"><label class="control-label">
-      <input type="checkbox" id="filter_all">All Runs
-    </label> </div>
+    <div class="col-md-3">
+      <div class="checkbox-inline"><label class="control-label">
+        <input type="checkbox" id="filter_all">All Runs
+      </label></div>
+      <br>
+      <div class="checkbox-inline"><label class="control-label">
+        <input type="checkbox" id="filter_concurrency">Concurrent Runs
+      </label></div>
+    </div>
   </div>
   <div id='filter_presets' class="form-group">
     <label for='filter-preset' class='col-md-2 control-label'>Presets:</label>
@@ -207,6 +214,8 @@
       });
       formatted_plot_data.push(data)
     });
+    //For whatever reason, if only a single dataset, CanvasJS doesn't stick to one color
+    formatted_plot_data.push({name: "Dummy", type: "column", showInLegend: false, dataPoints: []})
     console.log(formatted_plot_data)
 
     chart = new CanvasJS.Chart('canvasjs', {
@@ -229,10 +238,12 @@
         fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'
       },
       axisX: {
-        gridThickness: 1
+        gridThickness: 1,
+        intervalType: "day"
       },
       axisY: {
-        title: 'Runs'
+        title: 'Runs',
+        intervalType: "number"
       },
       data: formatted_plot_data
     });
@@ -350,3 +361,5 @@
   filterPreset('Policy check', ['policy-checked-at', 'policy-soft-failed-at', 'policy-hard-failed-at'])
   filterPreset('Errors', ['errored-at'])
 </script>
+
+<div just='clear things'></div>

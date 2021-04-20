@@ -1,0 +1,138 @@
+<script src="/js/tfe.js"></script>
+<script src="/js/catalog.js"></script>
+
+<form id='magic' action='#'>
+<div class='form-horizontal'>
+  <div class='form-group' id='form-fetch-workspaces'>
+    <label for='source_tfe_server' class='col-md-2 control-label'>Source TFE Server:</label>
+    <div class="col-md-4">
+      <input type='text' id='source_tfe_server' class='form-control' value='app.terraform.io'>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for='source_tfe_org' class='col-md-2 control-label'>Source TFE Organization:</label>
+    <div class="col-md-4">
+      <input type='text' id='source_tfe_org' class='form-control' placeholder='my_org'>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for='source_tfe_token' class='col-md-2 control-label'>Login Token:</label>
+    <div class="col-md-4">
+      <input type='password' id='source_tfe_token' class='form-control' placeholder='mYT0k3n'>
+    </div>
+  </div>
+  <p><button type='button' onclick='fetch_modules_catalog();' class='btn btn-info'>Retrieve Modules</button></p>
+  <div class='form-group' id='form-select-workspaces'>
+		<style>
+			.square {
+				padding-top:16%;
+				padding-bottom:16%;
+        white-space: normal;
+			}
+			.btn-primary {
+				color: #333;
+				background-color: #fff;
+				border-color: #ccc;
+			}
+			.btn-primary.focus {
+				color: inherit;
+				background-color: inherit;
+				border-color: inherit;
+			}
+		</style>
+		<div id="template" class="btn-group col-md-12" data-toggle="buttons">
+      <h4>Modules:</h4>
+    </div>
+    <script>
+      function selectedTemplate() {
+        sT = $('#template .btn.square.active > .glyphicon-class').map(function() {
+          return [$(this).attr('id'),$(this).attr('raw')]
+        }).get();
+        return sT
+      }
+    </script>
+    <p><button type='button' onclick='fetch_variables(...selectedTemplate());' class='btn btn-info'>Retrieve Options</button></p>
+  </div>
+  <div class='form-group' id='form-set-tf-variables'>
+    <p>Provisioning Options</p>
+  </div>
+  <div class='form-group' id='form-set-env-variables'>
+    <p>Environment Options</p>
+  </div>
+  <div class='form-group' id='form-set-advanced'>
+    <div class="col-md-2">
+      <button type="button" id='advanced_options' class="btn btn-link" onclick='toggle_advanced();'>Advanced Options <span class="glyphicon glyphicon-menu-up"></span></button>
+    </div>
+    <div class="col-md-4">
+      <textarea id='ws-attributes' class="form-control" rows='10' style="font-family: monospace;"></textarea>
+    </div>
+  </div>
+  <div class='form-group' id='create-workspace'>
+    <div class="form-group">
+      <label for='target_tfe_server' class='col-md-2 control-label'>Target TFE Server:</label>
+      <div class="col-md-4">
+        <input type='text' id='target_tfe_server' class='form-control' value='app.terraform.io'>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for='target_tfe_org' class='col-md-2 control-label'>Target TFE Organization:</label>
+      <div class="col-md-4">
+        <input type='text' id='target_tfe_org' class='form-control' placeholder='my_org'>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for='target_tfe_token' class='col-md-2 control-label'>Target TFE Token:</label>
+      <div class="col-md-4">
+        <input type='password' id='target_tfe_token' class='form-control' placeholder='mYT0k3n'>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for='target_workspace' class='col-md-2 control-label'>New Project Name:</label>
+      <div class="col-md-4">
+        <input type='text' id='target_workspace' class='form-control' placeholder='my_workspace'>
+      </div>
+    </div>
+    <p><button type='button' onclick='test();' class='btn btn-info'>Create Project</button></p>
+  </div>
+</div>
+</form>
+
+<!-- Information popup -->
+<div id="informationModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Project Information</h4>
+      </div>
+      <div class="modal-body">
+        <p>placeholder</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End popup -->
+
+<script>
+  //Catalog customizations
+  $('h3:first').html('Self-Service Portal')
+  $('#source_tfe_server').parents('.form-group').hide()
+  $('#source_tfe_org').parents('.form-group').hide()
+  $('#source_tfe_org').val('hashijit')
+  $('#target_tfe_server').parents('.form-group').hide()
+  $('#target_tfe_org').parents('.form-group').hide()
+  $('#target_tfe_token').parents('.form-group').hide()
+  $('#successModal').css('display', 'none')
+  
+  $('#form-select-workspaces').hide();
+  $('#form-set-tf-variables').hide();
+  $('#form-set-env-variables').hide();
+  $('#form-set-advanced').hide();
+  $('#ws-attributes').hide();
+  $('#create-workspace').hide();
+  formFooter();
+  $('.btn-warning').hide();
+</script>
