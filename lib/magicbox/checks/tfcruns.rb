@@ -124,11 +124,11 @@ module Magicbox::Checks
                   current_time_str             = start_time.strftime('%Y-%m-%d %H:%M') + ':00'
 
                   while current_time < end_time do
-                    @concurrency_cache[current_time_str]         = @concurrency_cache.key?(current_time_str) ? @concurrency_cache[current_time_str] : []
+                    @concurrency_cache[current_time_str] = @concurrency_cache.key?(current_time_str) ? @concurrency_cache[current_time_str] : []
                     @concurrency_cache[current_time_str].push(run_id)
                     @concurrency_cache[current_time_str].uniq!
-                    current_time                                 = current_time + Rational(60, 86400)
-                    current_time_str                             = current_time.strftime('%Y-%m-%d %H:%M') + ':00'
+                    current_time += Rational(60, 86_400)
+                    current_time_str = current_time.strftime('%Y-%m-%d %H:%M') + ':00'
                   end
 
                 end
@@ -158,8 +158,8 @@ module Magicbox::Checks
         end
         # Add sorted plotting data
         @goutput['plot_data']         = @plot_cache
-        #@goutput['plot_data']         = @plot_cache.collect { |f, points| { f => points.sort.to_h } }.reduce({}, :merge)
-        #@goutput['concurrency_cache'] = @concurrency_cache.collect { |f, points| { f => points } }.reduce({}, :merge)
+        # @goutput['plot_data']         = @plot_cache.collect { |f, points| { f => points.sort.to_h } }.reduce({}, :merge)
+        # @goutput['concurrency_cache'] = @concurrency_cache.collect { |f, points| { f => points } }.reduce({}, :merge)
         @goutput['concurrency_cache'] = @concurrency_cache
 
         ret = [@goutput]
