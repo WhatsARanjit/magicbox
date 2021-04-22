@@ -12,6 +12,7 @@ AllCops:
 
 Metrics/BlockLength:
   Exclude:
+    - 'lib/magicbox/checks/*.rb'
     - 'spec/**/*.rb'
 Metrics/BlockNesting:
   Exclude:
@@ -27,6 +28,12 @@ Performance/RegexpMatch:
   Exclude:
     - 'magic.rb'
 Style/RedundantReturn:
+  Exclude:
+    - 'lib/magicbox/checks/*.rb'
+Style/DateTime:
+  Exclude:
+    - 'lib/magicbox/checks/*.rb'
+Style/WhileUntilDo:
   Exclude:
     - 'lib/magicbox/checks/*.rb'
 
