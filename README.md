@@ -25,7 +25,7 @@ Magic Box API and sample web UI.
 
 Docker Usage
 ```shell
-docker run --rm -d -p 8443:8443 samgabrail/magicbox:latest
+docker run --rm -d -p 8443:8443 WhatsARanjit/magicbox:latest
 ```
 ## Requirements
 
