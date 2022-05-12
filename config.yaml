@@ -33,6 +33,7 @@ sample_pages:
   - hashicorp/tfc_activity
   - hashicorp/waas
   - hashicorp/template_catalog
+  - hashicorp/vault-mocks
   #- hashicorp/module_catalog
   - puppet/validate
   - puppet/fact
@@ -110,3 +111,6 @@ checks:
   tfc_activity:
     checks:
       - tfcruns
+  vaultmocks:
+    checks:
+      - vaultmocks
