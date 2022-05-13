@@ -1,0 +1,21 @@
+<script>
+  function test() {
+    data = '{ \
+      "command": "' + escape($('#magic-box').val()) + '" \
+    }'
+    submitcode('vaultmocks', data);
+  }
+</script>
+
+<form id='magic' action='#'>
+  <div class='form-group'>
+    <label for='magic-box'>Enter Vault <mono>-output-curl-string</mono>:</label>
+    <textarea class='form-control' id='magic-box' rows='5'></textarea>
+  </div>
+</form>
+
+<script>
+  $('h3:first').html('Vault Mock Creator')
+  formFooter();
+  $('.btn-warning').html('Create success.json')
+</script>
