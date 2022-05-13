@@ -5,7 +5,7 @@ module Magicbox::Checks
         require 'json'
         command = Magicbox::Webserver.sanitize(@data['command'])
 
-        pattern = 'curl -X ([\w]+) (-H ".*")+ -d \'({.*})\' (https?://[\d\.]+:\d+)/v1(.*)$'
+        pattern = 'curl -X ([\w]+) (-H ".*")+ -d \'({.*})\' (https?://[\d\.]+:\d+)/v1/(.*)$'
         matches = command.match(pattern)
 
         operation = {
