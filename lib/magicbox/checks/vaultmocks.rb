@@ -20,7 +20,7 @@ module Magicbox::Checks
             'request' => {
               'operation' => operation[matches[1]],
               'path'      => matches[5],
-              'data'      => matches[3]
+              'data'      => JSON.parse(matches[3])
             }
           },
           'test' => {
