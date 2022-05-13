@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Puppet
-gem 'puppet', '5.3.2'
+gem 'puppet', '6.25.1'
 gem 'puppet-lint', '2.3.3'
 gem 'puppet-syntax', '2.4.1'
 gem 'puppetlabs_spec_helper', '2.4.0'
