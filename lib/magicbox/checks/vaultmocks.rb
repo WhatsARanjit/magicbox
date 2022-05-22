@@ -15,20 +15,21 @@ module Magicbox::Checks
           'DELETE' => 'delete'
         }
 
-        ret = JSON.pretty_generate({
-          'global' => {
-            'request' => {
-              'operation' => operation[matches[1]],
-              'path'      => matches[5],
-              'data'      => JSON.parse(matches[3])
+        ret = JSON.pretty_generate(
+          {
+            'global' => {
+              'request' => {
+                'operation' => operation[matches[1]],
+                'path'      => matches[5],
+                'data'      => JSON.parse(matches[3])
+              }
+            },
+            'test' => {
+              'main' => true
             }
-          },
-          'test' => {
-            'main' => true
           }
-        })
+        )
         exitstatus = 0
-
       rescue RuntimeError => e
         {
           'exitcode' => 2,
