@@ -1,4 +1,4 @@
-# Magic Box [![Build Status](https://travis-ci.org/WhatsARanjit/magicbox.svg?branch=master)](https://travis-ci.org/WhatsARanjit/magicbox)
+# Magic Box [![Build Status](https://app.travis-ci.com/WhatsARanjit/magicbox.svg?branch=master)](https://app.travis-ci.com/WhatsARanjit/magicbox)
 
 #### Table of Contents
 
