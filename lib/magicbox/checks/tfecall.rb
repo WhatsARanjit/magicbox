@@ -51,16 +51,16 @@ module Magicbox::Checks
         )
 
         # Get the link data for pagination
-        link_data = JSON.parse(raw)["links"]
+        link_data = JSON.parse(raw)['links']
         ret = @return_key.empty? ? JSON.parse(raw) : JSON.parse(raw)[@return_key]
-        while link_data["self"] != link_data["last"]
+        while link_data['self'] != link_data['last']
           next_page = http_call(
             @method,
-            link_data["next"],
+            link_data['next'],
             @keys,
             @e_codes
           )
-          link_data = JSON.parse(next_page)["links"]
+          link_data = JSON.parse(next_page)['links']
           ret.concat(@return_key.empty? ? JSON.parse(next_page) : JSON.parse(next_page)[@return_key])
         end
       rescue RuntimeError => e
