@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+ruby "2.6.10"
 
 # Puppet
 gem 'puppet', '5.3.2'
