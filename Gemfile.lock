@@ -98,5 +98,8 @@ DEPENDENCIES
   semantic_puppet (= 1.0.1)
   sinatra (= 2.0.2)
 
+RUBY VERSION
+   ruby 2.6.10p210
+
 BUNDLED WITH
-   1.16.2
+   1.17.2

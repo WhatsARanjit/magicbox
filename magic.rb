@@ -23,6 +23,7 @@ end
 w_opts                      = @config['webserver']
 @woptions                   = { app: MyApp }
 @woptions[:Host]            = w_opts['host'] if w_opts.key?('host')
+@woptions[:Port]            = w_opts['port'] if ENV['PORT']
 @woptions[:Port]            = w_opts['port'] if w_opts.key?('port')
 @woptions[:Logger]          = w_opts['logger'] if w_opts.key?('logger')
 @woptions[:SSLEnable]       = w_opts['ssl_enable'] if w_opts.key?('ssl_enable')
